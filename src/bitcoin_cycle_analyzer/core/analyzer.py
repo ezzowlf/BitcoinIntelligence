@@ -1,0 +1,62 @@
+from __future__ import annotations
+import json
+from pathlib import Path
+import pandas as pd
+from ..analyzer import analyze as analyze_technical
+from .cycle_engine import analyze_cycle
+from .market_state import build_market_state
+from ..seasonality.statistics import monthly_statistics
+from ..seasonality.event_windows import event_window_statistics
+from ..onchain import UnavailableOnChainProvider, analyze_onchain
+from ..derivatives import analyze_derivatives
+from ..flows.etf import analyze_etf_flows
+from ..macro import analyze_macro
+from ..scoring import evidence_score, confluence_score
+
+
+def _seasonality(frame: pd.DataFrame, as_of) -> dict:
+    monthly = monthly_statistics(frame, as_of=as_of)
+    month = str(pd.Timestamp(as_of).month)
+    current = monthly.get(month, {})
+    median = current.get("median_return")
+    win = current.get("win_rate")
+    score = None if median is None or win is None else round(max(0, min(100, 50 + median * 100 + (win - .5) * 40)), 2)
+    events = {name: event_window_statistics(frame, name, as_of=as_of) for name in ("thanksgiving", "black_friday", "christmas", "new_year")}
+    return {"status": "AVAILABLE", "score": score, "current_month": current, "events": events, "provider": "derived from canonical BTC/USD", "last_update": as_of}
+
+
+def analyze_intelligence(frame: pd.DataFrame, config: dict, as_of=None, feeds: dict | None = None, quality_score: float = 1.0, oos_quality: float = .5) -> dict:
+    feeds = feeds or {}
+    cutoff = frame.index[-1] if as_of is None else pd.Timestamp(as_of)
+    technical = analyze_technical(frame, config, as_of=cutoff)
+    cycle = analyze_cycle(frame, as_of=cutoff)
+    modules = {
+        "onchain": analyze_onchain(feeds.get("onchain_provider", UnavailableOnChainProvider()), cutoff),
+        "etf": analyze_etf_flows(feeds.get("etf"), cutoff),
+        "derivatives": analyze_derivatives(cutoff, funding=feeds.get("funding"), open_interest=feeds.get("open_interest"), basis=feeds.get("basis"), liquidations=feeds.get("liquidations"), options=feeds.get("options")),
+        "macro": analyze_macro(feeds.get("macro"), cutoff),
+        "seasonality": _seasonality(frame, cutoff),
+        "news": feeds.get("news_summary", {"status": "UNAVAILABLE", "risk": None, "score": None}),
+    }
+    available_scores = [module["score"] for module in modules.values() if isinstance(module, dict) and module.get("score") is not None]
+    technical_direction = technical["score"].total / 100
+    agreement_values = [technical_direction] + [score / 100 for score in available_scores]
+    agreement = 1 - (max(agreement_values) - min(agreement_values)) if len(agreement_values) > 1 else .5
+    available_modules = sum(module.get("status") == "AVAILABLE" for module in modules.values())
+    evidence = evidence_score(technical["forward_summary_365d"].get("count", 0), quality_score, agreement, oos_quality, available_modules / len(modules))
+    factors = [
+        {"name": "technical_value", "group": "price_technical", "strength": technical_direction * 2 - 1},
+        {"name": "seasonality", "group": "calendar", "strength": (modules["seasonality"]["score"] / 50 - 1) if modules["seasonality"]["score"] is not None else 0},
+    ]
+    for name in ("onchain", "etf", "derivatives", "macro"):
+        factors.append({"name": name, "group": name, "status": modules[name]["status"], "strength": 0 if modules[name].get("score") is None else modules[name]["score"] / 50 - 1})
+    state = build_market_state(technical, cycle, modules, evidence)
+    state["confluence"] = confluence_score(factors)
+    state["data_status"] = {name: {"status": module.get("status", "UNAVAILABLE"), "provider": module.get("provider"), "last_update": module.get("last_update")} for name, module in modules.items()}
+    state["data_status"]["price"] = {"status": "AVAILABLE", "provider": feeds.get("price_provider", "canonical BTC/USD"), "last_update": cutoff, "data_delay": str(pd.Timestamp.now(tz="UTC") - pd.Timestamp(cutoff))}
+    return state
+
+
+def public_payload(state: dict) -> dict:
+    dimensions = state["dimensions"]
+    return {"service": "bitcoin-cycle", "timestamp": state["timestamp"], "symbol": "BTCUSD", "cycle_state": state["cycle"]["primary_regime"].lower(), "long_term_value": dimensions["long_term_value"], "timing": dimensions["technical_timing"], "risk": dimensions["risk"], "evidence": dimensions["evidence"], "entry_timing": state["entry_timing"]}

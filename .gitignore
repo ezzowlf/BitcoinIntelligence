@@ -1,0 +1,12 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+*.egg-info/
+database/*.db
+data/analyses/*.json
+data/reports/*.json
+data/reports/*.csv
+.streamlit/
+.venv/
+.runtime/
+python-*-amd64.exe

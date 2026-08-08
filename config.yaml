@@ -1,0 +1,38 @@
+version: "2.0.0"
+data:
+  provider: bitstamp
+  symbol: XBTUSD
+  database: database/bitcoin.db
+  timeframes: [4h, 1d, 1w, 1M]
+  data_version: "bitstamp-btcusd-v1"
+swings:
+  4h: {window: 8, min_atr_move: 1.5}
+  1d: {window: 10, min_atr_move: 2.0}
+  1w: {window: 6, min_atr_move: 2.5}
+  1M: {window: 3, min_atr_move: 3.0}
+score_weights:
+  long_term_trend: 20
+  historical_similarity: 20
+  fibonacci: 15
+  elliott_abc: 15
+  momentum_rsi: 10
+  support_resistance: 10
+  volume: 5
+  risk_reward: 5
+similarity:
+  neighbors: 30
+  exclusion_days: 730
+  min_history_days: 365
+  min_case_spacing_days: 30
+backtest:
+  threshold: 75
+  dca_days: 30
+intelligence:
+  seasonality_proxy_weight: 0.10
+  external_modules:
+    onchain: unavailable
+    etf: unavailable
+    derivatives: unavailable
+    macro: unavailable
+    news: unavailable
+  automatic_execution: false
