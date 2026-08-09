@@ -37,6 +37,7 @@ feeds = {"onchain_provider": StoreOnChainProvider(external_store),
          "macro": {metric: external_store.load(metric) for metric in ("fed_funds","us_2y","us_10y","dxy","cpi","core_cpi","pce","nonfarm_payrolls","unemployment","gdp","fed_balance_sheet","m2","nasdaq","sp500","gold","oil")},
          "etf": external_store.load("etf_net_flow_usd")}
 intelligence = analyze_intelligence(frame, config, as_of=analysis_cutoff,feeds=feeds)
+decision=intelligence["decision"]
 provider = canonical.provider.iloc[-1] if not canonical.empty and "provider" in canonical else "uploaded/local"
 last_update = canonical.import_timestamp.iloc[-1] if not canonical.empty and "import_timestamp" in canonical else "unknown"
 st.sidebar.metric("Data provider", provider)
@@ -51,6 +52,10 @@ c5.metric("Evidence 2.2", f"{intelligence['evidence_2_2']['score']:.1f}/100")
 st.metric("30D Drawdown Risk", f"{intelligence['precision']['risk']['horizons']['30d']:.1f}/100 ({intelligence['precision']['risk']['tail_state']})")
 st.caption(f"Confluence: {intelligence['confluence']['level']} | Independent groups: {intelligence['confluence']['independent_groups']}/8")
 st.caption(f"Analysis mode: {'HISTORICAL_PIT_REPLAY' if replay_enabled else intelligence['precision']['analysis_mode']}")
+st.subheader("WHAT SHOULD I DO?")
+d1,d2,d3=st.columns(3);d1.metric("LONG TERM",decision["long_term_decision"]);d2.metric("SWING",decision["swing_decision"]);d3.metric("RISK",decision["risk_action"])
+st.write("WHY?",decision["reason_codes"][:5]);st.write("WHAT ARE WE WAITING FOR?",decision["waiting_for"]);st.write("WHAT INVALIDATES THIS?",decision["invalidation_conditions"])
+st.caption(f"Decision confidence: {decision['confidence']} | Frozen model: {decision['frozen_model']} | Execution: {decision['execution']}")
 st.caption(result["score"].classification)
 st.warning("Der Opportunity Score ist ein Analyse-Score, keine kalibrierte Eintrittswahrscheinlichkeit.")
 st.subheader("Value / Confirmation / Risk")

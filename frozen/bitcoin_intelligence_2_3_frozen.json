@@ -1,0 +1,10 @@
+{
+  "model_id": "2.3-FROZEN",
+  "commit": "0c55061",
+  "config_hash": "db4b6ed6e40fd9f6ce7efe4b0748c61dee83ddcf0603962eb836eeafa8e3ee5f",
+  "research_cutoff": "2026-08-07T00:00:00Z",
+  "forward_start": "2026-08-10T00:00:00Z",
+  "weights": {"value": {"drawdown": 0.55, "trend": 0.25, "cycle": 0.20}, "risk": {"drawdown": 0.45, "volatility": 0.35, "leverage": 0.20}},
+  "thresholds": {"value_extreme": 85, "value_high": 65, "timing_confirmed": 75, "hysteresis_days": 3},
+  "rules": {"timing": "mandatory structure, confirmation, risk and data-quality gates", "regime": "five-model relative-support ensemble", "confluence": "maximum eight independent groups", "evidence": "quality, coverage, OOS and PIT support", "execution": "DISABLED"}
+}

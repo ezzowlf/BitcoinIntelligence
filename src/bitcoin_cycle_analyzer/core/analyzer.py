@@ -16,6 +16,7 @@ from ..risk import drawdown_risk
 from ..entry_timing import entry_timing_state
 from ..explainability import explain_state
 from ..precision import analyze_precision
+from ..decision import build_decision
 
 
 def _seasonality(frame: pd.DataFrame, as_of) -> dict:
@@ -80,6 +81,7 @@ def analyze_intelligence(frame: pd.DataFrame, config: dict, as_of=None, feeds: d
     state["data_status"]["price"] = {"status": "AVAILABLE", "provider": feeds.get("price_provider", "canonical BTC/USD"), "last_update": cutoff, "data_delay": str(pd.Timestamp.now(tz="UTC") - pd.Timestamp(cutoff))}
     state["explainability"] = explain_state(state)
     state["precision"] = analyze_precision(frame,technical,cycle,modules,evidence22,state["confluence"],state["data_status"],config,cutoff)
+    state["decision"] = build_decision(state,technical)
     return state
 
 
