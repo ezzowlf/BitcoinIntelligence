@@ -2,6 +2,8 @@
 
 > Version 2.1 ergänzt echte Binance-Funding/OI- und Coin-Metrics-Community-Daten mit strengem `available_at`-Vertrag. ETF, Makro und News bleiben ohne verifizierte Konfiguration ehrlich `UNAVAILABLE`. Details: `REAL_MARKET_DATA_VALIDATION_REPORT.md`.
 
+Version 2.2 erweitert die OI-Historie über das offizielle Binance-Vision-Archiv bis September 2020, ergänzt ALFRED-Vintage-, ETF- und MeanPulse-Verträge sowie Evidence/Confluence 2.2. Der reale Status und verbleibende Zugangshürden stehen in `BITCOIN_INTELLIGENCE_2_2_VALIDATION_REPORT.md`.
+
 Ein lokales, transparentes Research-System ausschließlich für Bitcoin. Es bewertet historische und zyklische Konstellationen, erzeugt aber **keine Anlageberatung** und kein automatisches Buy/Sell-Signal.
 
 ## Schnellstart (Windows / PowerShell)

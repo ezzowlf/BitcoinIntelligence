@@ -50,6 +50,8 @@ class NewsEvent:
     direction: EventDirection
     confidence: float
     source: str
+    btc_direction: BtcDirection = BtcDirection.UNKNOWN
+    market_scope: tuple[str, ...] = ()
 
     def __post_init__(self):
         if not 0 <= self.severity <= 1 or not 0 <= self.confidence <= 1:
@@ -59,6 +61,7 @@ class NewsEvent:
         result = asdict(self)
         result["category"] = self.category.value
         result["direction"] = self.direction.value
+        result["btc_direction"] = self.btc_direction.value
         return result
 
 
@@ -67,9 +70,14 @@ def events_as_of(events: list[NewsEvent], as_of) -> list[NewsEvent]:
     return [event for event in events if event.available_at <= cutoff]
 
 
+DEFAULT_HALF_LIVES_HOURS={"exchange_hack":6,"stablecoin_risk":24,"war":168,"war_escalation":168,
+                          "geopolitical":168,"regulation":336,"fed":72,"ecb":72,"inflation":48,"labor":48,
+                          "energy":96,"sanctions":168}
+
+
 def decay_weight(event: NewsEvent, as_of, half_lives_hours: dict[str,float] | None=None) -> float:
     import math
-    defaults={"exchange_hack":6,"stablecoin_risk":24,"war":168,"war_escalation":168,"regulation":336,"central_bank":72,"fed":72}
+    defaults=DEFAULT_HALF_LIVES_HOURS.copy()
     defaults.update(half_lives_hours or {})
     age=(pd.Timestamp(as_of)-event.available_at).total_seconds()/3600
     if age < 0:

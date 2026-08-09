@@ -4,7 +4,9 @@ import pandas as pd
 import requests
 from ..data_contracts import MarketDataRecord
 
-COMMUNITY_METRICS = {"CapMVRVCur":"mvrv", "FlowInExUSD":"exchange_inflows_usd", "FlowOutExUSD":"exchange_outflows_usd", "SplyExNtv":"exchange_balance_btc"}
+COMMUNITY_METRICS = {"CapMVRVCur":"mvrv", "FlowInExUSD":"exchange_inflows_usd", "FlowOutExUSD":"exchange_outflows_usd",
+                     "SplyExNtv":"exchange_balance_btc","AdrActCnt":"active_addresses","TxCnt":"transaction_count",
+                     "TxTfrCnt":"transfer_count","HashRate":"hash_rate","FeeTotNtv":"fees_btc","IssTotNtv":"issuance_btc"}
 
 
 class CoinMetricsCommunityProvider:
@@ -14,9 +16,12 @@ class CoinMetricsCommunityProvider:
     def __init__(self, timeout: int = 60): self.timeout = timeout
 
     def fetch(self, start="2011-08-18", end=None) -> list[MarketDataRecord]:
-        params = {"assets":"btc", "metrics":",".join(COMMUNITY_METRICS), "frequency":"1d", "start_time":start, "end_time":end or pd.Timestamp.now(tz="UTC").date().isoformat(), "page_size":10000, "paging_from":"start"}
-        response = requests.get(self.url, params=params, timeout=self.timeout); response.raise_for_status()
-        payload = response.json(); rows = payload.get("data", []); records = []
+        records=[]; rows=[]; metric_names=list(COMMUNITY_METRICS)
+        for offset in range(0,len(metric_names),5):
+            batch=metric_names[offset:offset+5]
+            params = {"assets":"btc", "metrics":",".join(batch), "frequency":"1d", "start_time":start, "end_time":end or pd.Timestamp.now(tz="UTC").date().isoformat(), "page_size":10000, "paging_from":"start"}
+            response = requests.get(self.url, params=params, timeout=self.timeout); response.raise_for_status()
+            rows.extend(response.json().get("data", []))
         retrieved = pd.Timestamp.now(tz="UTC")
         for row in rows:
             event = pd.Timestamp(row["time"])

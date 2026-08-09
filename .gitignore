@@ -10,3 +10,6 @@ data/reports/*.csv
 .venv/
 .runtime/
 python-*-amd64.exe
+.env
+.env.*
+!.env.example

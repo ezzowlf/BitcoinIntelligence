@@ -18,3 +18,16 @@ def factor_evidence(sample_size: int, historical_coverage: float, data_quality: 
     components={k:round(max(0,min(1,float(raw[k])))*w*100,2) for k,w in weights.items()}; score=round(sum(components.values()),2)
     status="VALIDATED" if score>=70 and ablation_value>.5 and oos_quality>.5 else "REJECTED" if sample_size>=100 and ablation_value<.4 else "RESEARCH"
     return {"score":score,"status":status,"components":components,"note":"Factor evidence is horizon-specific and not directional."}
+
+
+def evidence_score_v22(independent_groups: int, data_quality: float, historical_coverage: float, sample_size: int,
+                       oos_value: float, provider_agreement: float, point_in_time_quality: float, regime_coverage: float) -> dict:
+    raw={"independent_groups":min(1,independent_groups/8),"data_quality":data_quality,
+         "historical_coverage":historical_coverage,"sample_size":min(1,sample_size/100),"oos_value":oos_value,
+         "provider_agreement":provider_agreement,"point_in_time_quality":point_in_time_quality,"regime_coverage":regime_coverage}
+    weights={"independent_groups":.15,"data_quality":.15,"historical_coverage":.1,"sample_size":.1,"oos_value":.2,
+             "provider_agreement":.1,"point_in_time_quality":.1,"regime_coverage":.1}
+    components={key:round(max(0,min(1,float(value)))*weights[key]*100,2) for key,value in raw.items()}
+    score=round(sum(components.values()),2)
+    return {"score":score,"label":"HIGH" if score>=75 else "MODERATE" if score>=50 else "LOW","components":components,
+            "note":"Evidence 2.2 measures support quality, not market direction."}

@@ -30,7 +30,9 @@ result = analyze(frame, config)
 external_store = ExternalMetricStore(Path(__file__).resolve().parents[1] / config["data"]["external_database"])
 feeds = {"onchain_provider": StoreOnChainProvider(external_store),
          "funding": external_store.load("funding_rate_8h"),
-         "open_interest": external_store.load("open_interest_usd")}
+         "open_interest": external_store.load("open_interest_usd"),
+         "macro": {metric: external_store.load(metric) for metric in ("fed_funds","us_2y","us_10y","dxy","cpi","core_cpi","pce","nonfarm_payrolls","unemployment","gdp","fed_balance_sheet","m2","nasdaq","sp500","gold","oil")},
+         "etf": external_store.load("etf_net_flow_usd")}
 intelligence = analyze_intelligence(frame, config, feeds=feeds)
 provider = canonical.provider.iloc[-1] if not canonical.empty and "provider" in canonical else "uploaded/local"
 last_update = canonical.import_timestamp.iloc[-1] if not canonical.empty and "import_timestamp" in canonical else "unknown"
@@ -42,7 +44,9 @@ c1.metric("BTC", f"${result['price']:,.0f}")
 c2.metric("Cycle", intelligence["cycle"]["primary_regime"])
 c3.metric("Long-Term Value", f"{result['score'].total:.0f}/100")
 c4.metric("Entry Timing", intelligence["entry_timing"])
-c5.metric("Evidence", f"{intelligence['evidence']['score']:.0f}/100")
+c5.metric("Evidence 2.2", f"{intelligence['evidence_2_2']['score']:.1f}/100")
+st.metric("Drawdown Risk", f"{intelligence['drawdown_risk']['score']:.1f}/100 ({intelligence['drawdown_risk']['label']})")
+st.caption(f"Confluence: {intelligence['confluence']['level']} | Independent groups: {intelligence['confluence']['independent_groups']}/8")
 st.caption(result["score"].classification)
 st.warning("Der Opportunity Score ist ein Analyse-Score, keine kalibrierte Eintrittswahrscheinlichkeit.")
 st.subheader("Value / Confirmation / Risk")
@@ -53,6 +57,8 @@ with tabs[0]:
     st.dataframe(pd.Series(intelligence["dimensions"], name="value"))
     st.subheader("Independent Confluence")
     st.json(intelligence["confluence"])
+    st.subheader("Main Drivers and State Changes")
+    st.json(intelligence["explainability"])
     st.bar_chart(pd.Series(result["score"].components))
 with tabs[1]:
     st.json(intelligence["cycle"])
@@ -71,7 +77,9 @@ with tabs[4]:
 with tabs[5]:
     st.json(intelligence["modules"]["etf"])
 with tabs[6]:
-    st.json(intelligence["modules"]["macro"])
+    st.subheader("Macro State")
+    st.json(intelligence["modules"]["macro"].get("state", {}))
+    st.dataframe(pd.DataFrame(intelligence["modules"]["macro"].get("metrics", {})).T)
 with tabs[7]:
     heatmap = monthly_heatmap(frame)
     heatmap_fig = go.Figure(data=go.Heatmap(z=heatmap.values, x=[str(x) for x in heatmap.columns], y=[str(x) for x in heatmap.index], colorscale="RdYlGn", zmid=0))

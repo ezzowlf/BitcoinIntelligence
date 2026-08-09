@@ -1,4 +1,4 @@
-version: "2.1.0"
+version: "2.2.0"
 data:
   provider: bitstamp
   symbol: XBTUSD
@@ -37,3 +37,14 @@ intelligence:
     macro: unavailable
     news: unavailable
   automatic_execution: false
+  news_half_lives_hours:
+    exchange_hack: 6
+    stablecoin_risk: 24
+    inflation: 48
+    labor: 48
+    fed: 72
+    ecb: 72
+    energy: 96
+    war_escalation: 168
+    sanctions: 168
+    regulation: 336

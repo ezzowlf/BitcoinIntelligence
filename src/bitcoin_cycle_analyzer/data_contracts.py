@@ -16,6 +16,14 @@ class DataStatus(str, Enum):
     ERROR = "ERROR"
 
 
+class FactorStatus(str, Enum):
+    UNAVAILABLE = "UNAVAILABLE"
+    RESEARCH = "RESEARCH"
+    VALIDATED = "VALIDATED"
+    RISK_ONLY = "RISK_ONLY"
+    REJECTED = "REJECTED"
+
+
 @dataclass(frozen=True)
 class MetricObservation:
     metric: str

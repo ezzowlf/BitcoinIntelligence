@@ -11,9 +11,10 @@ from ..onchain import UnavailableOnChainProvider, analyze_onchain
 from ..derivatives import analyze_derivatives
 from ..flows.etf import analyze_etf_flows
 from ..macro import analyze_macro
-from ..scoring import evidence_score, confluence_score
+from ..scoring import evidence_score, evidence_score_v22, confluence_score
 from ..risk import drawdown_risk
 from ..entry_timing import entry_timing_state
+from ..explainability import explain_state
 
 
 def _seasonality(frame: pd.DataFrame, as_of) -> dict:
@@ -38,7 +39,7 @@ def analyze_intelligence(frame: pd.DataFrame, config: dict, as_of=None, feeds: d
         "derivatives": analyze_derivatives(cutoff, funding=feeds.get("funding"), open_interest=feeds.get("open_interest"), basis=feeds.get("basis"), liquidations=feeds.get("liquidations"), options=feeds.get("options")),
         "macro": analyze_macro(feeds.get("macro"), cutoff),
         "seasonality": _seasonality(frame, cutoff),
-        "news": feeds.get("news_summary", {"status": "UNAVAILABLE", "risk": None, "score": None}),
+        "news": feeds.get("news_summary", {"status": "UNAVAILABLE", "reason":"NO_REAL_MEANPULSE_EVENTS", "risk": None, "score": None}),
     }
     available_scores = [module["score"] for module in modules.values() if isinstance(module, dict) and module.get("score") is not None]
     technical_direction = technical["score"].total / 100
@@ -48,18 +49,33 @@ def analyze_intelligence(frame: pd.DataFrame, config: dict, as_of=None, feeds: d
     evidence = evidence_score(technical["forward_summary_365d"].get("count", 0), quality_score, agreement, oos_quality, available_modules / len(modules))
     factors = [
         {"name": "technical_value", "group": "price_technical", "strength": technical_direction * 2 - 1},
+        {"name": "cycle", "group": "cycle", "strength": (cycle.get("confidence", 50) / 50 - 1) if cycle.get("confidence") is not None else 0},
         {"name": "seasonality", "group": "calendar", "strength": (modules["seasonality"]["score"] / 50 - 1) if modules["seasonality"]["score"] is not None else 0},
     ]
     for name in ("onchain", "etf", "derivatives", "macro"):
         factors.append({"name": name, "group": name, "status": modules[name]["status"], "strength": 0 if modules[name].get("score") is None else modules[name]["score"] / 50 - 1})
+    factors.append({"name":"news","group":"news","status":modules["news"].get("status","UNAVAILABLE"),
+                    "strength":0 if modules["news"].get("score") is None else modules["news"]["score"]/50-1})
     state = build_market_state(technical, cycle, modules, evidence)
     state["confluence"] = confluence_score(factors)
+    independent=state["confluence"].get("independent_groups",0)
+    evidence22=evidence_score_v22(independent,quality_score,available_modules/len(modules),
+                                  technical["forward_summary_365d"].get("count",0),oos_quality,.5,.8,.5)
+    state["evidence_2_2"]=evidence22
+    state["dimensions"]["evidence"]=evidence22["score"]
+    state["group_confidence"]={factor["name"]:{"status":factor.get("status","AVAILABLE"),
+        "score":round((factor.get("strength",0)+1)*50,1) if factor.get("status","AVAILABLE")=="AVAILABLE" else None,
+        "confidence":100 if factor["name"] in {"technical_value","cycle"} else 40 if factor["name"]=="derivatives" else 20,
+        "data_quality":"HIGH" if factor["name"] in {"technical_value","cycle"} else "MIXED",
+        "coverage":modules.get(factor["name"],{}).get("coverage"),
+        "oos_value":"RISK_ONLY" if factor["name"]=="derivatives" else "RESEARCH"} for factor in factors}
     state["drawdown_risk"] = drawdown_risk(technical, modules["derivatives"], modules["macro"], modules["onchain"])
     rsi = technical.get("indicators", {}).get("rsi")
     state["entry_timing_detail"] = entry_timing_state(technical.get("structure", {}).get("trend", "unknown"), technical["states"]["confirmation"], rsi, modules["derivatives"])
     state["entry_timing"] = state["entry_timing_detail"]["state"]
     state["data_status"] = {name: {"status": module.get("status", "UNAVAILABLE"), "provider": module.get("provider"), "last_update": module.get("last_update")} for name, module in modules.items()}
     state["data_status"]["price"] = {"status": "AVAILABLE", "provider": feeds.get("price_provider", "canonical BTC/USD"), "last_update": cutoff, "data_delay": str(pd.Timestamp.now(tz="UTC") - pd.Timestamp(cutoff))}
+    state["explainability"] = explain_state(state)
     return state
 
 
