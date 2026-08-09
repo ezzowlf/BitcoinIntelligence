@@ -45,7 +45,7 @@ def audit(cfg,event,**details):
     with log.open("a",encoding="utf-8") as handle:handle.write(json.dumps(record,default=str)+"\n")
 def health(cfg,state=None):
     store=ledger(cfg);latest=store.latest_snapshot()
-    payload={"system":"ONLINE","champion":CHAMPION,"forward_validation":"ACTIVE","forward_start":"2026-08-10T00:00:00Z","telegram":"DRY_RUN" if cfg.telegram_dry_run else "ACTIVE","last_daily_snapshot":None if latest is None else latest["timestamp"],"execution":"DISABLED",**store.health()}
+    payload={"system":"ONLINE","master":"MASTER-3.0","primary_model":"2.5-RARE-SIGNAL","control_model":CHAMPION,"champion":CHAMPION,"forward_validation":"ACTIVE","forward_start":"2026-08-10T00:00:00Z","telegram":"DRY_RUN" if cfg.telegram_dry_run else "ACTIVE","last_daily_snapshot":None if latest is None else latest["timestamp"],"execution":"DISABLED",**store.health()}
     if state:payload.update({"last_analysis":str(state["precision"]["timestamp"]),"data_health":state["precision"]["data_health"],"providers":state["data_status"]})
     json_write(cfg.data_dir/"health.json",payload);return payload
 def startup(cfg,send=False):
@@ -62,7 +62,13 @@ def run_analysis(cfg,kind):
 def dispatch_alerts(cfg,state):
     state_file=cfg.forward_dir/"last_alert_state.json";previous=json.loads(state_file.read_text(encoding="utf-8")) if state_file.exists() else None
     store=ledger(cfg);client=TelegramClient(cfg.telegram_token,cfg.telegram_chat_id,cfg.telegram_enabled,cfg.telegram_dry_run);results=[]
-    for event in detect_events(state,previous):
+    events=detect_events(state,previous)
+    production=state["master"]["decision"]["production_signal"]
+    allowed={"RISK_CHANGE","CAPITULATION","DATA_WARNING","INVALIDATION","MASTER_PRODUCTION_SIGNAL","DISTRIBUTION_CONFIRMED","MAJOR_SUPPORT_BREAKDOWN","MAJOR_RESISTANCE_BREAKOUT"}
+    if cfg.telegram_candidate_alerts:allowed.add("MASTER_CANDIDATE_CHANGE")
+    if production in {"BUY","STRONG_BUY","SELL","STRONG_SELL"}:allowed.add("DECISION_CHANGE")
+    if state["master"]["state"]["distribution"]=="DISTRIBUTION_CONFIRMED":allowed.add("REGIME_CHANGE")
+    for event in (item for item in events if item in allowed):
         alert_id=event_id(event,state)
         if store.alert_exists(alert_id):continue
         message=event_message(event,state);delivery=client.send(message)
@@ -73,7 +79,7 @@ def daily(cfg):
     state=run_analysis(cfg,"daily");store=ledger(cfg);commit=subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip()
     timestamp=str(state["precision"]["timestamp"])
     if store.latest_snapshot() and store.latest_snapshot()["timestamp"]==timestamp:return {"status":"DEDUPLICATED","timestamp":timestamp}
-    payload=store.append_snapshot(state,commit,EXPECTED_CONFIG_HASH);audit(cfg,"SNAPSHOT",timestamp=timestamp);return {"snapshot":payload,"alerts":dispatch_alerts(cfg,state)}
+    payload=store.append_snapshot(state,commit,EXPECTED_CONFIG_HASH);master=store.append_master_snapshot(state["master"]);audit(cfg,"SNAPSHOT",timestamp=timestamp);return {"snapshot":payload,"master":master,"alerts":dispatch_alerts(cfg,state)}
 def h4(cfg):
     state=run_analysis(cfg,"h4");return {"decision":state["decision"],"alerts":dispatch_alerts(cfg,state)}
 def backup(cfg):
@@ -99,7 +105,7 @@ def poll(cfg):
     client=TelegramClient(cfg.telegram_token,cfg.telegram_chat_id,cfg.telegram_enabled,cfg.telegram_dry_run);offset_file=cfg.forward_dir/"telegram_offset.txt";offset=int(offset_file.read_text()) if offset_file.exists() else None;handled=[]
     for update in client.get_updates(offset):
         offset=max(offset or 0,update["update_id"]+1);name=client.authorized_command(update)
-        if name in {"/btc","/decision","/value","/timing","/risk","/cycle","/zones","/why","/health","/candidates","/signals"}:handled.append({"command":name,"delivery":client.send(command(cfg,name))["status"]})
+        if name in {"/master","/buy","/sell","/levels","/drawdown","/btc","/decision","/value","/timing","/risk","/cycle","/zones","/why","/health","/candidates","/signals"}:handled.append({"command":name,"delivery":client.send(command(cfg,name))["status"]})
     if offset is not None:offset_file.write_text(str(offset),encoding="ascii")
     return {"handled":handled,"unauthorized_ignored":True}
 def main():

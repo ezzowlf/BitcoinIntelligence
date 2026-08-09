@@ -22,6 +22,7 @@ class RuntimeSettings:
     telegram_token: str | None
     telegram_chat_id: str | None
     daily_summary: bool
+    telegram_candidate_alerts: bool
     execution: str = "DISABLED"
 
     @classmethod
@@ -44,6 +45,7 @@ class RuntimeSettings:
             telegram_token=token,
             telegram_chat_id=chat_id,
             daily_summary=_flag("DAILY_SUMMARY"),
+            telegram_candidate_alerts=_flag("TELEGRAM_CANDIDATE_ALERTS"),
         )
 
     def ensure_layout(self):

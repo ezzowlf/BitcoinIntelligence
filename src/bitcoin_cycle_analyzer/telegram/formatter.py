@@ -15,6 +15,23 @@ def compact_message(state):
     d=state["decision"];p=state["precision"]
     return f"₿ BITCOIN INTELLIGENCE\nBTC {money(d['zones']['current_price'])}\nMARKET STATE {p['market_state']}\nLONG TERM {d['long_term_decision']}\nSWING {d['swing_decision']}\nRISK {d['risk_action']}\nVALUE {p['value']['score']} {p['value']['state']}\nREGIME {p['regime']['current']} ({p['regime']['stability']})\nTIMING {p['timing']['state']}\nEVIDENCE {p['evidence']['label']}\nLast confirmed: {p['timestamp']}"
 
+def _range(zone):
+    if not zone:return "UNAVAILABLE"
+    low=zone.get("low",zone.get("lower_bound"));high=zone.get("high",zone.get("upper_bound"));return f"{money(low)} - {money(high)} ({zone.get('confidence','UNKNOWN')})"
+
+def _history_block(state,detail=False):
+    h=state["historical_entry_quality"];mae=h.get("mae_context",{});closest=h.get("closest_historical_entries",[])
+    analogue="UNAVAILABLE" if not closest else f"{closest[0]['date'][:10]} {closest[0]['similarity']}% ({closest[0]['archetype']})"
+    matched=", ".join(h.get("matched_factors",[])) or "none";missing=", ".join(h.get("missing_factors",[])) or "none";unavailable=", ".join(h.get("contradicting_factors",[])) or "none"
+    base=f"HISTORICAL ENTRY QUALITY\n{h['state']} ({h.get('score')} / 100; not probability)\nArchetype: {h['entry_archetype']}\nMatched: {matched}\nMissing: {missing}\nUnavailable: {unavailable}\nClosest: {analogue}\nHistorical MAE median/worst: {mae.get('median')} / {mae.get('worst')}"
+    if detail and closest:base+="\n\nHISTORICAL OUTCOMES - NOT FORECASTS\n"+"\n".join(f"{x['date'][:10]} | sim {x['similarity']}% | 365D {x['historical_return_365d']:.1%} | MAE {x['historical_MAE_365d']:.1%}" for x in closest)+f"\n\nFailed-buy reference n: {h['control_comparison']['failed_buy_reference_n']}"
+    return base
+
+def master_message(state):
+    s=state["master"]["state"];d=state["master"]["decision"]
+    why="\n".join(f"• {x}" for x in (d["positive_drivers"]+d["negative_drivers"])[:5]);waiting="\n".join(f"• {x}" for x in d["waiting_for"])
+    return f"₿ BITCOIN MASTER\n\nBTC\n{money(s['btc_price'])}\n\nLONG TERM\n{d['long_term_action']}\n\nNEW ENTRY\n{d['new_entry_action']}\n\nEXISTING POSITION\n{d['existing_position_action']}\n\nRISK\n{d['risk_action']}\n\nPRODUCTION\n{d['production_signal']}\n\nBUY CANDIDATE\n{s['buy_completion']}% (completion, not probability)\n\nSELL CANDIDATE\n{s['sell_completion']}% (completion, not probability)\n\nMAJOR SUPPORT\n{_range(s['nearest_support'])}\n\nMAJOR RESISTANCE\n{_range(s['nearest_resistance'])}\n\nDRAWDOWN\n{s['drawdown']:.1%}\n\nWEEKLY RSI\n{s['weekly_rsi']}\n\nREGIME\n{s['regime']} ({s['regime_stability']})\n\nWHY?\n{why}\n\nWAITING FOR\n{waiting}\n\nMaster: 3.0\nPrimary: 2.5\nControl: 2.3-FROZEN\nExecution: DISABLED"
+
 def command_message(command,state,health=None):
     p=state["precision"];d=state["decision"]
     if command in {"/btc"}:return compact_message(state)
@@ -32,4 +49,18 @@ def command_message(command,state,health=None):
     if command=="/signals":
         rare=state["rare_signal"];signal=rare["level_a"]
         return f"BITCOIN PRODUCTION SIGNAL\nCurrent: {signal['signal']}\nStrength: {signal['strength'] or 'N/A'}\nRare Buy: {rare['buy_state']}\nRare Sell: {rare['sell']['state']}\nHistorical: RESEARCH_ONLY\nForward BUY episodes: 0\nForward SELL episodes: 0\nModel: RARE_SIGNAL_CHALLENGER_1\nExecution: DISABLED"
-    return "Supported: /btc /decision /value /timing /risk /cycle /zones /why /health /candidates /signals"
+    if command=="/master":return master_message(state)+"\n\n"+_history_block(state)
+    if command in {"/history","/entryhistory"}:return _history_block(state,detail=True)+"\nResearch context only. Execution: DISABLED"
+    if command=="/buy":
+        s=state["master"]["state"]
+        return f"BITCOIN BUY VIEW\nRare Buy: {s['rare_buy']}\nCandidate: {s['buy_candidate']}\nCompletion: {s['buy_completion']}% (not probability)\nBuy Zone 1: {_range(s['buy_zones'][0])}\nBuy Zone 2: {_range(s['buy_zones'][1])}\nSupport: {_range(s['nearest_support'])}\nTiming: {s['timing']}\nValue: {s['value_state']} {s['value_score']}\nDrawdown: {s['drawdown']:.1%}\nWeekly RSI: {s['weekly_rsi']}\n\n{_history_block(state)}\nExecution: DISABLED"
+    if command=="/sell":
+        s=state["master"]["state"]
+        return f"BITCOIN SELL VIEW\nRare Sell: {s['rare_sell']}\nCandidate: {s['sell_candidate']}\nCompletion: {s['sell_completion']}% (not probability)\nDistribution: {s['distribution']}\nResistance: {_range(s['nearest_resistance'])}\nRisk: {s['risk']}\nWeekly RSI: {s['weekly_rsi']}\nMissing: {', '.join(state['rare_signal']['level_b']['missing_sell'])}\nRejected historical SELL proxy cannot trigger production.\nExecution: DISABLED"
+    if command=="/levels":
+        s=state["master"]["state"];invalid=state["decision"]["zones"]["invalidation"]
+        return f"BITCOIN LEVELS\nBuy Zone 1: {_range(s['buy_zones'][0])}\nBuy Zone 2: {_range(s['buy_zones'][1])}\nMajor Support: {_range(s['nearest_support'])}\nMajor Resistance: {_range(s['nearest_resistance'])}\nDistribution Zone: {_range(s['sell_zones'][0]) if s['sell_zones'] else 'UNAVAILABLE'}\nBreakdown: below {money(invalid['below']) if invalid.get('below') else 'UNAVAILABLE'}\nExecution: DISABLED"
+    if command=="/drawdown":
+        s=state["master"]["state"];draw=state["advanced"]["drawdown"]
+        return f"BITCOIN DRAWDOWN\nCurrent: {s['drawdown']:.1%}\nHistorical percentile: {s['drawdown_percentile']}\nMaximum: {draw['maximum_historical_drawdown']:.1%}\nDays under water: {draw['days_below_previous_ath']}\nRecovery: {draw['recovery_from_major_low']:.1%}\nState: {s['recovery_state']}\nExecution: DISABLED"
+    return "Supported: /master /history /buy /sell /levels /drawdown /btc /decision /value /timing /risk /cycle /zones /why /health /candidates /signals"

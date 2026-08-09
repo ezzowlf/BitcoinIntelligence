@@ -22,6 +22,10 @@ drawdown=close/ath-1
 daysUnder=ta.barssince(high>=ath)
 majorLow=ta.lowest(low,730)
 recovery=close/majorLow-1
+ma200D=request.security(syminfo.tickerid,"D",ta.sma(close,200),lookahead=barmerge.lookahead_off)
+ma200WProxy=request.security(syminfo.tickerid,"D",ta.sma(close,1400),lookahead=barmerge.lookahead_off)
+distance200D=close/ma200D-1
+distance200W=close/ma200WProxy-1
 
 [midD,upperD,lowerD]=ta.bb(close,20,2)
 [midW,upperW,lowerW]=request.security(syminfo.tickerid,"W",ta.bb(close,20,2),lookahead=barmerge.lookahead_off)
@@ -54,7 +58,7 @@ alertcondition(close<lowerW or close>upperW,"Weekly Bollinger Extreme","BTC clos
 alertcondition(supportBreak,"Support Breakdown","BTC closed below locally calculated support")
 alertcondition(resistanceBreak,"Resistance Breakout","BTC closed above locally calculated resistance")
 
-var table panel=table.new(position.top_right,3,10,border_width=1)
+var table panel=table.new(position.top_right,3,13,border_width=1)
 if barstate.islast
     table.cell(panel,0,0,"Bitcoin Intelligence");table.cell(panel,1,0,engineMode);table.cell(panel,2,0,"EXECUTION DISABLED")
     if showRsi
@@ -67,4 +71,7 @@ if barstate.islast
         table.cell(panel,0,6,"Days under ATH");table.cell(panel,1,6,str.tostring(daysUnder))
         table.cell(panel,0,7,"Recovery 730D low");table.cell(panel,1,7,str.tostring(recovery*100,"#.1")+"%")
     table.cell(panel,0,8,"BB D/W/M");table.cell(panel,1,8,bbState(upperD,lowerD)+" / "+bbState(upperW,lowerW));table.cell(panel,2,8,bbState(upperM,lowerM))
-    table.cell(panel,0,9,"Python states");table.cell(panel,1,9,"NOT IMPORTED");table.cell(panel,2,9,"PURE PINE ONLY")
+    table.cell(panel,0,9,"Price vs 200D");table.cell(panel,1,9,str.tostring(distance200D*100,"#.1")+"%")
+    table.cell(panel,0,10,"Price vs 200W proxy");table.cell(panel,1,10,str.tostring(distance200W*100,"#.1")+"%")
+    table.cell(panel,0,11,"Support / Resistance");table.cell(panel,1,11,str.tostring(majorSupport,"#.##"));table.cell(panel,2,11,str.tostring(majorResistance,"#.##"))
+    table.cell(panel,0,12,"Python similarity");table.cell(panel,1,12,"NOT AVAILABLE IN PINE");table.cell(panel,2,12,"PURE PINE ONLY")

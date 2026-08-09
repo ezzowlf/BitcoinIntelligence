@@ -35,7 +35,7 @@ The causal research proxy produced 82 independent episodes: 12 Production proxie
 | REDUCE | 31 | +3.56% | +4.76% | +41.81% (n=28 mature) | -24.14% | +23.52% |
 | SELL | 3 | +21.37% | +156.31% | +547.73% | -8.05% | +207.41% |
 
-The result is deliberately unfavorable to the current SELL proxy: all three SELL observations meet the documented 30D false-sell definition, and missed upside was extreme. Therefore the historical SELL rule is `REJECTED` for promotion. It remains research evidence for making the production SellOpportunityEngine stricter. REDUCE is not a full sell and is kept separate.
+The result is deliberately unfavorable to the current SELL proxy: two of three SELL observations meet the documented 30D false-sell definition, and median missed upside across all three was +207.41%. Therefore the historical SELL rule is `REJECTED` for promotion. It remains research evidence for making the production SellOpportunityEngine stricter. REDUCE is not a full sell and is kept separate.
 
 Observed per-active-year ranges were BUY 1-3, SELL 1-2, ACCUMULATE 1-8 and REDUCE 1-7. Years omitted from a state-specific range had zero signals.
 

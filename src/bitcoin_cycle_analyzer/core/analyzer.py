@@ -19,6 +19,8 @@ from ..precision import analyze_precision
 from ..decision import build_decision
 from ..advanced import HistoricalZoneEngine,DrawdownCycleEngine,multi_timeframe_indicators
 from ..rare_signals import RareSignalEngine
+from ..master import BitcoinMasterEngine
+from ..master.historical_entry_quality import evaluate_historical_entry_quality
 
 
 def _seasonality(frame: pd.DataFrame, as_of) -> dict:
@@ -86,6 +88,8 @@ def analyze_intelligence(frame: pd.DataFrame, config: dict, as_of=None, feeds: d
     state["decision"] = build_decision(state,technical)
     state["advanced"]={"historical_zones":HistoricalZoneEngine().analyze(frame,cutoff),"drawdown":DrawdownCycleEngine().analyze(frame,cutoff),"momentum":multi_timeframe_indicators(frame,cutoff,feeds.get("four_hour"))}
     state["rare_signal"]=RareSignalEngine().evaluate(state,technical,state["advanced"])
+    state["historical_entry_quality"]=evaluate_historical_entry_quality(frame,state,technical,feeds.get("project_root"))
+    state["master"]=BitcoinMasterEngine().analyze(state,technical)
     return state
 
 

@@ -13,7 +13,7 @@ from bitcoin_cycle_analyzer.core.analyzer import analyze_intelligence
 from bitcoin_cycle_analyzer.seasonality.statistics import monthly_heatmap
 from bitcoin_cycle_analyzer.external_store import ExternalMetricStore
 from bitcoin_cycle_analyzer.onchain import StoreOnChainProvider
-from bitcoin_cycle_analyzer.rare_signals import build_historical_signal_book
+from bitcoin_cycle_analyzer.master.replay import build_master_historical_signal_book
 
 st.set_page_config(page_title="Bitcoin Cycle Analyzer", layout="wide")
 st.title("Bitcoin Cycle Analyzer")
@@ -40,6 +40,7 @@ feeds = {"onchain_provider": StoreOnChainProvider(external_store),
          "etf": external_store.load("etf_net_flow_usd")}
 intelligence = analyze_intelligence(frame, config, as_of=analysis_cutoff,feeds=feeds)
 decision=intelligence["decision"]
+master=intelligence["master"];master_state=master["state"];master_decision=master["decision"]
 provider = canonical.provider.iloc[-1] if not canonical.empty and "provider" in canonical else "uploaded/local"
 last_update = canonical.import_timestamp.iloc[-1] if not canonical.empty and "import_timestamp" in canonical else "unknown"
 st.sidebar.metric("Data provider", provider)
@@ -54,10 +55,29 @@ c5.metric("Evidence 2.2", f"{intelligence['evidence_2_2']['score']:.1f}/100")
 st.metric("30D Drawdown Risk", f"{intelligence['precision']['risk']['horizons']['30d']:.1f}/100 ({intelligence['precision']['risk']['tail_state']})")
 st.caption(f"Confluence: {intelligence['confluence']['level']} | Independent groups: {intelligence['confluence']['independent_groups']}/8")
 st.caption(f"Analysis mode: {'HISTORICAL_PIT_REPLAY' if replay_enabled else intelligence['precision']['analysis_mode']}")
+st.header("₿ BITCOIN MASTER")
 st.subheader("WHAT SHOULD I DO?")
-d1,d2,d3=st.columns(3);d1.metric("LONG TERM",decision["long_term_decision"]);d2.metric("SWING",decision["swing_decision"]);d3.metric("RISK",decision["risk_action"])
-st.write("WHY?",decision["reason_codes"][:5]);st.write("WHAT ARE WE WAITING FOR?",decision["waiting_for"]);st.write("WHAT INVALIDATES THIS?",decision["invalidation_conditions"])
-st.caption(f"Decision confidence: {decision['confidence']} | Frozen model: {decision['frozen_model']} | Execution: {decision['execution']}")
+d1,d2,d3,d4=st.columns(4);d1.metric("LONG TERM",master_decision["long_term_action"]);d2.metric("NEW ENTRY",master_decision["new_entry_action"]);d3.metric("EXISTING POSITION",master_decision["existing_position_action"]);d4.metric("RISK",master_decision["risk_action"])
+st.metric("PRODUCTION SIGNAL",master_decision["production_signal"])
+ca,cb=st.columns(2);ca.metric("BUY CANDIDATE",f"{master_state['buy_completion']}%",help="Completion, not probability");cb.metric("SELL CANDIDATE",f"{master_state['sell_completion']}%",help="Completion, not probability")
+st.write("POSITIVE",master_decision["positive_drivers"]);st.write("NEGATIVE",master_decision["negative_drivers"]);st.write("UNCERTAIN / MISSING",master_decision["uncertain_drivers"])
+st.write("WHAT ARE WE WAITING FOR?",master_decision["waiting_for"]);st.write("UPGRADE CONDITIONS",master_decision["upgrade_conditions"]);st.write("DOWNGRADE CONDITIONS",master_decision["downgrade_conditions"])
+st.caption(f"Master confidence: {master_decision['confidence']} | Primary: {master['primary_analysis_model']} | Control: {master['control_model']} | {master_decision['model_disagreement']['state']} | Execution: DISABLED")
+historical_quality=intelligence["historical_entry_quality"]
+st.subheader("HISTORICAL ENTRY QUALITY")
+h1,h2,h3,h4=st.columns(4);h1.metric("QUALITY",historical_quality["state"],f"{historical_quality.get('score')} / 100 (not probability)");h2.metric("ARCHETYPE",historical_quality["entry_archetype"]);h3.metric("ENTRY TIMING",master_state["timing"]);h4.metric("MASTER NEW ENTRY",master_decision["new_entry_action"])
+st.caption(f"Based on {historical_quality['sample_size']} independent historical best-entry episodes. LIVE_RESEARCH_CONTEXT, not calibrated probability.")
+factor_labels={"DEEP_DRAWDOWN":"Deep Drawdown","MAJOR_HISTORICAL_SUPPORT":"Major Support","HIGH_VALUE":"High Value","BELOW_200D":"Below 200D","BELOW_200W":"Below 200W","DAILY_RSI_WEAK":"Daily RSI Weak","WEEKLY_RSI_WEAK":"Weekly RSI Weak","CAPITULATION_STRESS":"Capitulation"}
+st.dataframe(pd.DataFrame([{"factor":label,"status":"UNAVAILABLE" if historical_quality["factor_status"].get(key) is None else "YES" if historical_quality["factor_status"].get(key) else "NO"} for key,label in factor_labels.items()]),hide_index=True)
+v1,v2,v3,v4=st.columns(4);v1.metric("Current Drawdown",f"{historical_quality['current_drawdown']:.1%}");v2.metric("Price vs 200D",f"{historical_quality['price_vs_200d_pct']:.1%}" if historical_quality['price_vs_200d_pct'] is not None else "UNAVAILABLE");v3.metric("Price vs 200W",f"{historical_quality['price_vs_200w_pct']:.1%}" if historical_quality['price_vs_200w_pct'] is not None else "UNAVAILABLE");v4.metric("Weekly RSI",master_state["weekly_rsi"])
+st.dataframe(pd.DataFrame(historical_quality["closest_historical_entries"])[["date","archetype","similarity","historical_return_365d","historical_MAE_365d"]] if historical_quality["closest_historical_entries"] else pd.DataFrame())
+st.caption("Historical result - not a forecast.")
+if historical_quality.get("mae_context",{}).get("warning"):st.warning(f"HISTORICAL DOWNSIDE CONTEXT: similar entries had median {historical_quality['mae_context']['median']:.1%} and worst {historical_quality['mae_context']['worst']:.1%} further drawdown. High entry quality is not low risk.")
+st.subheader("MARKET MAP")
+map1,map2,map3=st.columns(3);map1.write({"MAJOR RESISTANCE":master_state["nearest_resistance"]});map2.metric("CURRENT BTC",f"${master_state['btc_price']:,.2f}");map3.write({"MAJOR SUPPORT":master_state["nearest_support"]})
+st.write("BUY ZONES",master_state["buy_zones"]);st.write("DISTRIBUTION / SELL ZONES",master_state["sell_zones"])
+with st.expander("MASTER FACTOR REGISTRY"):
+    st.dataframe(pd.DataFrame(master_state["factor_registry"]));st.json({"evidence":master_state["evidence"],"confluence":master_state["confluence"],"data_quality":master_state["data_quality"],"uncertainty":master_state["uncertainty"]})
 rare=intelligence["rare_signal"];advanced=intelligence["advanced"]
 st.subheader("RARE SIGNAL CHALLENGER")
 r1,r2,r3=st.columns(3);r1.metric("PRODUCTION",rare["level_a"]["signal"]);r2.metric("BUY CANDIDATE",f"{rare['level_b']['buy_completion']}%");r3.metric("SELL CANDIDATE",f"{rare['level_b']['sell_completion']}%")
@@ -70,7 +90,7 @@ st.caption(result["score"].classification)
 st.warning("Der Opportunity Score ist ein Analyse-Score, keine kalibrierte Eintrittswahrscheinlichkeit.")
 st.subheader("Value / Confirmation / Risk")
 st.write(result["states"])
-tabs = st.tabs(["OVERVIEW", "CYCLE", "TECHNICAL", "ON-CHAIN", "DERIVATIVES", "ETF FLOWS", "MACRO", "SEASONALITY", "HISTORICAL", "NEWS", "BACKTEST", "DATA HEALTH", "SIGNAL BOOK", "HISTORICAL LEVELS"])
+tabs = st.tabs(["OVERVIEW", "CYCLE", "TECHNICAL", "ON-CHAIN", "DERIVATIVES", "ETF FLOWS", "MACRO", "SEASONALITY", "HISTORICAL", "NEWS", "BACKTEST", "DATA HEALTH", "SIGNAL BOOK", "HISTORICAL LEVELS", "BEST HISTORICAL ENTRIES"])
 with tabs[0]:
     st.subheader("Precision Engine 2.3")
     st.json({key:intelligence["precision"].get(key) for key in ("market_state","system_conclusion","value","regime","timing","risk","uncertainty","data_health")})
@@ -139,9 +159,27 @@ with tabs[11]:
         import json
         st.json(json.loads(quality_path.read_text(encoding="utf-8")))
 with tabs[12]:
-    signal_book=build_historical_signal_book(frame.loc[:analysis_cutoff]);st.caption("HISTORICAL RESEARCH - never mixed with forward validation")
-    st.dataframe(signal_book[[c for c in ("date","signal_type","level","price","regime","return_30d","return_90d","return_365d","MAE_90d","MFE_90d") if c in signal_book]])
-    if not signal_book.empty:st.bar_chart(signal_book.assign(year=pd.to_datetime(signal_book.date).dt.year).groupby(["year","signal_type"]).size().unstack(fill_value=0))
+    signal_book,master_errors=build_master_historical_signal_book(frame.loc[:analysis_cutoff]);st.caption("MASTER HISTORICAL RESEARCH - never mixed with forward validation")
+    st.dataframe(signal_book[[c for c in ("date","master_signal","price","regime","return_30d","return_90d","return_365d","MAE_90d","MFE_90d") if c in signal_book]])
+    if not signal_book.empty:st.bar_chart(signal_book.assign(year=pd.to_datetime(signal_book.date).dt.year).groupby(["year","master_signal"]).size().unstack(fill_value=0))
+    st.subheader("ERROR TAXONOMY / REJECTED SELLS");st.dataframe(master_errors)
 with tabs[13]:
     st.caption("PIT-formed historical zones; later touches create new versions")
     st.dataframe(pd.DataFrame(advanced["historical_zones"]))
+with tabs[14]:
+    st.caption("RESEARCH_ONLY - future prices label outcomes; production logic is unchanged")
+    root=Path(__file__).resolve().parents[1];episode_path=root/"BITCOIN_ENTRY_EPISODES.csv";factor_path=root/"BITCOIN_ENTRY_FACTOR_MATRIX.csv"
+    if not episode_path.exists():
+        st.info("Run scripts/run_best_entry_study.py to generate the historical explorer.")
+    else:
+        episodes=pd.read_csv(episode_path,parse_dates=["date","start","end"]);factors=pd.read_csv(factor_path)
+        st.subheader("Ranked independent entry episodes")
+        st.dataframe(episodes[[c for c in ("rank","date","entry_price","return_365d","return_730d","MAE_365d","entry_archetype","recognized_master") if c in episodes]])
+        chart=go.Figure(go.Candlestick(x=frame.index,open=frame.open,high=frame.high,low=frame.low,close=frame.close,name="BTC"))
+        chart.add_trace(go.Scatter(x=episodes.date,y=episodes.entry_price,mode="markers",name="Top historical entry",marker={"size":10,"color":"green","symbol":"triangle-up"}))
+        st.plotly_chart(chart,use_container_width=True)
+        labels={f"#{int(row['rank'])} {pd.Timestamp(row['date']).date()}":int(i) for i,row in episodes.iterrows()};choices=st.multiselect("Compare two episodes",list(labels),default=list(labels)[:2],max_selections=2)
+        if choices:
+            detail_cols=[c for c in ("date","entry_price","drawdown","distance_200d","distance_200w","rsi_daily","rsi_weekly","rsi_monthly","bollinger_daily_position","bollinger_weekly_position","bollinger_monthly_position","major_support","zone_strength","zone_distance","fib_confluence","regime","cycle","capitulation_state","recovery_state","mvrv","funding","open_interest","recognized_2_3","recognized_2_5","recognized_master") if c in episodes]
+            st.dataframe(episodes.loc[[labels[x] for x in choices],detail_cols].set_index("date").T.astype(str))
+        st.subheader("Research factor ranking");st.dataframe(factors)

@@ -1,0 +1,20 @@
+{
+  "model_id": "MASTER_3_0_FROZEN",
+  "primary_analysis_model": "2.5-RARE-SIGNAL",
+  "primary_commit": "10fcb7c",
+  "control_model": "2.3-FROZEN",
+  "control_commit": "0c55061",
+  "master_code_hash": "4a14ecdb692815a9c3689fe109c9c227105ad7afa59dd98b363f7968b09f1746",
+  "code_manifest": {
+    "master/engine.py": "a525ecd7038661941235f3c1ed6739020a700ecc",
+    "master/models.py": "9ca53ee10b7274ec5fc5e3fcd9487b0b2b5a8dd5",
+    "master/registry.py": "fa462c1cc2eb275a9dd79179007e30727e0315c8",
+    "master/replay.py": "9cb6733a0705a4018abb303fba8646bedb47ec5a"
+  },
+  "research_cutoff": "2026-08-07T00:00:00Z",
+  "master_forward_start": "2026-08-10T00:00:00Z",
+  "decision_method": "domain hierarchy; no voting; no universal score",
+  "rejected_inputs": ["2.5 historical SELL proxy"],
+  "production_sell": "requires confirmed distribution, structure break and at least three independent sell groups",
+  "execution": "DISABLED"
+}
