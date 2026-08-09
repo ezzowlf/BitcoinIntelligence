@@ -1,4 +1,4 @@
-version: "2.2.0"
+version: "2.3.0"
 data:
   provider: bitstamp
   symbol: XBTUSD
@@ -37,6 +37,11 @@ intelligence:
     macro: unavailable
     news: unavailable
   automatic_execution: false
+  precision:
+    state_hysteresis_min_days: 3
+    timing_confirm_threshold: 75
+    timing_exit_threshold: 60
+    require_closed_candle: true
   news_half_lives_hours:
     exchange_hack: 6
     stablecoin_risk: 24

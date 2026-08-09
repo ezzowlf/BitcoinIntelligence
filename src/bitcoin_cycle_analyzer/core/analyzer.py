@@ -15,6 +15,7 @@ from ..scoring import evidence_score, evidence_score_v22, confluence_score
 from ..risk import drawdown_risk
 from ..entry_timing import entry_timing_state
 from ..explainability import explain_state
+from ..precision import analyze_precision
 
 
 def _seasonality(frame: pd.DataFrame, as_of) -> dict:
@@ -31,6 +32,8 @@ def _seasonality(frame: pd.DataFrame, as_of) -> dict:
 def analyze_intelligence(frame: pd.DataFrame, config: dict, as_of=None, feeds: dict | None = None, quality_score: float = 1.0, oos_quality: float = .5) -> dict:
     feeds = feeds or {}
     cutoff = frame.index[-1] if as_of is None else pd.Timestamp(as_of)
+    if getattr(frame.index,"tz",None) is not None and cutoff.tzinfo is None:
+        cutoff=cutoff.tz_localize(frame.index.tz)
     technical = analyze_technical(frame, config, as_of=cutoff)
     cycle = analyze_cycle(frame, as_of=cutoff)
     modules = {
@@ -76,6 +79,7 @@ def analyze_intelligence(frame: pd.DataFrame, config: dict, as_of=None, feeds: d
     state["data_status"] = {name: {"status": module.get("status", "UNAVAILABLE"), "provider": module.get("provider"), "last_update": module.get("last_update")} for name, module in modules.items()}
     state["data_status"]["price"] = {"status": "AVAILABLE", "provider": feeds.get("price_provider", "canonical BTC/USD"), "last_update": cutoff, "data_delay": str(pd.Timestamp.now(tz="UTC") - pd.Timestamp(cutoff))}
     state["explainability"] = explain_state(state)
+    state["precision"] = analyze_precision(frame,technical,cycle,modules,evidence22,state["confluence"],state["data_status"],config,cutoff)
     return state
 
 

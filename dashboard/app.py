@@ -26,14 +26,17 @@ if uploaded:
 if frame.empty:
     st.info("Noch keine 1D-Daten vorhanden. Lade eine CSV mit timestamp/open/high/low/close/volume hoch oder führe das Update-Skript aus.")
     st.stop()
-result = analyze(frame, config)
+replay_enabled=st.sidebar.toggle("Historical PIT Replay",value=False)
+replay_date=st.sidebar.date_input("Replay date",value=frame.index[-1].date(),min_value=frame.index[0].date(),max_value=frame.index[-1].date(),disabled=not replay_enabled)
+analysis_cutoff=pd.Timestamp(replay_date,tz="UTC") if replay_enabled else frame.index[-1]
+result = analyze(frame, config,as_of=analysis_cutoff)
 external_store = ExternalMetricStore(Path(__file__).resolve().parents[1] / config["data"]["external_database"])
 feeds = {"onchain_provider": StoreOnChainProvider(external_store),
          "funding": external_store.load("funding_rate_8h"),
          "open_interest": external_store.load("open_interest_usd"),
          "macro": {metric: external_store.load(metric) for metric in ("fed_funds","us_2y","us_10y","dxy","cpi","core_cpi","pce","nonfarm_payrolls","unemployment","gdp","fed_balance_sheet","m2","nasdaq","sp500","gold","oil")},
          "etf": external_store.load("etf_net_flow_usd")}
-intelligence = analyze_intelligence(frame, config, feeds=feeds)
+intelligence = analyze_intelligence(frame, config, as_of=analysis_cutoff,feeds=feeds)
 provider = canonical.provider.iloc[-1] if not canonical.empty and "provider" in canonical else "uploaded/local"
 last_update = canonical.import_timestamp.iloc[-1] if not canonical.empty and "import_timestamp" in canonical else "unknown"
 st.sidebar.metric("Data provider", provider)
@@ -41,18 +44,21 @@ st.sidebar.metric("Last data timestamp", str(frame.index[-1]))
 st.sidebar.caption(f"Last data update: {last_update}")
 c1, c2, c3, c4, c5 = st.columns(5)
 c1.metric("BTC", f"${result['price']:,.0f}")
-c2.metric("Cycle", intelligence["cycle"]["primary_regime"])
-c3.metric("Long-Term Value", f"{result['score'].total:.0f}/100")
-c4.metric("Entry Timing", intelligence["entry_timing"])
+c2.metric("Regime", intelligence["precision"]["regime"]["current"])
+c3.metric("Long-Term Value", f"{intelligence['precision']['value']['score']:.1f}/100")
+c4.metric("Entry Timing", intelligence["precision"]["timing"]["state"])
 c5.metric("Evidence 2.2", f"{intelligence['evidence_2_2']['score']:.1f}/100")
-st.metric("Drawdown Risk", f"{intelligence['drawdown_risk']['score']:.1f}/100 ({intelligence['drawdown_risk']['label']})")
+st.metric("30D Drawdown Risk", f"{intelligence['precision']['risk']['horizons']['30d']:.1f}/100 ({intelligence['precision']['risk']['tail_state']})")
 st.caption(f"Confluence: {intelligence['confluence']['level']} | Independent groups: {intelligence['confluence']['independent_groups']}/8")
+st.caption(f"Analysis mode: {'HISTORICAL_PIT_REPLAY' if replay_enabled else intelligence['precision']['analysis_mode']}")
 st.caption(result["score"].classification)
 st.warning("Der Opportunity Score ist ein Analyse-Score, keine kalibrierte Eintrittswahrscheinlichkeit.")
 st.subheader("Value / Confirmation / Risk")
 st.write(result["states"])
 tabs = st.tabs(["OVERVIEW", "CYCLE", "TECHNICAL", "ON-CHAIN", "DERIVATIVES", "ETF FLOWS", "MACRO", "SEASONALITY", "HISTORICAL", "NEWS", "BACKTEST", "DATA HEALTH"])
 with tabs[0]:
+    st.subheader("Precision Engine 2.3")
+    st.json({key:intelligence["precision"].get(key) for key in ("market_state","system_conclusion","value","regime","timing","risk","uncertainty","data_health")})
     st.subheader("Bitcoin Market State Matrix")
     st.dataframe(pd.Series(intelligence["dimensions"], name="value"))
     st.subheader("Independent Confluence")
