@@ -11,6 +11,16 @@ def test_missing_telegram_credentials_forces_dry_run(monkeypatch,tmp_path):
     monkeypatch.setenv("BITCOIN_HOME",str(tmp_path));monkeypatch.setenv("TELEGRAM_ENABLED","true");monkeypatch.setenv("TELEGRAM_DRY_RUN","false");monkeypatch.delenv("TELEGRAM_BOT_TOKEN",raising=False);monkeypatch.delenv("TELEGRAM_CHAT_ID",raising=False)
     cfg=RuntimeSettings.from_env(tmp_path);assert cfg.telegram_dry_run is True and cfg.execution=="DISABLED"
 
+def test_execution_enable_attempt_is_hard_blocked(monkeypatch,tmp_path):
+    monkeypatch.setenv("BITCOIN_EXECUTION_ENABLED","true")
+    import pytest
+    with pytest.raises(RuntimeError,match="must remain DISABLED"):RuntimeSettings.from_env(tmp_path)
+
+def test_vps_env_file_is_loaded_without_dotenv(monkeypatch,tmp_path):
+    monkeypatch.delenv("TELEGRAM_CHAT_ID",raising=False);monkeypatch.delenv("BITCOIN_EXECUTION_ENABLED",raising=False)
+    (tmp_path/".env").write_text("TELEGRAM_CHAT_ID=42\nTELEGRAM_DRY_RUN=true\n",encoding="utf-8")
+    assert RuntimeSettings.from_env(tmp_path).telegram_chat_id=="42"
+
 
 def test_telegram_client_dry_run_never_calls_network():
     class NoNetwork:
