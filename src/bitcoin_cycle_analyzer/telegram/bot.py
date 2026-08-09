@@ -12,9 +12,10 @@ class TelegramDecisionBot:
         if state["precision"].get("candle_status","CONFIRMED")!="CONFIRMED":
             return {"alert_id":None,"message":"PREVIEW - unconfirmed candle\n"+decision_message(state),"dry_run":self.dry_run,"execution":"DISABLED","confirmed":False}
         fingerprint=hashlib.sha256(json.dumps(current).encode()).hexdigest()
-        if fingerprint in self._fingerprints:return None
+        if fingerprint in self._fingerprints or (self.ledger is not None and self.ledger.alert_exists(fingerprint)):return None
         self._fingerprints.add(fingerprint)
         alert={"alert_id":fingerprint,"message":decision_message(state),"dry_run":self.dry_run,"execution":"DISABLED","confirmed":True}
         if self.ledger is not None:
-            self.ledger.append_alert(fingerprint,state["precision"]["timestamp"],"STATE_CHANGE",decision["long_term_decision"],alert)
+            alert.update({"market_state":state["precision"]["market_state"],"btc_price":decision["zones"]["current_price"]})
+            self.ledger.append_alert(fingerprint,state["precision"]["timestamp"],"STATE_CHANGE",decision["long_term_decision"],alert,"DRY_RUN" if self.dry_run else "PENDING")
         return alert
