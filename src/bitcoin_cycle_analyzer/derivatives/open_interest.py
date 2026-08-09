@@ -14,5 +14,7 @@ def analyze_open_interest(frame: pd.DataFrame | None, as_of) -> dict:
     def change(days):
         past = series.loc[:series.index[-1] - pd.Timedelta(days=days)]
         return None if past.empty else latest / float(past.iloc[-1]) - 1
-    return {"status": "AVAILABLE", "value": latest, "change_24h": change(1), "change_7d": change(7), "provider": visible.iloc[-1].get("provider", "unknown"), "last_update": visible.iloc[-1].available_at}
-
+    percentile = float((series <= latest).mean())
+    return {"status": "AVAILABLE", "value": latest, "change_1h": change(1 / 24),
+            "change_24h": change(1), "change_7d": change(7), "percentile": percentile,
+            "provider": visible.iloc[-1].get("provider", "unknown"), "last_update": visible.iloc[-1].available_at}

@@ -1,5 +1,13 @@
 # Market Factors
 
+## Real-data status in 2.1
+
+- Binance public USD-M Futures: Funding seit September 2019 und ein aktuelles 500-Stunden-OI-Fenster.
+- Coin Metrics Community v4: MVRV sowie Exchange Inflows, Outflows und Balance. MVRV ohne historische Statuszeit ist nur aktueller Research-Kontext.
+- FRED/ALFRED: vintage-fähiger Provider vorhanden, aber ohne API-Key `UNAVAILABLE`.
+- ETF und MeanPulse News: `UNAVAILABLE`, bis eine verifizierte Point-in-time-Quelle konfiguriert ist.
+- Der Funding-Ablationstest rechtfertigt kein eigenes Score-Gewicht; Derivate wirken nur auf Risiko und Timing.
+
 | Faktor | Bedeutung | Quelle / Frequenz | Historische Abdeckung | Verwendung | Nicht erlaubt |
 |---|---|---|---|---|---|
 | BTC OHLCV | Preis, Volumen, Marktstruktur | Bitstamp, 4H/1D; Kraken als zweiter Provider | Bitstamp ab 2011 | technische Analyse, Cycle, Seasonality | Exchange-Serie als globalen Index ausgeben |
@@ -23,4 +31,3 @@
 ## Datenstatus
 
 Jedes Modul meldet Provider, letzten verfügbaren Zeitpunkt und `AVAILABLE`, `DELAYED`, `STALE` oder `UNAVAILABLE`. Das Dashboard zeigt diese Angaben im Bereich `DATA HEALTH`.
-

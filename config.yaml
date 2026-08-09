@@ -1,10 +1,11 @@
-version: "2.0.0"
+version: "2.1.0"
 data:
   provider: bitstamp
   symbol: XBTUSD
   database: database/bitcoin.db
   timeframes: [4h, 1d, 1w, 1M]
   data_version: "bitstamp-btcusd-v1"
+  external_database: database/external_metrics.db
 swings:
   4h: {window: 8, min_atr_move: 1.5}
   1d: {window: 10, min_atr_move: 2.0}

@@ -12,6 +12,8 @@ from ..derivatives import analyze_derivatives
 from ..flows.etf import analyze_etf_flows
 from ..macro import analyze_macro
 from ..scoring import evidence_score, confluence_score
+from ..risk import drawdown_risk
+from ..entry_timing import entry_timing_state
 
 
 def _seasonality(frame: pd.DataFrame, as_of) -> dict:
@@ -52,6 +54,10 @@ def analyze_intelligence(frame: pd.DataFrame, config: dict, as_of=None, feeds: d
         factors.append({"name": name, "group": name, "status": modules[name]["status"], "strength": 0 if modules[name].get("score") is None else modules[name]["score"] / 50 - 1})
     state = build_market_state(technical, cycle, modules, evidence)
     state["confluence"] = confluence_score(factors)
+    state["drawdown_risk"] = drawdown_risk(technical, modules["derivatives"], modules["macro"], modules["onchain"])
+    rsi = technical.get("indicators", {}).get("rsi")
+    state["entry_timing_detail"] = entry_timing_state(technical.get("structure", {}).get("trend", "unknown"), technical["states"]["confirmation"], rsi, modules["derivatives"])
+    state["entry_timing"] = state["entry_timing_detail"]["state"]
     state["data_status"] = {name: {"status": module.get("status", "UNAVAILABLE"), "provider": module.get("provider"), "last_update": module.get("last_update")} for name, module in modules.items()}
     state["data_status"]["price"] = {"status": "AVAILABLE", "provider": feeds.get("price_provider", "canonical BTC/USD"), "last_update": cutoff, "data_delay": str(pd.Timestamp.now(tz="UTC") - pd.Timestamp(cutoff))}
     return state

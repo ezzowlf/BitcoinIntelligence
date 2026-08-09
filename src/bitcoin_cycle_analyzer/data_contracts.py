@@ -7,10 +7,13 @@ import pandas as pd
 
 
 class DataStatus(str, Enum):
+    LIVE = "LIVE"
     AVAILABLE = "AVAILABLE"
     DELAYED = "DELAYED"
     STALE = "STALE"
+    PARTIAL = "PARTIAL"
     UNAVAILABLE = "UNAVAILABLE"
+    ERROR = "ERROR"
 
 
 @dataclass(frozen=True)
@@ -55,3 +58,28 @@ def point_in_time(frame: pd.DataFrame, as_of, available_column: str = "available
         raise ValueError(f"missing {available_column}")
     available = pd.to_datetime(frame[available_column], utc=True)
     return frame.loc[available <= pd.Timestamp(as_of)].copy()
+
+
+@dataclass(frozen=True)
+class MarketDataRecord:
+    metric: str
+    value: float
+    event_timestamp: pd.Timestamp
+    observed_at: pd.Timestamp
+    available_at: pd.Timestamp
+    provider: str
+    source_id: str
+    quality: str
+    revision: str = "initial"
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
+def provider_disagreement(records: list[MarketDataRecord], tolerance_pct: float = .05) -> dict:
+    if len(records) < 2:
+        return {"detected": False, "providers": len(records), "relative_spread": None, "confidence_multiplier": 1.0}
+    values = [record.value for record in records]
+    denominator = max(abs(sum(values) / len(values)), 1e-12)
+    spread = (max(values) - min(values)) / denominator
+    return {"detected": spread > tolerance_pct, "providers": len(records), "relative_spread": spread, "confidence_multiplier": .5 if spread > tolerance_pct else 1.0}

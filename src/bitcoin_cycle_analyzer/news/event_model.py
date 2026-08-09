@@ -12,6 +12,9 @@ class EventDirection(str, Enum):
 
 
 class EventCategory(str, Enum):
+    GEOPOLITICAL = "geopolitical"
+    WAR_ESCALATION = "war_escalation"
+    DEESCALATION = "deescalation"
     WAR = "war"
     CEASEFIRE = "ceasefire"
     SANCTIONS = "sanctions"
@@ -28,6 +31,13 @@ class EventCategory(str, Enum):
     SOVEREIGN = "sovereign_bitcoin"
     CORPORATE = "corporate_bitcoin"
     MINER_STRESS = "miner_stress"
+    ENERGY = "energy"
+
+
+class BtcDirection(str, Enum):
+    POSITIVE = "positive"
+    NEGATIVE = "negative"
+    UNKNOWN = "unknown"
 
 
 @dataclass(frozen=True)
@@ -56,3 +66,13 @@ def events_as_of(events: list[NewsEvent], as_of) -> list[NewsEvent]:
     cutoff = pd.Timestamp(as_of)
     return [event for event in events if event.available_at <= cutoff]
 
+
+def decay_weight(event: NewsEvent, as_of, half_lives_hours: dict[str,float] | None=None) -> float:
+    import math
+    defaults={"exchange_hack":6,"stablecoin_risk":24,"war":168,"war_escalation":168,"regulation":336,"central_bank":72,"fed":72}
+    defaults.update(half_lives_hours or {})
+    age=(pd.Timestamp(as_of)-event.available_at).total_seconds()/3600
+    if age < 0:
+        return 0.0
+    half_life=defaults.get(event.category.value,48)
+    return event.severity*event.confidence*math.pow(.5,age/half_life)

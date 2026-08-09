@@ -1,5 +1,7 @@
 # Bitcoin Cycle Analyzer
 
+> Version 2.1 ergänzt echte Binance-Funding/OI- und Coin-Metrics-Community-Daten mit strengem `available_at`-Vertrag. ETF, Makro und News bleiben ohne verifizierte Konfiguration ehrlich `UNAVAILABLE`. Details: `REAL_MARKET_DATA_VALIDATION_REPORT.md`.
+
 Ein lokales, transparentes Research-System ausschließlich für Bitcoin. Es bewertet historische und zyklische Konstellationen, erzeugt aber **keine Anlageberatung** und kein automatisches Buy/Sell-Signal.
 
 ## Schnellstart (Windows / PowerShell)
@@ -64,3 +66,9 @@ Elliott-Wellen bleiben subjektiv: Die Engine liefert nur plausible regelbasierte
 ## Backtest-Interpretation
 
 Der echte Mehrzykluslauf liegt lokal unter `data/reports/` und ist in `REAL_DATA_VALIDATION_REPORT.md` vollständig zusammengefasst. Die Resultate zeigen deskriptiven Wert, aber keinen robusten Beweis einer stabilen Überlegenheit gegenüber Buy & Hold oder einfachen Regeln.
+Externe Daten aktualisieren und validieren:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\update_external_data.py
+.\.venv\Scripts\python.exe scripts\run_market_data_validation.py
+```

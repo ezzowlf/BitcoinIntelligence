@@ -11,6 +11,8 @@ from bitcoin_cycle_analyzer.analyzer import analyze
 from bitcoin_cycle_analyzer.similarity import evidence_label
 from bitcoin_cycle_analyzer.core.analyzer import analyze_intelligence
 from bitcoin_cycle_analyzer.seasonality.statistics import monthly_heatmap
+from bitcoin_cycle_analyzer.external_store import ExternalMetricStore
+from bitcoin_cycle_analyzer.onchain import StoreOnChainProvider
 
 st.set_page_config(page_title="Bitcoin Cycle Analyzer", layout="wide")
 st.title("Bitcoin Cycle Analyzer")
@@ -25,7 +27,11 @@ if frame.empty:
     st.info("Noch keine 1D-Daten vorhanden. Lade eine CSV mit timestamp/open/high/low/close/volume hoch oder führe das Update-Skript aus.")
     st.stop()
 result = analyze(frame, config)
-intelligence = analyze_intelligence(frame, config)
+external_store = ExternalMetricStore(Path(__file__).resolve().parents[1] / config["data"]["external_database"])
+feeds = {"onchain_provider": StoreOnChainProvider(external_store),
+         "funding": external_store.load("funding_rate_8h"),
+         "open_interest": external_store.load("open_interest_usd")}
+intelligence = analyze_intelligence(frame, config, feeds=feeds)
 provider = canonical.provider.iloc[-1] if not canonical.empty and "provider" in canonical else "uploaded/local"
 last_update = canonical.import_timestamp.iloc[-1] if not canonical.empty and "import_timestamp" in canonical else "unknown"
 st.sidebar.metric("Data provider", provider)
@@ -92,6 +98,13 @@ with tabs[10]:
         st.info("Noch kein echter Validierungsbericht vorhanden.")
 with tabs[11]:
     st.dataframe(pd.DataFrame(intelligence["data_status"]).T)
+    st.subheader("External source coverage")
+    coverage = external_store.coverage()
+    st.dataframe(coverage if not coverage.empty else pd.DataFrame([{"status": "UNAVAILABLE", "note": "Run scripts/update_external_data.py"}]))
+    health_path = Path(__file__).resolve().parents[1] / "data" / "reports" / "external_data_health.json"
+    if health_path.exists():
+        import json
+        st.json(json.loads(health_path.read_text(encoding="utf-8")))
     quality_path = Path(__file__).resolve().parents[1] / "data" / "reports" / "data_quality.json"
     if quality_path.exists():
         import json
