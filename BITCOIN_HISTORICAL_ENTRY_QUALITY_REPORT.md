@@ -69,6 +69,6 @@ The staged variants use later episode lows as research outcomes and are not exec
 
 ## Frozen boundaries
 
-Reference: `BEST_ENTRY_REFERENCE_SET_V1`, eight episode IDs, episode CSV SHA-256 `186c1370cf957724adb3d21b40a37039f00550880c61658e61e31e3518677d25`, factor matrix SHA-256 `267576b6da48e4603a85a031e94f237c688522464ad247330c931401b2ef3a5e`.
+Reference: `BEST_ENTRY_REFERENCE_SET_V1`, eight episode IDs, canonical-LF episode CSV SHA-256 `3ff9330d4302e2325b358ad74d38b619a22718a777968ae1359d5b9c0a6a24b6`, canonical-LF factor matrix SHA-256 `cd1210ce2b905378e1ec2637c3b9a897221e5aa9fd264fce03b856eb638cac35`.
 
 No Production BUY/SELL rule, candidate threshold, risk rule, timing rule or automatic execution behavior was changed.

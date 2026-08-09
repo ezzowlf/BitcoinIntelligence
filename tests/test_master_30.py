@@ -136,5 +136,5 @@ def test_candidate_change_is_separate_from_production(current):
 def test_master_freeze_hash_matches_sources():
     import hashlib
     root=Path(__file__).parents[1];freeze=json.loads((root/"frozen"/"master_3_0_frozen.json").read_text(encoding="utf-8"));digest=hashlib.sha256()
-    for file in ("engine.py","models.py","registry.py","replay.py"):digest.update((root/"src"/"bitcoin_cycle_analyzer"/"master"/file).read_bytes())
+    for file in ("engine.py","models.py","registry.py","replay.py"):digest.update((root/"src"/"bitcoin_cycle_analyzer"/"master"/file).read_bytes().replace(b"\r\n",b"\n"))
     assert digest.hexdigest()==freeze["master_code_hash"] and freeze["execution"]=="DISABLED"

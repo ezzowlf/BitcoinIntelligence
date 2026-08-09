@@ -35,11 +35,11 @@ def verify_frozen():
     actual=PrecisionStore.config_hash(load_config(ROOT/"config.yaml"))
     if actual!=EXPECTED_CONFIG_HASH:raise RuntimeError("FROZEN_MODEL_HASH_MISMATCH")
     master=json.loads((ROOT/"frozen"/"master_3_0_frozen.json").read_text(encoding="utf-8"));digest=hashlib.sha256()
-    for name in ("engine.py","models.py","registry.py","replay.py"):digest.update((ROOT/"src"/"bitcoin_cycle_analyzer"/"master"/name).read_bytes())
+    for name in ("engine.py","models.py","registry.py","replay.py"):digest.update((ROOT/"src"/"bitcoin_cycle_analyzer"/"master"/name).read_bytes().replace(b"\r\n",b"\n"))
     if digest.hexdigest()!=master["master_code_hash"]:raise RuntimeError("MASTER_FROZEN_HASH_MISMATCH")
     reference=json.loads((ROOT/"frozen"/"best_entry_reference_set_v1.json").read_text(encoding="utf-8"))
-    if hashlib.sha256((ROOT/"BITCOIN_ENTRY_EPISODES.csv").read_bytes()).hexdigest()!=reference["episodes_sha256"]:raise RuntimeError("ENTRY_EPISODES_HASH_MISMATCH")
-    if hashlib.sha256((ROOT/"BITCOIN_ENTRY_FACTOR_MATRIX.csv").read_bytes()).hexdigest()!=reference["factor_matrix_sha256"]:raise RuntimeError("ENTRY_FACTORS_HASH_MISMATCH")
+    if hashlib.sha256((ROOT/"BITCOIN_ENTRY_EPISODES.csv").read_bytes().replace(b"\r\n",b"\n")).hexdigest()!=reference["episodes_sha256"]:raise RuntimeError("ENTRY_EPISODES_HASH_MISMATCH")
+    if hashlib.sha256((ROOT/"BITCOIN_ENTRY_FACTOR_MATRIX.csv").read_bytes().replace(b"\r\n",b"\n")).hexdigest()!=reference["factor_matrix_sha256"]:raise RuntimeError("ENTRY_FACTORS_HASH_MISMATCH")
     return {"control_config_hash":actual,"master_hash":master["master_code_hash"],"reference_set":reference["reference_set"],"reference_hash":reference["factor_matrix_sha256"]}
 def deployed_version():
     path=ROOT/"DEPLOYED_VERSION.json"

@@ -30,7 +30,8 @@ class HistoricalEntryQuality:
     score:float|None;state:str;matched_factors:list;missing_factors:list;contradicting_factors:list;factor_status:dict;factor_groups:dict;closest_historical_entries:list;sample_size:int;research_status:str;research_evidence:str;entry_archetype:str;mae_context:dict;control_comparison:dict;price_vs_200d_pct:float|None;price_vs_200w_pct:float|None;current_drawdown:float|None;drawdown_percentile:float|None;accumulation_context:str;reference_set:str;threshold_provenance:dict
     def to_dict(self):return asdict(self)
 
-def _hash(path):return hashlib.sha256(path.read_bytes()).hexdigest()
+def _canonical_bytes(path):return path.read_bytes().replace(b"\r\n",b"\n")
+def _hash(path):return hashlib.sha256(_canonical_bytes(path)).hexdigest()
 
 def load_reference_set(root:Path|None=None):
     root=root or Path(__file__).resolve().parents[3];meta_path=root/"frozen"/"best_entry_reference_set_v1.json";episode_path=root/"BITCOIN_ENTRY_EPISODES.csv";factor_path=root/"BITCOIN_ENTRY_FACTOR_MATRIX.csv"
