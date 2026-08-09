@@ -43,7 +43,7 @@ def verify_frozen():
     return {"control_config_hash":actual,"master_hash":master["master_code_hash"],"reference_set":reference["reference_set"],"reference_hash":reference["factor_matrix_sha256"]}
 def deployed_version():
     path=ROOT/"DEPLOYED_VERSION.json"
-    if path.exists():return json.loads(path.read_text(encoding="utf-8"))
+    if path.exists():return json.loads(path.read_text(encoding="utf-8-sig"))
     try:return {"local_commit":subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip()}
     except Exception:return {"local_commit":"UNKNOWN"}
 def audit(cfg,event,**details):
