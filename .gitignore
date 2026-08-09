@@ -9,6 +9,7 @@ data/reports/*.csv
 .streamlit/
 .venv/
 .runtime/
+deployment_artifacts/
 python-*-amd64.exe
 .env
 .env.*
