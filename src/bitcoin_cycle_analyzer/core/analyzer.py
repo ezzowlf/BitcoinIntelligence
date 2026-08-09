@@ -17,6 +17,8 @@ from ..entry_timing import entry_timing_state
 from ..explainability import explain_state
 from ..precision import analyze_precision
 from ..decision import build_decision
+from ..advanced import HistoricalZoneEngine,DrawdownCycleEngine,multi_timeframe_indicators
+from ..rare_signals import RareSignalEngine
 
 
 def _seasonality(frame: pd.DataFrame, as_of) -> dict:
@@ -82,6 +84,8 @@ def analyze_intelligence(frame: pd.DataFrame, config: dict, as_of=None, feeds: d
     state["explainability"] = explain_state(state)
     state["precision"] = analyze_precision(frame,technical,cycle,modules,evidence22,state["confluence"],state["data_status"],config,cutoff)
     state["decision"] = build_decision(state,technical)
+    state["advanced"]={"historical_zones":HistoricalZoneEngine().analyze(frame,cutoff),"drawdown":DrawdownCycleEngine().analyze(frame,cutoff),"momentum":multi_timeframe_indicators(frame,cutoff,feeds.get("four_hour"))}
+    state["rare_signal"]=RareSignalEngine().evaluate(state,technical,state["advanced"])
     return state
 
 

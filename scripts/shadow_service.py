@@ -99,7 +99,7 @@ def poll(cfg):
     client=TelegramClient(cfg.telegram_token,cfg.telegram_chat_id,cfg.telegram_enabled,cfg.telegram_dry_run);offset_file=cfg.forward_dir/"telegram_offset.txt";offset=int(offset_file.read_text()) if offset_file.exists() else None;handled=[]
     for update in client.get_updates(offset):
         offset=max(offset or 0,update["update_id"]+1);name=client.authorized_command(update)
-        if name in {"/btc","/decision","/value","/timing","/risk","/cycle","/zones","/why","/health"}:handled.append({"command":name,"delivery":client.send(command(cfg,name))["status"]})
+        if name in {"/btc","/decision","/value","/timing","/risk","/cycle","/zones","/why","/health","/candidates","/signals"}:handled.append({"command":name,"delivery":client.send(command(cfg,name))["status"]})
     if offset is not None:offset_file.write_text(str(offset),encoding="ascii")
     return {"handled":handled,"unauthorized_ignored":True}
 def main():

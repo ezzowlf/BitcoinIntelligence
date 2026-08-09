@@ -7,10 +7,13 @@ FORWARD_START=pd.Timestamp("2026-08-10T00:00:00Z")
 SCHEMA="""CREATE TABLE IF NOT EXISTS frozen_snapshots(timestamp TEXT PRIMARY KEY,btc_price REAL NOT NULL,payload_json TEXT NOT NULL,model_id TEXT NOT NULL,commit_hash TEXT NOT NULL,config_hash TEXT NOT NULL,available_at TEXT NOT NULL,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS decision_alerts(alert_id TEXT PRIMARY KEY,timestamp TEXT NOT NULL,alert_type TEXT NOT NULL,decision TEXT NOT NULL,payload_json TEXT NOT NULL,model_id TEXT NOT NULL,message_hash TEXT,market_state TEXT,btc_price REAL,telegram_delivery_status TEXT DEFAULT 'PENDING',created_at TEXT DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE IF NOT EXISTS forward_outcomes(alert_id TEXT,horizon_days INTEGER,outcome_json TEXT,matured_at TEXT,PRIMARY KEY(alert_id,horizon_days));
+CREATE TABLE IF NOT EXISTS rare_signals(signal_id TEXT PRIMARY KEY,timestamp TEXT NOT NULL,level TEXT NOT NULL,signal TEXT NOT NULL,payload_json TEXT NOT NULL,model_id TEXT NOT NULL,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
 CREATE TRIGGER IF NOT EXISTS frozen_no_update BEFORE UPDATE ON frozen_snapshots BEGIN SELECT RAISE(ABORT,'append-only'); END;
 CREATE TRIGGER IF NOT EXISTS frozen_no_delete BEFORE DELETE ON frozen_snapshots BEGIN SELECT RAISE(ABORT,'append-only'); END;
 CREATE TRIGGER IF NOT EXISTS alerts_no_update BEFORE UPDATE ON decision_alerts BEGIN SELECT RAISE(ABORT,'append-only'); END;
-CREATE TRIGGER IF NOT EXISTS alerts_no_delete BEFORE DELETE ON decision_alerts BEGIN SELECT RAISE(ABORT,'append-only'); END;"""
+CREATE TRIGGER IF NOT EXISTS alerts_no_delete BEFORE DELETE ON decision_alerts BEGIN SELECT RAISE(ABORT,'append-only'); END;
+CREATE TRIGGER IF NOT EXISTS rare_no_update BEFORE UPDATE ON rare_signals BEGIN SELECT RAISE(ABORT,'append-only'); END;
+CREATE TRIGGER IF NOT EXISTS rare_no_delete BEFORE DELETE ON rare_signals BEGIN SELECT RAISE(ABORT,'append-only'); END;"""
 
 
 class ForwardLedger:
@@ -31,6 +34,9 @@ class ForwardLedger:
         with sqlite3.connect(self.path) as con: con.execute("INSERT INTO decision_alerts(alert_id,timestamp,alert_type,decision,payload_json,model_id,message_hash,market_state,btc_price,telegram_delivery_status) VALUES(?,?,?,?,?,?,?,?,?,?)",(alert_id,str(timestamp),alert_type,decision,json.dumps(payload,default=str),"2.3-FROZEN",message_hash,payload.get("market_state"),payload.get("btc_price"),delivery_status))
     def alert_exists(self,alert_id):
         with sqlite3.connect(self.path) as con:return con.execute("SELECT 1 FROM decision_alerts WHERE alert_id=?",(alert_id,)).fetchone() is not None
+    def append_rare_signal(self,signal_id,timestamp,level,signal,payload):
+        if pd.Timestamp(timestamp)<FORWARD_START:raise ValueError("rare signal precedes frozen forward start")
+        with sqlite3.connect(self.path) as con:con.execute("INSERT INTO rare_signals(signal_id,timestamp,level,signal,payload_json,model_id) VALUES(?,?,?,?,?,?)",(signal_id,str(timestamp),level,signal,json.dumps(payload,default=str),"RARE_SIGNAL_CHALLENGER_1"))
     def delivery_status(self,alert_id):
         with sqlite3.connect(self.path) as con:
             row=con.execute("SELECT telegram_delivery_status FROM decision_alerts WHERE alert_id=?",(alert_id,)).fetchone();return None if row is None else row[0]
@@ -38,5 +44,5 @@ class ForwardLedger:
         with sqlite3.connect(self.path) as con: row=con.execute("SELECT payload_json FROM frozen_snapshots ORDER BY timestamp DESC LIMIT 1").fetchone()
         return None if row is None else json.loads(row[0])
     def health(self):
-        with sqlite3.connect(self.path) as con: snapshots=con.execute("SELECT COUNT(*) FROM frozen_snapshots").fetchone()[0];alerts=con.execute("SELECT COUNT(*) FROM decision_alerts").fetchone()[0]
-        return {"model":"2.3-FROZEN","forward_start":str(FORWARD_START),"snapshots":snapshots,"alerts":alerts,"append_only":True,"execution":"DISABLED"}
+        with sqlite3.connect(self.path) as con: snapshots=con.execute("SELECT COUNT(*) FROM frozen_snapshots").fetchone()[0];alerts=con.execute("SELECT COUNT(*) FROM decision_alerts").fetchone()[0];rare=con.execute("SELECT COUNT(*) FROM rare_signals").fetchone()[0]
+        return {"model":"2.3-FROZEN","forward_start":str(FORWARD_START),"snapshots":snapshots,"alerts":alerts,"rare_signals":rare,"append_only":True,"execution":"DISABLED"}

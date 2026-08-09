@@ -26,4 +26,10 @@ def command_message(command,state,health=None):
     if command=="/zones":return str(d["zones"])
     if command=="/why":return f"POSITIVE {d['why']['positive']}\nNEGATIVE {d['why']['negative']}\nUNCERTAIN {d['why']['uncertain']}\nMISSING {p['confluence']['unavailable']}"
     if command=="/health":return str(health or {"data_health":p["data_health"],"frozen_model":"2.3-FROZEN","execution":"DISABLED"})
-    return "Supported: /btc /decision /value /timing /risk /cycle /zones /why /health"
+    if command=="/candidates":
+        c=state["rare_signal"]["level_b"]
+        return f"BITCOIN RARE SIGNAL CANDIDATES\nBuy: {c['buy']} ({c['buy_completion']}%)\nSell: {c['sell']} ({c['sell_completion']}%)\nMissing buy: {', '.join(c['missing_buy'])}\nMissing sell: {', '.join(c['missing_sell'])}\nStatus: CHALLENGER / RESEARCH\nExecution: DISABLED"
+    if command=="/signals":
+        rare=state["rare_signal"];signal=rare["level_a"]
+        return f"BITCOIN PRODUCTION SIGNAL\nCurrent: {signal['signal']}\nStrength: {signal['strength'] or 'N/A'}\nRare Buy: {rare['buy_state']}\nRare Sell: {rare['sell']['state']}\nHistorical: RESEARCH_ONLY\nForward BUY episodes: 0\nForward SELL episodes: 0\nModel: RARE_SIGNAL_CHALLENGER_1\nExecution: DISABLED"
+    return "Supported: /btc /decision /value /timing /risk /cycle /zones /why /health /candidates /signals"

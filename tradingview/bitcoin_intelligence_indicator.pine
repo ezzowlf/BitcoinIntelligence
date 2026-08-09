@@ -1,0 +1,70 @@
+//@version=6
+indicator("Bitcoin Intelligence 2.5 - Pure Pine",overlay=true,max_labels_count=100,max_boxes_count=20)
+
+showZones=input.bool(true,"Show Historical Supports/Resistance")
+showFib=input.bool(true,"Show Fibonacci")
+showBollinger=input.bool(false,"Show Bollinger")
+showRsi=input.bool(true,"Show RSI Table")
+showDrawdown=input.bool(true,"Show Drawdown")
+showBuy=input.bool(true,"Show Buy Zones")
+showSell=input.bool(true,"Show Sell Zones")
+engineMode=input.string("PURE PINE","Mode",options=["PURE PINE","ENGINE ASSISTED (manual display only)"])
+
+rsi4h=request.security(syminfo.tickerid,"240",ta.rsi(close,14),lookahead=barmerge.lookahead_off)
+rsiD=request.security(syminfo.tickerid,"D",ta.rsi(close,14),lookahead=barmerge.lookahead_off)
+rsiW=request.security(syminfo.tickerid,"W",ta.rsi(close,14),lookahead=barmerge.lookahead_off)
+rsiM=request.security(syminfo.tickerid,"M",ta.rsi(close,14),lookahead=barmerge.lookahead_off)
+rsi365=request.security(syminfo.tickerid,"D",ta.rsi(close,365),lookahead=barmerge.lookahead_off)
+
+var float ath=na
+ath:=na(ath)?high:math.max(ath,high)
+drawdown=close/ath-1
+daysUnder=ta.barssince(high>=ath)
+majorLow=ta.lowest(low,730)
+recovery=close/majorLow-1
+
+[midD,upperD,lowerD]=ta.bb(close,20,2)
+[midW,upperW,lowerW]=request.security(syminfo.tickerid,"W",ta.bb(close,20,2),lookahead=barmerge.lookahead_off)
+[midM,upperM,lowerM]=request.security(syminfo.tickerid,"M",ta.bb(close,20,2),lookahead=barmerge.lookahead_off)
+bbState(float upper,float lower)=>close>upper?"ABOVE":close<lower?"BELOW":"INSIDE"
+
+atr=ta.atr(14)
+majorSupport=ta.lowest(low[1],180)
+majorResistance=ta.highest(high[1],180)
+zoneWidth=atr*0.75
+p1=plot(showZones?majorSupport:na,"Major Support",color=color.new(color.green,20),linewidth=2)
+p2=plot(showZones?majorSupport+zoneWidth:na,"Support Upper",color=color.new(color.green,80))
+fill(p1,p2,color=color.new(color.green,88))
+r1=plot(showZones?majorResistance:na,"Major Resistance",color=color.new(color.red,20),linewidth=2)
+r2=plot(showZones?majorResistance-zoneWidth:na,"Resistance Lower",color=color.new(color.red,80))
+fill(r1,r2,color=color.new(color.red,88))
+
+swingHigh=ta.highest(high,90);swingLow=ta.lowest(low,90);fib618=swingHigh-(swingHigh-swingLow)*0.618
+plot(showFib?fib618:na,"0.618 Fib",color=color.new(color.blue,25))
+plot(showBollinger?upperD:na,"Daily BB Upper",color=color.new(color.purple,50));plot(showBollinger?lowerD:na,"Daily BB Lower",color=color.new(color.purple,50))
+
+supportEntered=low<=majorSupport+zoneWidth and close>=majorSupport
+resistanceEntered=high>=majorResistance-zoneWidth and close<=majorResistance
+supportBreak=close<majorSupport
+resistanceBreak=close>majorResistance
+alertcondition(supportEntered,"Major Support Entered","BTC entered a locally calculated major support zone")
+alertcondition(resistanceEntered,"Major Resistance Entered","BTC entered a locally calculated major resistance zone")
+alertcondition(rsiW<30 or rsiW>70,"Weekly RSI Extreme","BTC Weekly RSI reached an extreme")
+alertcondition(close<lowerW or close>upperW,"Weekly Bollinger Extreme","BTC closed outside Weekly Bollinger Bands")
+alertcondition(supportBreak,"Support Breakdown","BTC closed below locally calculated support")
+alertcondition(resistanceBreak,"Resistance Breakout","BTC closed above locally calculated resistance")
+
+var table panel=table.new(position.top_right,3,10,border_width=1)
+if barstate.islast
+    table.cell(panel,0,0,"Bitcoin Intelligence");table.cell(panel,1,0,engineMode);table.cell(panel,2,0,"EXECUTION DISABLED")
+    if showRsi
+        table.cell(panel,0,1,"RSI 4H / D");table.cell(panel,1,1,str.tostring(rsi4h,"#.0"));table.cell(panel,2,1,str.tostring(rsiD,"#.0"))
+        table.cell(panel,0,2,"RSI W / M");table.cell(panel,1,2,str.tostring(rsiW,"#.0"));table.cell(panel,2,2,str.tostring(rsiM,"#.0"))
+        table.cell(panel,0,3,"RSI 365D RESEARCH");table.cell(panel,1,3,str.tostring(rsi365,"#.0"))
+    if showDrawdown
+        table.cell(panel,0,4,"ATH / Price");table.cell(panel,1,4,str.tostring(ath,"#.##"));table.cell(panel,2,4,str.tostring(close,"#.##"))
+        table.cell(panel,0,5,"Drawdown");table.cell(panel,1,5,str.tostring(drawdown*100,"#.1")+"%")
+        table.cell(panel,0,6,"Days under ATH");table.cell(panel,1,6,str.tostring(daysUnder))
+        table.cell(panel,0,7,"Recovery 730D low");table.cell(panel,1,7,str.tostring(recovery*100,"#.1")+"%")
+    table.cell(panel,0,8,"BB D/W/M");table.cell(panel,1,8,bbState(upperD,lowerD)+" / "+bbState(upperW,lowerW));table.cell(panel,2,8,bbState(upperM,lowerM))
+    table.cell(panel,0,9,"Python states");table.cell(panel,1,9,"NOT IMPORTED");table.cell(panel,2,9,"PURE PINE ONLY")

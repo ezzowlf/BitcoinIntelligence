@@ -16,7 +16,7 @@ if hasattr(sys.stdout,"reconfigure"):
 
 def state():
     config=load_config(root/"config.yaml");prices=OHLCVStore(root/config["data"]["database"]).load("1d");store=ExternalMetricStore(root/config["data"]["external_database"])
-    feeds={"onchain_provider":StoreOnChainProvider(store),"funding":store.load("funding_rate_8h"),"open_interest":store.load("open_interest_usd"),"macro":{},"etf":store.load("etf_net_flow_usd")}
+    feeds={"onchain_provider":StoreOnChainProvider(store),"funding":store.load("funding_rate_8h"),"open_interest":store.load("open_interest_usd"),"macro":{},"etf":store.load("etf_net_flow_usd"),"four_hour":OHLCVStore(root/config["data"]["database"]).load("4h")}
     return analyze_intelligence(prices,config,feeds=feeds),config
 def main():
     parser=argparse.ArgumentParser();parser.add_argument("command",choices=("run","snapshot","telegram","health"));parser.add_argument("--telegram-command",default="/decision");args=parser.parse_args();current,config=state();ledger=ForwardLedger(root/"database"/"forward_validation.db")

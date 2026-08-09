@@ -13,6 +13,7 @@ from bitcoin_cycle_analyzer.core.analyzer import analyze_intelligence
 from bitcoin_cycle_analyzer.seasonality.statistics import monthly_heatmap
 from bitcoin_cycle_analyzer.external_store import ExternalMetricStore
 from bitcoin_cycle_analyzer.onchain import StoreOnChainProvider
+from bitcoin_cycle_analyzer.rare_signals import build_historical_signal_book
 
 st.set_page_config(page_title="Bitcoin Cycle Analyzer", layout="wide")
 st.title("Bitcoin Cycle Analyzer")
@@ -32,6 +33,7 @@ analysis_cutoff=pd.Timestamp(replay_date,tz="UTC") if replay_enabled else frame.
 result = analyze(frame, config,as_of=analysis_cutoff)
 external_store = ExternalMetricStore(Path(__file__).resolve().parents[1] / config["data"]["external_database"])
 feeds = {"onchain_provider": StoreOnChainProvider(external_store),
+         "four_hour": store.load("4h"),
          "funding": external_store.load("funding_rate_8h"),
          "open_interest": external_store.load("open_interest_usd"),
          "macro": {metric: external_store.load(metric) for metric in ("fed_funds","us_2y","us_10y","dxy","cpi","core_cpi","pce","nonfarm_payrolls","unemployment","gdp","fed_balance_sheet","m2","nasdaq","sp500","gold","oil")},
@@ -56,11 +58,19 @@ st.subheader("WHAT SHOULD I DO?")
 d1,d2,d3=st.columns(3);d1.metric("LONG TERM",decision["long_term_decision"]);d2.metric("SWING",decision["swing_decision"]);d3.metric("RISK",decision["risk_action"])
 st.write("WHY?",decision["reason_codes"][:5]);st.write("WHAT ARE WE WAITING FOR?",decision["waiting_for"]);st.write("WHAT INVALIDATES THIS?",decision["invalidation_conditions"])
 st.caption(f"Decision confidence: {decision['confidence']} | Frozen model: {decision['frozen_model']} | Execution: {decision['execution']}")
+rare=intelligence["rare_signal"];advanced=intelligence["advanced"]
+st.subheader("RARE SIGNAL CHALLENGER")
+r1,r2,r3=st.columns(3);r1.metric("PRODUCTION",rare["level_a"]["signal"]);r2.metric("BUY CANDIDATE",f"{rare['level_b']['buy_completion']}%");r3.metric("SELL CANDIDATE",f"{rare['level_b']['sell_completion']}%")
+st.caption(f"Buy: {rare['buy_state']} | Sell: {rare['sell']['state']} | Distribution: {rare['sell']['distribution']} | RARE_SIGNAL_CHALLENGER_1 | Execution DISABLED")
+dd=advanced["drawdown"];mom=advanced["momentum"]
+with st.expander("Historical zones, drawdown, RSI and Bollinger",expanded=True):
+    a,b,c,d=st.columns(4);a.metric("Current drawdown",f"{dd['current_drawdown']:.1%}");b.metric("Drawdown percentile",f"{dd['historical_severity_percentile']:.1f}");c.metric("Weekly RSI",mom['weekly']['rsi']);d.metric("Monthly RSI",mom['monthly']['rsi'])
+    st.write({"drawdown_state":dd["state"],"recovery":dd["recovery_from_major_low"],"rsi_365d":mom["rsi_365d"],"bollinger":{"daily":mom["daily"]["bollinger"]["state"],"weekly":mom["weekly"]["bollinger"]["state"],"monthly":mom["monthly"]["bollinger"]["state"]}})
 st.caption(result["score"].classification)
 st.warning("Der Opportunity Score ist ein Analyse-Score, keine kalibrierte Eintrittswahrscheinlichkeit.")
 st.subheader("Value / Confirmation / Risk")
 st.write(result["states"])
-tabs = st.tabs(["OVERVIEW", "CYCLE", "TECHNICAL", "ON-CHAIN", "DERIVATIVES", "ETF FLOWS", "MACRO", "SEASONALITY", "HISTORICAL", "NEWS", "BACKTEST", "DATA HEALTH"])
+tabs = st.tabs(["OVERVIEW", "CYCLE", "TECHNICAL", "ON-CHAIN", "DERIVATIVES", "ETF FLOWS", "MACRO", "SEASONALITY", "HISTORICAL", "NEWS", "BACKTEST", "DATA HEALTH", "SIGNAL BOOK", "HISTORICAL LEVELS"])
 with tabs[0]:
     st.subheader("Precision Engine 2.3")
     st.json({key:intelligence["precision"].get(key) for key in ("market_state","system_conclusion","value","regime","timing","risk","uncertainty","data_health")})
@@ -128,3 +138,10 @@ with tabs[11]:
     if quality_path.exists():
         import json
         st.json(json.loads(quality_path.read_text(encoding="utf-8")))
+with tabs[12]:
+    signal_book=build_historical_signal_book(frame.loc[:analysis_cutoff]);st.caption("HISTORICAL RESEARCH - never mixed with forward validation")
+    st.dataframe(signal_book[[c for c in ("date","signal_type","level","price","regime","return_30d","return_90d","return_365d","MAE_90d","MFE_90d") if c in signal_book]])
+    if not signal_book.empty:st.bar_chart(signal_book.assign(year=pd.to_datetime(signal_book.date).dt.year).groupby(["year","signal_type"]).size().unstack(fill_value=0))
+with tabs[13]:
+    st.caption("PIT-formed historical zones; later touches create new versions")
+    st.dataframe(pd.DataFrame(advanced["historical_zones"]))

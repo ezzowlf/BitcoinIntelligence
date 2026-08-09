@@ -1,0 +1,22 @@
+{
+  "model_id": "RARE_SIGNAL_CHALLENGER_1",
+  "status": "CHALLENGER",
+  "history_label": "RESEARCH_ONLY",
+  "forward_start": "2026-08-10T00:00:00Z",
+  "champion_unchanged": "2.3-FROZEN",
+  "config_hash": "ac6d64ec790425055db060a7df145efb2e67e958fd51509f0f18de63afc7a599",
+  "code_manifest": {
+    "rare_signals/engine.py": "0ca6aa2ed79d82a2aa5d80cad0b6c5516e5fa968",
+    "advanced/zones.py": "2d328157dad796f7d7c36675df327adf6209eba4",
+    "advanced/drawdown.py": "686640474418149d7934cdb8602e5dcad5d90c3d",
+    "advanced/indicators.py": "0cb68d448dcc73f89f571115bea089f4347fdb83"
+  },
+  "definitions": {
+    "production": "Requires healthy critical data, adequate evidence and independent confluence",
+    "strong_buy": "At least five buy groups including timing and capitulation",
+    "strong_sell": "At least four sell groups, confirmed distribution and weekly structure breakdown",
+    "news_cap": "News without market transmission can produce WATCH only",
+    "normal_state": "NO_PRODUCTION_SIGNAL"
+  },
+  "execution": "DISABLED"
+}
