@@ -18,6 +18,8 @@ from bitcoin_cycle_analyzer.event_evidence import PointInTimeEventDatabase
 from bitcoin_cycle_analyzer.fusion_live import Fusion6ForwardLedger
 from bitcoin_cycle_analyzer.indicator_state import build_decision_state_v1,build_indicator_state_v1,rule_registry,write_json,PINE_MQL_CAPABILITY_MATRIX
 from bitcoin_cycle_analyzer.decision_intelligence import build_decision_state as build_decision_intelligence,build_explanation_facts,RULE_REGISTRY as DECISION_RULE_REGISTRY
+from bitcoin_cycle_analyzer.ui_state import LAYER_PRESETS,get_chart_view_state
+from bitcoin_cycle_analyzer.glossary import GLOSSARY
 
 ROOT=Path(__file__).resolve().parents[1]
 st.set_page_config(page_title="BTC Intelligence Terminal",page_icon="₿",layout="wide",initial_sidebar_state="collapsed")
@@ -30,7 +32,9 @@ h1,h2,h3{letter-spacing:.02em}.terminal-head{display:flex;justify-content:space-
 .bottomcard{background:var(--panel);border-top:2px solid var(--line);padding:.55rem .7rem;min-height:132px}.bottomcard h4{font-size:.67rem;letter-spacing:.12em;color:var(--muted);margin:0 0 .35rem}.bottomgrid{display:grid;grid-template-columns:1fr 1fr;gap:.25rem .7rem;font-size:.75rem}.bottomgrid b{text-align:right}.stTabs [data-baseweb="tab-list"]{gap:.15rem;border-bottom:1px solid var(--line)}.stTabs [data-baseweb="tab"]{height:2.2rem;font-size:.72rem;background:transparent}.stButton button{border-radius:3px;border:1px solid var(--line);background:var(--panel2)}
 div[data-baseweb="select"]>div{background:var(--panel)!important;border-color:var(--line)!important;color:var(--text)!important;min-height:2.35rem}div[data-baseweb="select"] input{color:var(--text)!important}[data-baseweb="tag"],[data-tag]{background:#1b2a3e!important;color:#cbd5e1!important;border-color:#30435e!important}[role="group"][aria-label="Selected values"]{background:var(--panel)!important}div[data-testid="stButtonGroup"] button{background:var(--panel)!important;border-color:var(--line)!important;color:#aebbd0!important}div[data-testid="stButtonGroup"] button[aria-pressed="true"]{background:#19304a!important;color:#f4f8ff!important;border-color:#356da2!important}
 div[data-testid="stMetric"]{background:transparent;border:0;padding:0}div[data-testid="stMetricLabel"]{font-size:.7rem;color:var(--muted)}
-@media(max-width:700px){.block-container{padding:.65rem}.terminal-head{display:block}.price{font-size:1.85rem}.engines{margin-top:.5rem}.decision{grid-template-columns:1fr 1fr}.decision>div:nth-child(2){border-right:0}.decision>div{border-bottom:1px solid var(--line)}.decision label{font-size:.55rem;overflow-wrap:anywhere}.decision strong{font-size:.82rem}.viewbar{overflow-wrap:anywhere}.bottomcard{min-height:auto}}
+.simplecard{background:var(--panel);border:1px solid var(--line);padding:1rem 1.1rem;margin-bottom:.6rem}.simplecard .bigstate{font-size:1.6rem}.simplerow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.6rem;margin-top:.6rem}.simplerow>div{background:var(--panel2);border:1px solid var(--line);padding:.5rem .65rem}.simplerow label{display:block;color:var(--muted);font-size:.65rem;letter-spacing:.1em;margin-bottom:.2rem}
+div[data-testid="stButtonGroup"] button{min-height:44px}div[role="radiogroup"] label{min-height:44px}
+@media(max-width:700px){.block-container{padding:.65rem}.terminal-head{display:block}.price{font-size:1.85rem}.engines{margin-top:.5rem}.decision{grid-template-columns:1fr 1fr}.decision>div:nth-child(2){border-right:0}.decision>div{border-bottom:1px solid var(--line)}.decision label{font-size:.55rem;overflow-wrap:anywhere}.decision strong{font-size:.82rem}.viewbar{overflow-wrap:anywhere}.bottomcard{min-height:auto}.simplerow{grid-template-columns:1fr 1fr}}
 </style>""",unsafe_allow_html=True)
 
 config=load_config(ROOT/"config.yaml");store=OHLCVStore(ROOT/config["data"]["database"]);canonical=store.load_canonical("1d");frame=canonical[["open","high","low","close","volume"]] if not canonical.empty else store.load("1d")
@@ -57,61 +61,94 @@ status_color={"ACTIVE":"var(--green)","WATCH":"var(--amber)","DORMANT":"var(--mu
 scenario_chips="".join(f"<span class='badge' style='border-color:{status_color.get(s['status'],'var(--line)')};color:{status_color.get(s['status'],'var(--muted)')}'>{s['name']} · {s['status']}</span>" for s in macro7["scenarios"])
 st.markdown(f"<div style='margin:-.35rem 0 .6rem;line-height:2.1'>{scenario_chips}</div>",unsafe_allow_html=True)
 
-left,main=st.columns([1,3.15],gap="medium")
-with left:
-    di=decision_intel;dz=di["active_zone"];dec_color={"STRONG_BUY":"var(--green)","BUY":"var(--green)","ACCUMULATE":"var(--amber)","WATCH":"var(--amber)","WAIT":"var(--muted)","REDUCE":"var(--red)","TAKE_PROFIT":"var(--amber)","HIGH_RISK":"var(--red)","SELL":"var(--red)","NO_EDGE":"var(--muted)"}.get(di["decision"],"var(--muted)")
-    zone_line="No active structural zone" if dz is None or dz.get("lower") is None else f"{dz['label']} · ${dz['lower']:,.0f} – ${dz['upper']:,.0f}"
-    st.markdown(f"""<div class='sidepanel'><h4>BITCOIN DECISION <span class='micro'>research synthesis</span></h4><div class='bigstate' style='color:{dec_color}'>{di['decision']}</div><div class='micro'>{decision_explanation['conclusion']}</div><div class='levelrow'><span>ZONE</span><b>{zone_line}</b></div><div class='levelrow'><span>ENTRY</span><b>{di['entry_status'].replace('_',' ')}</b></div><div class='levelrow'><span>CONFIDENCE</span><b>{di['decision_confidence']['label']} ({di['decision_confidence']['score']}/100)</b></div><div class='levelrow'><span>INVALIDATION</span><b>{'—' if di['invalidation_level'] is None else f"${di['invalidation_level']:,.0f}"}</b></div></div>""",unsafe_allow_html=True)
-    with st.expander("WHY?"):
-        st.markdown("**Supporting**  \n"+("\n".join(decision_explanation["why_positive"]) or "—"))
-        st.markdown("**Contradicting / missing**  \n"+("\n".join(decision_explanation["why_not_buy"]) or "—"))
-        if di["targets"]:st.markdown("**Targets**  \n"+"  \n".join(f"{t['id']}: ${t['price']:,.0f} — {t['why']}" for t in di["targets"]))
-        st.caption(decision_explanation["role"]+" · rules: "+", ".join(r.split(":")[0] for r in decision_explanation["rule_ids"]))
-    zone=m5["buy"]["zone"] or {};zl=zone.get("low");zh=zone.get("high");support=ms.get("nearest_support");resistance=ms.get("nearest_resistance")
-    st.markdown(f"""<div class='sidepanel'><h4>BUY OPPORTUNITY</h4><div class='bigstate score'>{m5['buy']['quality']:.0f} / 100</div><div>{m5['buy']['state']} · {m5['buy']['zone_lifecycle']['state']}</div><div class='micro'>Historical setup quality · keine Wahrscheinlichkeit</div></div><div class='sidepanel'><h4>SELL-OFF RISK</h4><div class='bigstate'>{m5['risk']['sell_off_risk']}</div><div class='micro'>{m5['risk']['distribution']} · {m5['risk']['existing_position_action']}</div></div><div class='sidepanel'><h4>NEXT BUY ZONE</h4><div class='bigstate'>{'UNAVAILABLE' if zl is None else f'${zl:,.0f} – ${zh:,.0f}'}</div><div class='micro'>Distance {m5['buy']['zone_lifecycle']['distance_pct'] if m5['buy']['zone_lifecycle']['distance_pct'] is not None else '—'} %</div><div class='levelrow'><span>ZONE 2</span><b>${ms['buy_zones'][1]['high']:,.0f}</b></div><div class='levelrow'><span>MAJOR SUPPORT</span><b>{'—' if not support else f'${support["upper_bound"]:,.0f}'}</b></div><div class='levelrow'><span>MAJOR RESISTANCE</span><b>{'—' if not resistance else f'${resistance["lower_bound"]:,.0f}'}</b></div></div>""",unsafe_allow_html=True)
-    wait_labels={"no_confirmed_lower_low":"Kein neues bestätigtes tieferes Tief","structure_reclaim":"Struktur zurückerobern","h4_or_d1_confirmation":"H4/D1-Bestätigung"};waiting="".join(f"<span>○ {wait_labels.get(x,x)}</span>" for x in md["waiting_for"])
-    st.markdown(f"<div class='sidepanel'><h4>WAITING FOR</h4><div class='compactlist'>{waiting}</div></div><div class='sidepanel'><h4>BULLISH / BEARISH TRIGGERS</h4><div class='compactlist'><span class='positive'>↑ H4 Reclaim · Support hält</span><span class='positive'>↑ Regime verbessert sich</span><span class='negative'>↓ Weekly Support Break</span><span class='negative'>↓ Distribution bestätigt</span></div></div>",unsafe_allow_html=True)
-    macro_primary=macro_e["primary"];macro_alt=(macro_e["alternatives"] or [{}])[0]
-    st.markdown(f"""<div class='sidepanel'><h4>INTELLIGENCE</h4><div class='compactlist'><span><b>CYCLE</b> {fusion['regime']} · {cycles['current']['drawdown']:.1%} from ATH</span><span><b>ELLIOTT PRIMARY</b> {macro_primary.get('name','Unresolved')}</span><span><b>ELLIOTT ALT</b> {macro_alt.get('name','—')}</span><span><b>INVALIDATION</b> {'—' if macro_primary.get('invalidation_level') is None else f"${macro_primary['invalidation_level']:,.0f}"}</span><span><b>CONFIRMATION</b> {'—' if macro_primary.get('confirmation_level') is None else f"${macro_primary['confirmation_level']:,.0f}"}</span><span><b>SCENARIO</b> {active_scenario['name']} · {active_scenario['status']}</span></div></div>""",unsafe_allow_html=True)
-with main:
-    LAYER_PRESETS={"CLEAN":[],"SWING":["200D/200W","Swing Zones","Signals"],"MACRO":["Macro Zones","200D/200W","Elliott","Historical Entries"],"RESEARCH":["Macro Zones","Swing Zones","200D/200W","Bollinger","Fib","Elliott","Historical Entries","Events","Signals"]}
-    qp=st.query_params;preset_default=qp.get("preset","SWING")
+di=decision_intel;dz=di["active_zone"];dec_color={"STRONG_BUY":"var(--green)","BUY":"var(--green)","ACCUMULATE":"var(--amber)","WATCH":"var(--amber)","WAIT":"var(--muted)","REDUCE":"var(--red)","TAKE_PROFIT":"var(--amber)","HIGH_RISK":"var(--red)","SELL":"var(--red)","NO_EDGE":"var(--muted)"}.get(di["decision"],"var(--muted)")
+zone_line="No active structural zone" if dz is None or dz.get("lower") is None else f"{dz['label']} · ${dz['lower']:,.0f} – ${dz['upper']:,.0f}"
+qp=st.query_params;view_state=get_chart_view_state(st.session_state,qp)
+mode_col,_=st.columns([1,4])
+mode=mode_col.segmented_control("VIEW",["SIMPLE","RESEARCH"],default=view_state["mode"],label_visibility="collapsed")
+view_state["mode"]=mode;qp["mode"]=mode
+simple=mode=="SIMPLE"
+
+if simple:
+    missing_conf=[t["description"] for t in di["confirmation"]["triggers"].values() if not t["met"]]
+    st.markdown(f"""<div class='simplecard'><div class='micro'>CURRENT VIEW</div><div class='bigstate' style='color:{dec_color}'>{di['decision']}</div><div class='simplerow'>
+    <div><label>GOOD AREA</label><b>{zone_line}</b></div>
+    <div><label>ENTRY</label><b>{di['entry_status'].replace('_',' ')}</b></div>
+    <div><label>WAITING FOR</label><b>{missing_conf[0] if missing_conf else '—'}</b></div>
+    <div><label>WRONG IF BELOW</label><b>{'—' if di['invalidation_level'] is None else f"${di['invalidation_level']:,.0f}"}</b></div>
+    </div><div class='micro' style='margin-top:.6rem'><b>WHY?</b> {len(di['evidence_agreement']['supporting_families'])} positive factors, {len(di['evidence_agreement']['contradicting_families'])} against — {decision_explanation['conclusion']}</div></div>""",unsafe_allow_html=True)
+    with st.expander("Explain the terms used above"):
+        for term in ("Cycle","Invalidation","Confirmation","Reclaim"):
+            st.markdown(f"**{term}** — {GLOSSARY.get(term,'')}")
+    layers=[];tf=st.segmented_control("TIMEFRAME",["1D","1W","1M","1Y","ALL"],default="ALL",label_visibility="collapsed");scale="LOG" if tf in {"ALL","1Y"} else "LIN"
+else:
     preset_row=st.columns([1,1,1,1,3])
     for idx,pname in enumerate(LAYER_PRESETS):
-        if preset_row[idx].button(pname,key=f"preset_{pname}",use_container_width=True):st.session_state["layers"]=LAYER_PRESETS[pname];st.query_params["preset"]=pname
-    if "layers" not in st.session_state:st.session_state["layers"]=LAYER_PRESETS.get(preset_default,LAYER_PRESETS["SWING"])
+        if preset_row[idx].button(pname,key=f"preset_{pname}",use_container_width=True):st.session_state["layers"]=LAYER_PRESETS[pname];qp["preset"]=pname
+    if "layers" not in st.session_state:st.session_state["layers"]=LAYER_PRESETS.get(qp.get("preset","SWING"),LAYER_PRESETS["SWING"])
     controls=st.columns([1,2.15,.85]);tf=controls[0].segmented_control("TIMEFRAME",["4H","1D","1W","1M","1Y","ALL"],default=qp.get("tf","ALL"),label_visibility="collapsed");layers=controls[1].multiselect("LAYERS",["Macro Zones","Swing Zones","200D/200W","Bollinger","Fib","Elliott","Historical Entries","Events","Signals"],key="layers",label_visibility="collapsed");scale=controls[2].segmented_control("SCALE",["LOG","LIN"],default=qp.get("scale") or ("LOG" if tf in {"ALL","1Y"} else "LIN"),label_visibility="collapsed")
-    st.query_params["tf"]=tf;st.query_params["scale"]=scale
-    chart_frame=h4 if tf=="4H" and not h4.empty else frame.resample("W-MON").agg({"open":"first","high":"max","low":"min","close":"last","volume":"sum"}).dropna() if tf=="1W" else frame.resample("ME").agg({"open":"first","high":"max","low":"min","close":"last","volume":"sum"}).dropna() if tf=="1M" else frame.resample("YE").agg({"open":"first","high":"max","low":"min","close":"last","volume":"sum"}).dropna() if tf=="1Y" else frame
-    visible=chart_frame if tf in {"ALL","1Y"} else chart_frame.tail(450 if tf in {"4H","1D"} else 220);fig=go.Figure(go.Candlestick(x=visible.index,open=visible.open,high=visible.high,low=visible.low,close=visible.close,increasing_line_color="#26c281",decreasing_line_color="#ee5a67",name="BTC"))
-    if "200D/200W" in layers and tf!="4H":
-        ma200=frame.close.rolling(200).mean().reindex(visible.index,method="ffill");ma200w=frame.close.rolling(1400).mean().reindex(visible.index,method="ffill");fig.add_trace(go.Scatter(x=visible.index,y=ma200,name="200D",line={"color":"#4da3ff","width":1.3}));fig.add_trace(go.Scatter(x=visible.index,y=ma200w,name="200W",line={"color":"#9b7bff","width":1.3}))
-    if "Bollinger" in layers:
-        mid=visible.close.rolling(20).mean();std=visible.close.rolling(20).std();fig.add_trace(go.Scatter(x=visible.index,y=mid+2*std,name="BB+",line={"color":"#46566c","width":1,"dash":"dot"}));fig.add_trace(go.Scatter(x=visible.index,y=mid-2*std,name="BB-",line={"color":"#46566c","width":1,"dash":"dot"}))
-    if "Swing Zones" in layers:
-        for z,color,name in ((ms["buy_zones"][0],"rgba(38,194,129,.13)","BUY ZONE 1"),(ms["buy_zones"][1],"rgba(38,194,129,.07)","BUY ZONE 2")):
-            if z.get("status")=="AVAILABLE":fig.add_hrect(y0=z["low"],y1=z["high"],fillcolor=color,line_width=0,annotation_text=name,annotation_position="top left")
-        if support:fig.add_hrect(y0=support["lower_bound"],y1=support["upper_bound"],fillcolor="rgba(77,163,255,.07)",line_width=0)
-        if resistance:fig.add_hrect(y0=resistance["lower_bound"],y1=resistance["upper_bound"],fillcolor="rgba(238,90,103,.06)",line_width=0)
-    if "Macro Zones" in layers:
-        for key,color in (("tactical_buy","rgba(77,163,255,.09)"),("macro_accumulation","rgba(38,194,129,.10)"),("deep_value","rgba(240,180,77,.08)"),("extreme_cycle","rgba(238,90,103,.07)")):
-            z=macro7["zones"].get(key)
-            if z:fig.add_hrect(y0=z["low"],y1=z["high"],fillcolor=color,line_width=0,annotation_text=key.replace("_"," ").upper(),annotation_position="top left")
-    if "Elliott" in layers:
-        swings=pd.DataFrame(elliott["evidence"]["confirmed_swings"])
-        if not swings.empty:fig.add_trace(go.Scatter(x=pd.to_datetime(swings.pivot_time),y=swings.price,mode="markers+text",text=[str(i+1) for i in range(len(swings))],textposition="top center",marker={"size":6,"color":"#f0b44d"},name="Confirmed swings"))
-    SIGNAL_STYLE={"STRONG_BUY_CANDIDATE":{"symbol":"triangle-up","color":"#26c281"},"HISTORICAL_EXTREME":{"symbol":"star","color":"#f0b44d"},"HIGH_RISK_DISTRIBUTION":{"symbol":"triangle-down","color":"#ee5a67"}}
-    if "Signals" in layers:
-        path=ROOT/"data"/"reports"/"master5_signal_book.csv"
-        if path.exists():
-            sig=pd.read_csv(path,parse_dates=["timestamp"]);sig=sig[sig.signal.isin(SIGNAL_STYLE) & (sig.false_signal==False)]
-            for kind,style in SIGNAL_STYLE.items():
-                rows=sig[sig.signal==kind]
-                if not rows.empty:fig.add_trace(go.Scatter(x=rows.timestamp,y=rows.price,mode="markers",marker={"size":10,"symbol":style["symbol"],"color":style["color"],"line":{"width":1,"color":"#070b12"}},name=kind.replace("_"," ").title()))
-    fig.add_hline(y=live_price,line_color="#f0b44d",line_width=1,annotation_text=f"LIVE ${live_price:,.0f}",annotation_position="top right")
-    fig.update_layout(height=555,margin={"l":8,"r":8,"t":15,"b":8},paper_bgcolor="#070b12",plot_bgcolor="#070b12",font={"color":"#8d9bb0","size":10},dragmode="pan",newshape={"line":{"color":"#f0b44d","width":1.5}},xaxis={"rangeslider":{"visible":False},"gridcolor":"#142033","showspikes":True,"spikemode":"across","spikesnap":"cursor","spikecolor":"#4da3ff","spikethickness":1},yaxis={"side":"right","gridcolor":"#142033","tickformat":",.0f","type":"log" if scale=="LOG" else "linear","showspikes":True,"spikemode":"across","spikesnap":"cursor","spikecolor":"#4da3ff","spikethickness":1},legend={"orientation":"h","y":1.02,"x":0},hovermode="x unified")
-    st.plotly_chart(fig,width="stretch",config={"displaylogo":False,"scrollZoom":True,"displayModeBar":True,"modeBarButtonsToAdd":["v1hovermode","toggleSpikelines","drawline","drawopenpath","drawrect","drawcircle","eraseshape"],"modeBarButtonsToRemove":["lasso2d","select2d"]})
-    st.caption("Drawings are your own annotations · independent of system zones/signals · not saved across sessions in this build")
+qp["tf"]=tf;qp["scale"]=scale
+
+chart_frame=h4 if tf=="4H" and not h4.empty else frame.resample("W-MON").agg({"open":"first","high":"max","low":"min","close":"last","volume":"sum"}).dropna() if tf=="1W" else frame.resample("ME").agg({"open":"first","high":"max","low":"min","close":"last","volume":"sum"}).dropna() if tf=="1M" else frame.resample("YE").agg({"open":"first","high":"max","low":"min","close":"last","volume":"sum"}).dropna() if tf=="1Y" else frame
+visible=chart_frame if tf in {"ALL","1Y"} else chart_frame.tail(450 if tf in {"4H","1D"} else 220);fig=go.Figure(go.Candlestick(x=visible.index,open=visible.open,high=visible.high,low=visible.low,close=visible.close,increasing_line_color="#26c281",decreasing_line_color="#ee5a67",name="BTC"))
+support=ms.get("nearest_support");resistance=ms.get("nearest_resistance")
+# Decision Intelligence zone/invalidation/targets ALWAYS render — highest chart-layer priority, never gated behind a layer toggle.
+if dz is not None and dz.get("lower") is not None:
+    zone_fill={"STRONG_BUY_ZONE":"rgba(38,194,129,.18)","BUY_ZONE":"rgba(38,194,129,.12)","WATCH_ZONE":"rgba(240,180,77,.10)","TAKE_PROFIT_ZONE":"rgba(240,180,77,.10)","HIGH_RISK_ZONE":"rgba(238,90,103,.12)"}.get(dz["zone_type"],"rgba(240,180,77,.10)")
+    fig.add_hrect(y0=dz["lower"],y1=dz["upper"],fillcolor=zone_fill,line_width=1.5,line_color=dec_color,annotation_text=f"{dz['zone_type'].replace('_',' ')} · {di['entry_status'].replace('_',' ')}",annotation_position="top left",annotation_font_color=dec_color)
+if di.get("invalidation_level") is not None:
+    fig.add_hline(y=di["invalidation_level"],line_color="#ee5a67",line_dash="dash",line_width=1.3,annotation_text=f"INVALIDATION ${di['invalidation_level']:,.0f}",annotation_position="bottom right")
+for t in di.get("targets",[]):
+    fig.add_hline(y=t["price"],line_color="#4da3ff",line_dash="dot",line_width=1,annotation_text=f"{t['id']} ${t['price']:,.0f}",annotation_position="top right")
+if "200D/200W" in layers and tf!="4H":
+    ma200=frame.close.rolling(200).mean().reindex(visible.index,method="ffill");ma200w=frame.close.rolling(1400).mean().reindex(visible.index,method="ffill");fig.add_trace(go.Scatter(x=visible.index,y=ma200,name="200D",line={"color":"#4da3ff","width":1.3}));fig.add_trace(go.Scatter(x=visible.index,y=ma200w,name="200W",line={"color":"#9b7bff","width":1.3}))
+if "Bollinger" in layers:
+    mid=visible.close.rolling(20).mean();std=visible.close.rolling(20).std();fig.add_trace(go.Scatter(x=visible.index,y=mid+2*std,name="BB+",line={"color":"#46566c","width":1,"dash":"dot"}));fig.add_trace(go.Scatter(x=visible.index,y=mid-2*std,name="BB-",line={"color":"#46566c","width":1,"dash":"dot"}))
+if "Swing Zones" in layers:
+    for z,color,name in ((ms["buy_zones"][0],"rgba(38,194,129,.13)","BUY ZONE 1"),(ms["buy_zones"][1],"rgba(38,194,129,.07)","BUY ZONE 2")):
+        if z.get("status")=="AVAILABLE":fig.add_hrect(y0=z["low"],y1=z["high"],fillcolor=color,line_width=0,annotation_text=name,annotation_position="top left")
+    if support:fig.add_hrect(y0=support["lower_bound"],y1=support["upper_bound"],fillcolor="rgba(77,163,255,.07)",line_width=0)
+    if resistance:fig.add_hrect(y0=resistance["lower_bound"],y1=resistance["upper_bound"],fillcolor="rgba(238,90,103,.06)",line_width=0)
+if "Macro Zones" in layers:
+    for key,color in (("tactical_buy","rgba(77,163,255,.09)"),("macro_accumulation","rgba(38,194,129,.10)"),("deep_value","rgba(240,180,77,.08)"),("extreme_cycle","rgba(238,90,103,.07)")):
+        z=macro7["zones"].get(key)
+        if z:fig.add_hrect(y0=z["low"],y1=z["high"],fillcolor=color,line_width=0,annotation_text=key.replace("_"," ").upper(),annotation_position="top left")
+if "Elliott" in layers:
+    swings=pd.DataFrame(elliott["evidence"]["confirmed_swings"])
+    if not swings.empty:fig.add_trace(go.Scatter(x=pd.to_datetime(swings.pivot_time),y=swings.price,mode="markers+text",text=[str(i+1) for i in range(len(swings))],textposition="top center",marker={"size":6,"color":"#f0b44d"},name="Confirmed swings"))
+SIGNAL_STYLE={"STRONG_BUY_CANDIDATE":{"symbol":"triangle-up","color":"#26c281"},"HISTORICAL_EXTREME":{"symbol":"star","color":"#f0b44d"},"HIGH_RISK_DISTRIBUTION":{"symbol":"triangle-down","color":"#ee5a67"}}
+if "Signals" in layers:
+    path=ROOT/"data"/"reports"/"master5_signal_book.csv"
+    if path.exists():
+        sig=pd.read_csv(path,parse_dates=["timestamp"]);sig=sig[sig.signal.isin(SIGNAL_STYLE) & (sig.false_signal==False)]
+        for kind,style in SIGNAL_STYLE.items():
+            rows=sig[sig.signal==kind]
+            if not rows.empty:fig.add_trace(go.Scatter(x=rows.timestamp,y=rows.price,mode="markers",marker={"size":10,"symbol":style["symbol"],"color":style["color"],"line":{"width":1,"color":"#070b12"}},name=kind.replace("_"," ").title()))
+fig.add_hline(y=live_price,line_color="#f0b44d",line_width=1,annotation_text=f"LIVE ${live_price:,.0f}",annotation_position="top right")
+fig.update_layout(height=620 if simple else 555,margin={"l":8,"r":8,"t":15,"b":8},paper_bgcolor="#070b12",plot_bgcolor="#070b12",font={"color":"#8d9bb0","size":10},dragmode="pan",newshape={"line":{"color":"#f0b44d","width":1.5}},xaxis={"rangeslider":{"visible":False},"gridcolor":"#142033","showspikes":True,"spikemode":"across","spikesnap":"cursor","spikecolor":"#4da3ff","spikethickness":1},yaxis={"side":"right","gridcolor":"#142033","tickformat":",.0f","type":"log" if scale=="LOG" else "linear","showspikes":True,"spikemode":"across","spikesnap":"cursor","spikecolor":"#4da3ff","spikethickness":1},legend={"orientation":"h","y":1.02,"x":0},hovermode="x unified")
+st.plotly_chart(fig,width="stretch",config={"displaylogo":False,"scrollZoom":True,"displayModeBar":True,"modeBarButtonsToAdd":["v1hovermode","toggleSpikelines","drawline","drawopenpath","drawrect","drawcircle","eraseshape"],"modeBarButtonsToRemove":["lasso2d","select2d"]})
+st.caption("Green/amber/red band = active decision zone · dashed red = invalidation · dotted blue = targets · your own drawings are independent annotations, not saved across sessions in this build")
+
+if simple:
+    st.stop()
+
+with st.expander("WHY?"):
+    st.markdown("**Supporting**  \n"+("\n".join(decision_explanation["why_positive"]) or "—"))
+    st.markdown("**Contradicting / missing**  \n"+("\n".join(decision_explanation["why_not_buy"]) or "—"))
+    if di["targets"]:st.markdown("**Targets**  \n"+"  \n".join(f"{t['id']}: ${t['price']:,.0f} — {t['why']}" for t in di["targets"]))
+    st.caption(decision_explanation["role"]+" · rules: "+", ".join(r.split(":")[0] for r in decision_explanation["rule_ids"]))
+
+zone=m5["buy"]["zone"] or {};zl=zone.get("low");zh=zone.get("high")
+wait_labels={"no_confirmed_lower_low":"Kein neues bestätigtes tieferes Tief","structure_reclaim":"Struktur zurückerobern","h4_or_d1_confirmation":"H4/D1-Bestätigung"};waiting="".join(f"<span>○ {wait_labels.get(x,x)}</span>" for x in md["waiting_for"])
+macro_primary=macro_e["primary"];macro_alt=(macro_e["alternatives"] or [{}])[0]
+st.markdown(f"""<div class='simplerow' style='margin:.3rem 0 .8rem'>
+<div class='sidepanel' style='margin:0'><h4>BITCOIN DECISION <span class='micro'>research synthesis</span></h4><div class='bigstate' style='color:{dec_color}'>{di['decision']}</div><div class='micro'>{decision_explanation['conclusion']}</div><div class='levelrow'><span>ZONE</span><b>{zone_line}</b></div><div class='levelrow'><span>CONFIDENCE</span><b>{di['decision_confidence']['label']} ({di['decision_confidence']['score']}/100)</b></div></div>
+<div class='sidepanel' style='margin:0'><h4>BUY OPPORTUNITY</h4><div class='bigstate score'>{m5['buy']['quality']:.0f} / 100</div><div>{m5['buy']['state']} · {m5['buy']['zone_lifecycle']['state']}</div><div class='micro'>Historical setup quality · keine Wahrscheinlichkeit</div></div>
+<div class='sidepanel' style='margin:0'><h4>SELL-OFF RISK</h4><div class='bigstate'>{m5['risk']['sell_off_risk']}</div><div class='micro'>{m5['risk']['distribution']} · {m5['risk']['existing_position_action']}</div></div>
+<div class='sidepanel' style='margin:0'><h4>NEXT BUY ZONE</h4><div class='bigstate'>{'UNAVAILABLE' if zl is None else f'${zl:,.0f} – ${zh:,.0f}'}</div><div class='micro'>Distance {m5['buy']['zone_lifecycle']['distance_pct'] if m5['buy']['zone_lifecycle']['distance_pct'] is not None else '—'} %</div><div class='levelrow'><span>MAJOR SUPPORT</span><b>{'—' if not support else f'${support["upper_bound"]:,.0f}'}</b></div><div class='levelrow'><span>MAJOR RESISTANCE</span><b>{'—' if not resistance else f'${resistance["lower_bound"]:,.0f}'}</b></div></div>
+<div class='sidepanel' style='margin:0'><h4>WAITING FOR</h4><div class='compactlist'>{waiting}</div></div>
+<div class='sidepanel' style='margin:0'><h4>INTELLIGENCE</h4><div class='compactlist'><span><b>CYCLE</b> {fusion['regime']} · {cycles['current']['drawdown']:.1%} from ATH</span><span><b>ELLIOTT PRIMARY</b> {macro_primary.get('name','Unresolved')}</span><span><b>SCENARIO</b> {active_scenario['name']} · {active_scenario['status']}</span></div></div>
+</div>""",unsafe_allow_html=True)
 
 cycle=cycles["current"];closest=hq.get("closest_historical_entries",[]);rsi_d=mom["daily"]["rsi"];rsi_w=mom["weekly"]["rsi"];rsi_m=mom["monthly"]["rsi"];ma200=float(frame.close.rolling(200).mean().iloc[-1]);ma200w=float(frame.close.rolling(1400).mean().iloc[-1]);data_status=state["data_status"]
 b1,b2,b3,b4=st.columns(4,gap="small")

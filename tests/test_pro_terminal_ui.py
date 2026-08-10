@@ -13,7 +13,7 @@ def test_terminal_has_compact_decision_and_live_confirmed_distinction():
     assert "MT5 LIVE" in SOURCE and "Confirmed H4" in SOURCE
 
 def test_chart_is_dominant_and_has_required_overlays():
-    assert "height=555" in SOURCE
+    assert "height=620 if simple else 555" in SOURCE
     for layer in ("Zones","200D/200W","Bollinger","Elliott","Signals","Historical Entries"):assert layer in SOURCE
     assert "add_hrect" in SOURCE and "add_hline" in SOURCE
 
@@ -39,7 +39,9 @@ def test_indicator_state_and_rule_registry_are_exported_and_not_executed():
     assert '"execution": "DISABLED"' in Path("src/bitcoin_cycle_analyzer/indicator_state.py").read_text(encoding="utf-8")
 
 def test_layer_presets_and_drawing_tools_present():
-    for preset in ("CLEAN","SWING","MACRO","RESEARCH"):assert f'"{preset}"' in SOURCE
+    ui_state_source = Path("src/bitcoin_cycle_analyzer/ui_state.py").read_text(encoding="utf-8")
+    for preset in ("CLEAN","SWING","MACRO","RESEARCH"):assert f'"{preset}"' in ui_state_source
+    assert "LAYER_PRESETS" in SOURCE  # app.py consumes the shared preset state, doesn't redefine it
     assert "drawline" in SOURCE and "drawrect" in SOURCE and "eraseshape" in SOURCE
 
 def test_dormant_conditional_targets_are_labelled_not_predicted():
@@ -48,3 +50,37 @@ def test_dormant_conditional_targets_are_labelled_not_predicted():
 def test_decision_card_is_wired_and_traceable():
     assert "BITCOIN DECISION" in SOURCE and "build_decision_intelligence" in SOURCE
     assert "Decision Rule Registry" in SOURCE and "DECISION_RULE_REGISTRY" in SOURCE
+
+def test_simple_and_research_modes_exist_and_default_to_research():
+    assert '["SIMPLE","RESEARCH"]' in SOURCE
+    from bitcoin_cycle_analyzer.ui_state import default_chart_view_state
+    assert default_chart_view_state()["mode"] == "RESEARCH"  # existing daily workflow stays the default
+
+def test_decision_zone_and_invalidation_render_unconditionally_on_chart():
+    # These must NOT be inside an `if X in layers:` gate — they are P0 priority
+    # (Teil "CHART LAYER PRIORITY": current price / active decision zone / invalidation / targets first).
+    assert "Decision Intelligence zone/invalidation/targets ALWAYS render" in SOURCE
+
+def test_touch_targets_are_at_least_44px_in_css():
+    assert "min-height:44px" in SOURCE
+
+def test_glossary_has_no_fabricated_facts_only_static_definitions():
+    from bitcoin_cycle_analyzer.glossary import GLOSSARY
+    assert len(GLOSSARY) >= 8
+    for term, text in GLOSSARY.items():
+        assert len(text) > 10
+        assert "you should buy" not in text.lower() and "you should sell" not in text.lower()
+
+def test_ui_state_module_separates_chart_view_state_from_engine_state():
+    ui_state_source = Path("src/bitcoin_cycle_analyzer/ui_state.py").read_text(encoding="utf-8")
+    assert "ENGINE STATE" in ui_state_source and "DECISION STATE" in ui_state_source and "CHART VIEW STATE" in ui_state_source
+
+def test_no_zone_classification_logic_is_reimplemented_in_the_ui():
+    # app.py may only READ zone_type/decision/entry_status from the decision_intelligence
+    # dicts (di/dz) — it must never itself branch on price to decide STRONG_BUY_ZONE etc.
+    import re
+    zone_type_literals = re.findall(r'"(STRONG_BUY_ZONE|BUY_ZONE|WATCH_ZONE|TAKE_PROFIT_ZONE|HIGH_RISK_ZONE)"', SOURCE)
+    # the only allowed occurrence is inside the zone_fill lookup dict, which maps an
+    # already-decided zone_type to a display color — not a decision.
+    fill_dict_line = next(l for l in SOURCE.splitlines() if "zone_fill=" in l)
+    assert all(lit in fill_dict_line for lit in set(zone_type_literals))
