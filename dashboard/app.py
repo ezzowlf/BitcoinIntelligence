@@ -1,185 +1,286 @@
 from pathlib import Path
 import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-
+import json
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"src"))
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+from bitcoin_cycle_analyzer.ai import BitcoinAIRouter
+from bitcoin_cycle_analyzer.runtime import env_values
 from bitcoin_cycle_analyzer.config import load_config
-from bitcoin_cycle_analyzer.data_provider import OHLCVStore
-from bitcoin_cycle_analyzer.analyzer import analyze
-from bitcoin_cycle_analyzer.similarity import evidence_label
 from bitcoin_cycle_analyzer.core.analyzer import analyze_intelligence
-from bitcoin_cycle_analyzer.seasonality.statistics import monthly_heatmap
+from bitcoin_cycle_analyzer.data_provider import OHLCVStore
 from bitcoin_cycle_analyzer.external_store import ExternalMetricStore
+from bitcoin_cycle_analyzer.live import MT5MarketDataProvider
 from bitcoin_cycle_analyzer.onchain import StoreOnChainProvider
-from bitcoin_cycle_analyzer.master.replay import build_master_historical_signal_book
+from bitcoin_cycle_analyzer.fusion6 import HistoricalPatternDiscoveryEngine
+from bitcoin_cycle_analyzer.event_evidence import PointInTimeEventDatabase
+from bitcoin_cycle_analyzer.fusion_live import Fusion6ForwardLedger
+from bitcoin_cycle_analyzer.indicator_state import build_decision_state_v1,build_indicator_state_v1,rule_registry,write_json,PINE_MQL_CAPABILITY_MATRIX
+from bitcoin_cycle_analyzer.decision_intelligence import build_decision_state as build_decision_intelligence,build_explanation_facts,RULE_REGISTRY as DECISION_RULE_REGISTRY
 
-st.set_page_config(page_title="Bitcoin Cycle Analyzer", layout="wide")
-st.title("Bitcoin Cycle Analyzer")
-config = load_config(Path(__file__).resolve().parents[1] / "config.yaml")
-store = OHLCVStore(Path(__file__).resolve().parents[1] / config["data"]["database"])
-canonical = store.load_canonical("1d")
-frame = canonical[["open", "high", "low", "close", "volume"]] if not canonical.empty else store.load("1d")
-uploaded = st.sidebar.file_uploader("Optional: OHLCV CSV", type="csv")
-if uploaded:
-    frame = pd.read_csv(uploaded, parse_dates=["timestamp"]).set_index("timestamp")
-if frame.empty:
-    st.info("Noch keine 1D-Daten vorhanden. Lade eine CSV mit timestamp/open/high/low/close/volume hoch oder führe das Update-Skript aus.")
-    st.stop()
-replay_enabled=st.sidebar.toggle("Historical PIT Replay",value=False)
-replay_date=st.sidebar.date_input("Replay date",value=frame.index[-1].date(),min_value=frame.index[0].date(),max_value=frame.index[-1].date(),disabled=not replay_enabled)
-analysis_cutoff=pd.Timestamp(replay_date,tz="UTC") if replay_enabled else frame.index[-1]
-result = analyze(frame, config,as_of=analysis_cutoff)
-external_store = ExternalMetricStore(Path(__file__).resolve().parents[1] / config["data"]["external_database"])
-feeds = {"onchain_provider": StoreOnChainProvider(external_store),
-         "four_hour": store.load("4h"),
-         "funding": external_store.load("funding_rate_8h"),
-         "open_interest": external_store.load("open_interest_usd"),
-         "macro": {metric: external_store.load(metric) for metric in ("fed_funds","us_2y","us_10y","dxy","cpi","core_cpi","pce","nonfarm_payrolls","unemployment","gdp","fed_balance_sheet","m2","nasdaq","sp500","gold","oil")},
-         "etf": external_store.load("etf_net_flow_usd")}
-intelligence = analyze_intelligence(frame, config, as_of=analysis_cutoff,feeds=feeds)
-decision=intelligence["decision"]
-master=intelligence["master"];master_state=master["state"];master_decision=master["decision"]
-provider = canonical.provider.iloc[-1] if not canonical.empty and "provider" in canonical else "uploaded/local"
-last_update = canonical.import_timestamp.iloc[-1] if not canonical.empty and "import_timestamp" in canonical else "unknown"
-st.sidebar.metric("Data provider", provider)
-st.sidebar.metric("Last data timestamp", str(frame.index[-1]))
-st.sidebar.caption(f"Last data update: {last_update}")
-c1, c2, c3, c4, c5 = st.columns(5)
-c1.metric("BTC", f"${result['price']:,.0f}")
-c2.metric("Regime", intelligence["precision"]["regime"]["current"])
-c3.metric("Long-Term Value", f"{intelligence['precision']['value']['score']:.1f}/100")
-c4.metric("Entry Timing", intelligence["precision"]["timing"]["state"])
-c5.metric("Evidence 2.2", f"{intelligence['evidence_2_2']['score']:.1f}/100")
-st.metric("30D Drawdown Risk", f"{intelligence['precision']['risk']['horizons']['30d']:.1f}/100 ({intelligence['precision']['risk']['tail_state']})")
-st.caption(f"Confluence: {intelligence['confluence']['level']} | Independent groups: {intelligence['confluence']['independent_groups']}/8")
-st.caption(f"Analysis mode: {'HISTORICAL_PIT_REPLAY' if replay_enabled else intelligence['precision']['analysis_mode']}")
-st.header("₿ BITCOIN MASTER")
-st.subheader("WHAT SHOULD I DO?")
-d1,d2,d3,d4=st.columns(4);d1.metric("LONG TERM",master_decision["long_term_action"]);d2.metric("NEW ENTRY",master_decision["new_entry_action"]);d3.metric("EXISTING POSITION",master_decision["existing_position_action"]);d4.metric("RISK",master_decision["risk_action"])
-st.metric("PRODUCTION SIGNAL",master_decision["production_signal"])
-ca,cb=st.columns(2);ca.metric("BUY CANDIDATE",f"{master_state['buy_completion']}%",help="Completion, not probability");cb.metric("SELL CANDIDATE",f"{master_state['sell_completion']}%",help="Completion, not probability")
-st.write("POSITIVE",master_decision["positive_drivers"]);st.write("NEGATIVE",master_decision["negative_drivers"]);st.write("UNCERTAIN / MISSING",master_decision["uncertain_drivers"])
-st.write("WHAT ARE WE WAITING FOR?",master_decision["waiting_for"]);st.write("UPGRADE CONDITIONS",master_decision["upgrade_conditions"]);st.write("DOWNGRADE CONDITIONS",master_decision["downgrade_conditions"])
-st.caption(f"Master confidence: {master_decision['confidence']} | Primary: {master['primary_analysis_model']} | Control: {master['control_model']} | {master_decision['model_disagreement']['state']} | Execution: DISABLED")
-historical_quality=intelligence["historical_entry_quality"]
-st.subheader("HISTORICAL ENTRY QUALITY")
-h1,h2,h3,h4=st.columns(4);h1.metric("QUALITY",historical_quality["state"],f"{historical_quality.get('score')} / 100 (not probability)");h2.metric("ARCHETYPE",historical_quality["entry_archetype"]);h3.metric("ENTRY TIMING",master_state["timing"]);h4.metric("MASTER NEW ENTRY",master_decision["new_entry_action"])
-st.caption(f"Based on {historical_quality['sample_size']} independent historical best-entry episodes. LIVE_RESEARCH_CONTEXT, not calibrated probability.")
-factor_labels={"DEEP_DRAWDOWN":"Deep Drawdown","MAJOR_HISTORICAL_SUPPORT":"Major Support","HIGH_VALUE":"High Value","BELOW_200D":"Below 200D","BELOW_200W":"Below 200W","DAILY_RSI_WEAK":"Daily RSI Weak","WEEKLY_RSI_WEAK":"Weekly RSI Weak","CAPITULATION_STRESS":"Capitulation"}
-st.dataframe(pd.DataFrame([{"factor":label,"status":"UNAVAILABLE" if historical_quality["factor_status"].get(key) is None else "YES" if historical_quality["factor_status"].get(key) else "NO"} for key,label in factor_labels.items()]),hide_index=True)
-v1,v2,v3,v4=st.columns(4);v1.metric("Current Drawdown",f"{historical_quality['current_drawdown']:.1%}");v2.metric("Price vs 200D",f"{historical_quality['price_vs_200d_pct']:.1%}" if historical_quality['price_vs_200d_pct'] is not None else "UNAVAILABLE");v3.metric("Price vs 200W",f"{historical_quality['price_vs_200w_pct']:.1%}" if historical_quality['price_vs_200w_pct'] is not None else "UNAVAILABLE");v4.metric("Weekly RSI",master_state["weekly_rsi"])
-st.dataframe(pd.DataFrame(historical_quality["closest_historical_entries"])[["date","archetype","similarity","historical_return_365d","historical_MAE_365d"]] if historical_quality["closest_historical_entries"] else pd.DataFrame())
-st.caption("Historical result - not a forecast.")
-if historical_quality.get("mae_context",{}).get("warning"):st.warning(f"HISTORICAL DOWNSIDE CONTEXT: similar entries had median {historical_quality['mae_context']['median']:.1%} and worst {historical_quality['mae_context']['worst']:.1%} further drawdown. High entry quality is not low risk.")
-st.subheader("MARKET MAP")
-map1,map2,map3=st.columns(3);map1.write({"MAJOR RESISTANCE":master_state["nearest_resistance"]});map2.metric("CURRENT BTC",f"${master_state['btc_price']:,.2f}");map3.write({"MAJOR SUPPORT":master_state["nearest_support"]})
-st.write("BUY ZONES",master_state["buy_zones"]);st.write("DISTRIBUTION / SELL ZONES",master_state["sell_zones"])
-with st.expander("MASTER FACTOR REGISTRY"):
-    st.dataframe(pd.DataFrame(master_state["factor_registry"]));st.json({"evidence":master_state["evidence"],"confluence":master_state["confluence"],"data_quality":master_state["data_quality"],"uncertainty":master_state["uncertainty"]})
-rare=intelligence["rare_signal"];advanced=intelligence["advanced"]
-st.subheader("RARE SIGNAL CHALLENGER")
-r1,r2,r3=st.columns(3);r1.metric("PRODUCTION",rare["level_a"]["signal"]);r2.metric("BUY CANDIDATE",f"{rare['level_b']['buy_completion']}%");r3.metric("SELL CANDIDATE",f"{rare['level_b']['sell_completion']}%")
-st.caption(f"Buy: {rare['buy_state']} | Sell: {rare['sell']['state']} | Distribution: {rare['sell']['distribution']} | RARE_SIGNAL_CHALLENGER_1 | Execution DISABLED")
-dd=advanced["drawdown"];mom=advanced["momentum"]
-with st.expander("Historical zones, drawdown, RSI and Bollinger",expanded=True):
-    a,b,c,d=st.columns(4);a.metric("Current drawdown",f"{dd['current_drawdown']:.1%}");b.metric("Drawdown percentile",f"{dd['historical_severity_percentile']:.1f}");c.metric("Weekly RSI",mom['weekly']['rsi']);d.metric("Monthly RSI",mom['monthly']['rsi'])
-    st.write({"drawdown_state":dd["state"],"recovery":dd["recovery_from_major_low"],"rsi_365d":mom["rsi_365d"],"bollinger":{"daily":mom["daily"]["bollinger"]["state"],"weekly":mom["weekly"]["bollinger"]["state"],"monthly":mom["monthly"]["bollinger"]["state"]}})
-st.caption(result["score"].classification)
-st.warning("Der Opportunity Score ist ein Analyse-Score, keine kalibrierte Eintrittswahrscheinlichkeit.")
-st.subheader("Value / Confirmation / Risk")
-st.write(result["states"])
-tabs = st.tabs(["OVERVIEW", "CYCLE", "TECHNICAL", "ON-CHAIN", "DERIVATIVES", "ETF FLOWS", "MACRO", "SEASONALITY", "HISTORICAL", "NEWS", "BACKTEST", "DATA HEALTH", "SIGNAL BOOK", "HISTORICAL LEVELS", "BEST HISTORICAL ENTRIES"])
+ROOT=Path(__file__).resolve().parents[1]
+st.set_page_config(page_title="BTC Intelligence Terminal",page_icon="₿",layout="wide",initial_sidebar_state="collapsed")
+st.markdown("""<style>
+:root{--bg:#070b12;--panel:#0d1420;--panel2:#111a28;--line:#223047;--text:#e6edf7;--muted:#7f8ea3;--green:#26c281;--amber:#f0b44d;--red:#ee5a67;--blue:#4da3ff}
+.stApp{background:var(--bg);color:var(--text)}header[data-testid="stHeader"],div[data-testid="stToolbar"],.stDeployButton{display:none!important}.block-container{max-width:1900px;padding:1rem 1.35rem 2rem}
+h1,h2,h3{letter-spacing:.02em}.terminal-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:.15rem 0 .8rem;margin-bottom:.65rem}.ticker{font-size:1rem;color:var(--muted);font-weight:700}.price{font-size:2.35rem;font-weight:750;line-height:1.05}.micro{font-size:.75rem;color:var(--muted);margin-top:.25rem}.badge{display:inline-block;padding:.2rem .5rem;border:1px solid var(--line);border-radius:3px;font-size:.7rem;margin-left:.35rem}.live{color:var(--green);border-color:#1d634a}.engine{display:inline-flex;gap:.45rem;align-items:center;margin-left:.7rem}.dot{height:7px;width:7px;border-radius:50%;background:var(--green);display:inline-block}
+.decision{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);background:var(--panel);margin:.4rem 0 .6rem}.decision>div{padding:.55rem .8rem;border-right:1px solid var(--line)}.decision>div:last-child{border:0}.decision label,.kpi label{display:block;color:var(--muted);font-size:.66rem;letter-spacing:.12em}.decision strong{font-size:.95rem}.viewbar{border-left:3px solid var(--amber);background:#101722;padding:.5rem .8rem;font-size:.92rem;margin-bottom:.7rem}.viewbar b{color:var(--amber)}
+.sidepanel{background:var(--panel);border:1px solid var(--line);padding:.7rem;margin-bottom:.55rem}.sidepanel h4{font-size:.67rem;color:var(--muted);letter-spacing:.12em;margin:0 0 .35rem}.bigstate{font-size:1.2rem;font-weight:750}.score{color:var(--amber)}.positive{color:var(--green)}.negative{color:var(--red)}.neutral{color:var(--muted)}.levelrow{display:flex;justify-content:space-between;border-top:1px solid #182438;padding:.28rem 0;font-size:.76rem}.compactlist{font-size:.74rem;line-height:1.55;color:#c3cfdd}.compactlist span{display:block}
+.bottomcard{background:var(--panel);border-top:2px solid var(--line);padding:.55rem .7rem;min-height:132px}.bottomcard h4{font-size:.67rem;letter-spacing:.12em;color:var(--muted);margin:0 0 .35rem}.bottomgrid{display:grid;grid-template-columns:1fr 1fr;gap:.25rem .7rem;font-size:.75rem}.bottomgrid b{text-align:right}.stTabs [data-baseweb="tab-list"]{gap:.15rem;border-bottom:1px solid var(--line)}.stTabs [data-baseweb="tab"]{height:2.2rem;font-size:.72rem;background:transparent}.stButton button{border-radius:3px;border:1px solid var(--line);background:var(--panel2)}
+div[data-baseweb="select"]>div{background:var(--panel)!important;border-color:var(--line)!important;color:var(--text)!important;min-height:2.35rem}div[data-baseweb="select"] input{color:var(--text)!important}[data-baseweb="tag"],[data-tag]{background:#1b2a3e!important;color:#cbd5e1!important;border-color:#30435e!important}[role="group"][aria-label="Selected values"]{background:var(--panel)!important}div[data-testid="stButtonGroup"] button{background:var(--panel)!important;border-color:var(--line)!important;color:#aebbd0!important}div[data-testid="stButtonGroup"] button[aria-pressed="true"]{background:#19304a!important;color:#f4f8ff!important;border-color:#356da2!important}
+div[data-testid="stMetric"]{background:transparent;border:0;padding:0}div[data-testid="stMetricLabel"]{font-size:.7rem;color:var(--muted)}
+@media(max-width:700px){.block-container{padding:.65rem}.terminal-head{display:block}.price{font-size:1.85rem}.engines{margin-top:.5rem}.decision{grid-template-columns:1fr 1fr}.decision>div:nth-child(2){border-right:0}.decision>div{border-bottom:1px solid var(--line)}.decision label{font-size:.55rem;overflow-wrap:anywhere}.decision strong{font-size:.82rem}.viewbar{overflow-wrap:anywhere}.bottomcard{min-height:auto}}
+</style>""",unsafe_allow_html=True)
+
+config=load_config(ROOT/"config.yaml");store=OHLCVStore(ROOT/config["data"]["database"]);canonical=store.load_canonical("1d");frame=canonical[["open","high","low","close","volume"]] if not canonical.empty else store.load("1d")
+if frame.empty:st.error("Keine BTC-Daten verfügbar.");st.stop()
+external=ExternalMetricStore(ROOT/config["data"]["external_database"]);mt5=MT5MarketDataProvider(values=env_values(ROOT/".env"));mh=mt5.connect();tick=mt5.tick() if mh.status=="ONLINE" else {"status":"UNAVAILABLE","reason":mh.reason};h4=mt5.confirmed_candles("4h",1000) if mh.status=="ONLINE" else store.load("4h");d1=mt5.confirmed_candles("1d",700) if mh.status=="ONLINE" else frame.iloc[0:0];w1=mt5.confirmed_candles("1w",260) if mh.status=="ONLINE" else frame.iloc[0:0];m1=mt5.confirmed_candles("1mo",180) if mh.status=="ONLINE" else frame.iloc[0:0];div=MT5MarketDataProvider.divergence(tick.get("mid"),float(frame.close.iloc[-1]));usable=mh.status=="ONLINE" and tick.get("freshness") in {"LIVE","DELAYED"} and not d1.empty and div.get("status")!="CRITICAL"
+if usable:frame=pd.concat([frame.loc[frame.index<d1.index[0]],d1]).sort_index();frame=frame[~frame.index.duplicated(keep="last")]
+live={"status":"ONLINE" if usable else mh.status,"health":mh.__dict__,"tick":tick,"divergence":div,"last_confirmed_h4":None if mh.status!="ONLINE" or h4.empty else h4.index[-1],"last_confirmed_d1":None if mh.status!="ONLINE" or d1.empty else d1.index[-1],"last_confirmed_w1":None if mh.status!="ONLINE" or w1.empty else w1.index[-1],"last_confirmed_1m":None if mh.status!="ONLINE" or m1.empty else m1.index[-1],"timing_confirmation":"ENABLED" if usable else "BLOCKED","provenance":mt5.provenance()};mt5.close()
+@st.cache_data(show_spinner=False)
+def discovery(data):return HistoricalPatternDiscoveryEngine().discover(data)
+feeds={"onchain_provider":StoreOnChainProvider(external),"four_hour":h4,"funding":external.load("funding_rate_8h"),"open_interest":external.load("open_interest_usd"),"etf":external.load("etf_net_flow_usd"),"macro":{},"live_market":live,"price_provider":"MT5 confirmed D1 + BITSTAMP historical" if usable else "BITSTAMP historical dataset","project_root":ROOT,"fusion_discovery":discovery(frame)}
+state=analyze_intelligence(frame,config,feeds=feeds);m3=state["master"];ms=m3["state"];md=m3["decision"];m5=state["master5_challenger"];fusion=state["fusion6"];macro7=state["macro7"];hq=state["historical_entry_quality"];cycles=state["elliott_cycle"]["cycle_history"];elliott=state["elliott_cycle"]["elliott"];mom=state["advanced"]["momentum"]
+event_db=PointInTimeEventDatabase(ROOT/"database"/"historical_event_evidence.db");event_health=event_db.health();event_rows=event_db.as_of(pd.Timestamp.now(tz="UTC"));fusion_live=Fusion6ForwardLedger(ROOT/"database"/"fusion6_live.db",json.loads((ROOT/"frozen"/"fusion_6_research_frozen.json").read_text(encoding="utf-8"))["forward_start"]);fusion_health=fusion_live.health()
+live_price=tick.get("mid") if usable else ms["btc_price"];spread=tick.get("spread");day_change=float(frame.close.iloc[-1]/frame.close.iloc[-2]-1) if len(frame)>1 else 0
+status_class="live" if usable else "";tick_label=str(tick.get("timestamp","UNAVAILABLE"))[11:19];confirmed=str(live.get("last_confirmed_h4") or "UNAVAILABLE")[:16]
+st.markdown(f"""<div class='terminal-head'><div><div class='ticker'>₿ BTCUSD <span class='badge {status_class}'>{'MT5 LIVE' if usable else str(mh.status)}</span></div><div class='price'>${live_price:,.2f}</div><div class='micro'><span class='{'positive' if day_change>=0 else 'negative'}'>{day_change:+.2%} D1</span> · Bid {'—' if tick.get('bid') is None else f'${tick["bid"]:,.2f}'} · Ask {'—' if tick.get('ask') is None else f'${tick["ask"]:,.2f}'} · Spread {'—' if spread is None else f'${spread:.2f}'} · Tick {tick_label} UTC · Age {tick.get('age_seconds','—')}s · Confirmed H4 {confirmed} · D1 {str(live.get('last_confirmed_d1') or '—')[:16]} · W1 {str(live.get('last_confirmed_w1') or '—')[:16]}</div></div><div class='engines'><span class='engine'><i class='dot'></i>CONTROL 3</span><span class='engine'><i class='dot'></i>SPECIALIST 5</span><span class='engine'><i class='dot' style='background:var(--amber)'></i>FUSION 6 RESEARCH</span></div></div>""",unsafe_allow_html=True)
+macro_e=macro7["elliott"];active_scenario=next((x for x in macro7["scenarios"] if x["status"]=="ACTIVE"),macro7["scenarios"][0])
+timing_state="CONFIRMED" if md.get("state")=="CONFIRMED" else "CONFIRMING" if md.get("waiting_for") and len(md.get("waiting_for"))<=1 else "EARLY" if md.get("waiting_for") else "WAIT"
+decision_state=build_decision_state_v1(state,macro7,live_price,active_scenario,timing_state)
+decision_intel=build_decision_intelligence(state,macro7,frame,live_price)
+decision_explanation=build_explanation_facts(decision_intel)
+risk_state=decision_state["risk"]
+st.markdown(f"""<div class='decision'><div><label>MACRO</label><strong class='positive'>{decision_state['macro']}</strong></div><div><label>LONG SWING</label><strong class='score'>{decision_state['long_swing']}</strong></div><div><label>TIMING</label><strong>{decision_state['timing']}</strong></div><div><label>RISK</label><strong class='{"negative" if risk_state=="HIGH" else "score" if risk_state=="CAUTION" else "positive"}'>{risk_state}</strong></div><div><label>CURRENT SCENARIO</label><strong>{decision_state['current_scenario']['name']}</strong></div></div><div class='viewbar'><b>MACRO VIEW</b> · {decision_state['why'][0]} · {decision_state['why'][1]} · Long-Swing BUY bleibt ohne validierten Edge gesperrt.</div>""",unsafe_allow_html=True)
+status_color={"ACTIVE":"var(--green)","WATCH":"var(--amber)","DORMANT":"var(--muted)","INVALIDATED":"var(--red)"}
+scenario_chips="".join(f"<span class='badge' style='border-color:{status_color.get(s['status'],'var(--line)')};color:{status_color.get(s['status'],'var(--muted)')}'>{s['name']} · {s['status']}</span>" for s in macro7["scenarios"])
+st.markdown(f"<div style='margin:-.35rem 0 .6rem;line-height:2.1'>{scenario_chips}</div>",unsafe_allow_html=True)
+
+left,main=st.columns([1,3.15],gap="medium")
+with left:
+    di=decision_intel;dz=di["active_zone"];dec_color={"STRONG_BUY":"var(--green)","BUY":"var(--green)","ACCUMULATE":"var(--amber)","WATCH":"var(--amber)","WAIT":"var(--muted)","REDUCE":"var(--red)","TAKE_PROFIT":"var(--amber)","HIGH_RISK":"var(--red)","SELL":"var(--red)","NO_EDGE":"var(--muted)"}.get(di["decision"],"var(--muted)")
+    zone_line="No active structural zone" if dz is None or dz.get("lower") is None else f"{dz['label']} · ${dz['lower']:,.0f} – ${dz['upper']:,.0f}"
+    st.markdown(f"""<div class='sidepanel'><h4>BITCOIN DECISION <span class='micro'>research synthesis</span></h4><div class='bigstate' style='color:{dec_color}'>{di['decision']}</div><div class='micro'>{decision_explanation['conclusion']}</div><div class='levelrow'><span>ZONE</span><b>{zone_line}</b></div><div class='levelrow'><span>ENTRY</span><b>{di['entry_status'].replace('_',' ')}</b></div><div class='levelrow'><span>CONFIDENCE</span><b>{di['decision_confidence']['label']} ({di['decision_confidence']['score']}/100)</b></div><div class='levelrow'><span>INVALIDATION</span><b>{'—' if di['invalidation_level'] is None else f"${di['invalidation_level']:,.0f}"}</b></div></div>""",unsafe_allow_html=True)
+    with st.expander("WHY?"):
+        st.markdown("**Supporting**  \n"+("\n".join(decision_explanation["why_positive"]) or "—"))
+        st.markdown("**Contradicting / missing**  \n"+("\n".join(decision_explanation["why_not_buy"]) or "—"))
+        if di["targets"]:st.markdown("**Targets**  \n"+"  \n".join(f"{t['id']}: ${t['price']:,.0f} — {t['why']}" for t in di["targets"]))
+        st.caption(decision_explanation["role"]+" · rules: "+", ".join(r.split(":")[0] for r in decision_explanation["rule_ids"]))
+    zone=m5["buy"]["zone"] or {};zl=zone.get("low");zh=zone.get("high");support=ms.get("nearest_support");resistance=ms.get("nearest_resistance")
+    st.markdown(f"""<div class='sidepanel'><h4>BUY OPPORTUNITY</h4><div class='bigstate score'>{m5['buy']['quality']:.0f} / 100</div><div>{m5['buy']['state']} · {m5['buy']['zone_lifecycle']['state']}</div><div class='micro'>Historical setup quality · keine Wahrscheinlichkeit</div></div><div class='sidepanel'><h4>SELL-OFF RISK</h4><div class='bigstate'>{m5['risk']['sell_off_risk']}</div><div class='micro'>{m5['risk']['distribution']} · {m5['risk']['existing_position_action']}</div></div><div class='sidepanel'><h4>NEXT BUY ZONE</h4><div class='bigstate'>{'UNAVAILABLE' if zl is None else f'${zl:,.0f} – ${zh:,.0f}'}</div><div class='micro'>Distance {m5['buy']['zone_lifecycle']['distance_pct'] if m5['buy']['zone_lifecycle']['distance_pct'] is not None else '—'} %</div><div class='levelrow'><span>ZONE 2</span><b>${ms['buy_zones'][1]['high']:,.0f}</b></div><div class='levelrow'><span>MAJOR SUPPORT</span><b>{'—' if not support else f'${support["upper_bound"]:,.0f}'}</b></div><div class='levelrow'><span>MAJOR RESISTANCE</span><b>{'—' if not resistance else f'${resistance["lower_bound"]:,.0f}'}</b></div></div>""",unsafe_allow_html=True)
+    wait_labels={"no_confirmed_lower_low":"Kein neues bestätigtes tieferes Tief","structure_reclaim":"Struktur zurückerobern","h4_or_d1_confirmation":"H4/D1-Bestätigung"};waiting="".join(f"<span>○ {wait_labels.get(x,x)}</span>" for x in md["waiting_for"])
+    st.markdown(f"<div class='sidepanel'><h4>WAITING FOR</h4><div class='compactlist'>{waiting}</div></div><div class='sidepanel'><h4>BULLISH / BEARISH TRIGGERS</h4><div class='compactlist'><span class='positive'>↑ H4 Reclaim · Support hält</span><span class='positive'>↑ Regime verbessert sich</span><span class='negative'>↓ Weekly Support Break</span><span class='negative'>↓ Distribution bestätigt</span></div></div>",unsafe_allow_html=True)
+    macro_primary=macro_e["primary"];macro_alt=(macro_e["alternatives"] or [{}])[0]
+    st.markdown(f"""<div class='sidepanel'><h4>INTELLIGENCE</h4><div class='compactlist'><span><b>CYCLE</b> {fusion['regime']} · {cycles['current']['drawdown']:.1%} from ATH</span><span><b>ELLIOTT PRIMARY</b> {macro_primary.get('name','Unresolved')}</span><span><b>ELLIOTT ALT</b> {macro_alt.get('name','—')}</span><span><b>INVALIDATION</b> {'—' if macro_primary.get('invalidation_level') is None else f"${macro_primary['invalidation_level']:,.0f}"}</span><span><b>CONFIRMATION</b> {'—' if macro_primary.get('confirmation_level') is None else f"${macro_primary['confirmation_level']:,.0f}"}</span><span><b>SCENARIO</b> {active_scenario['name']} · {active_scenario['status']}</span></div></div>""",unsafe_allow_html=True)
+with main:
+    LAYER_PRESETS={"CLEAN":[],"SWING":["200D/200W","Swing Zones","Signals"],"MACRO":["Macro Zones","200D/200W","Elliott","Historical Entries"],"RESEARCH":["Macro Zones","Swing Zones","200D/200W","Bollinger","Fib","Elliott","Historical Entries","Events","Signals"]}
+    qp=st.query_params;preset_default=qp.get("preset","SWING")
+    preset_row=st.columns([1,1,1,1,3])
+    for idx,pname in enumerate(LAYER_PRESETS):
+        if preset_row[idx].button(pname,key=f"preset_{pname}",use_container_width=True):st.session_state["layers"]=LAYER_PRESETS[pname];st.query_params["preset"]=pname
+    if "layers" not in st.session_state:st.session_state["layers"]=LAYER_PRESETS.get(preset_default,LAYER_PRESETS["SWING"])
+    controls=st.columns([1,2.15,.85]);tf=controls[0].segmented_control("TIMEFRAME",["4H","1D","1W","1M","1Y","ALL"],default=qp.get("tf","ALL"),label_visibility="collapsed");layers=controls[1].multiselect("LAYERS",["Macro Zones","Swing Zones","200D/200W","Bollinger","Fib","Elliott","Historical Entries","Events","Signals"],key="layers",label_visibility="collapsed");scale=controls[2].segmented_control("SCALE",["LOG","LIN"],default=qp.get("scale") or ("LOG" if tf in {"ALL","1Y"} else "LIN"),label_visibility="collapsed")
+    st.query_params["tf"]=tf;st.query_params["scale"]=scale
+    chart_frame=h4 if tf=="4H" and not h4.empty else frame.resample("W-MON").agg({"open":"first","high":"max","low":"min","close":"last","volume":"sum"}).dropna() if tf=="1W" else frame.resample("ME").agg({"open":"first","high":"max","low":"min","close":"last","volume":"sum"}).dropna() if tf=="1M" else frame.resample("YE").agg({"open":"first","high":"max","low":"min","close":"last","volume":"sum"}).dropna() if tf=="1Y" else frame
+    visible=chart_frame if tf in {"ALL","1Y"} else chart_frame.tail(450 if tf in {"4H","1D"} else 220);fig=go.Figure(go.Candlestick(x=visible.index,open=visible.open,high=visible.high,low=visible.low,close=visible.close,increasing_line_color="#26c281",decreasing_line_color="#ee5a67",name="BTC"))
+    if "200D/200W" in layers and tf!="4H":
+        ma200=frame.close.rolling(200).mean().reindex(visible.index,method="ffill");ma200w=frame.close.rolling(1400).mean().reindex(visible.index,method="ffill");fig.add_trace(go.Scatter(x=visible.index,y=ma200,name="200D",line={"color":"#4da3ff","width":1.3}));fig.add_trace(go.Scatter(x=visible.index,y=ma200w,name="200W",line={"color":"#9b7bff","width":1.3}))
+    if "Bollinger" in layers:
+        mid=visible.close.rolling(20).mean();std=visible.close.rolling(20).std();fig.add_trace(go.Scatter(x=visible.index,y=mid+2*std,name="BB+",line={"color":"#46566c","width":1,"dash":"dot"}));fig.add_trace(go.Scatter(x=visible.index,y=mid-2*std,name="BB-",line={"color":"#46566c","width":1,"dash":"dot"}))
+    if "Swing Zones" in layers:
+        for z,color,name in ((ms["buy_zones"][0],"rgba(38,194,129,.13)","BUY ZONE 1"),(ms["buy_zones"][1],"rgba(38,194,129,.07)","BUY ZONE 2")):
+            if z.get("status")=="AVAILABLE":fig.add_hrect(y0=z["low"],y1=z["high"],fillcolor=color,line_width=0,annotation_text=name,annotation_position="top left")
+        if support:fig.add_hrect(y0=support["lower_bound"],y1=support["upper_bound"],fillcolor="rgba(77,163,255,.07)",line_width=0)
+        if resistance:fig.add_hrect(y0=resistance["lower_bound"],y1=resistance["upper_bound"],fillcolor="rgba(238,90,103,.06)",line_width=0)
+    if "Macro Zones" in layers:
+        for key,color in (("tactical_buy","rgba(77,163,255,.09)"),("macro_accumulation","rgba(38,194,129,.10)"),("deep_value","rgba(240,180,77,.08)"),("extreme_cycle","rgba(238,90,103,.07)")):
+            z=macro7["zones"].get(key)
+            if z:fig.add_hrect(y0=z["low"],y1=z["high"],fillcolor=color,line_width=0,annotation_text=key.replace("_"," ").upper(),annotation_position="top left")
+    if "Elliott" in layers:
+        swings=pd.DataFrame(elliott["evidence"]["confirmed_swings"])
+        if not swings.empty:fig.add_trace(go.Scatter(x=pd.to_datetime(swings.pivot_time),y=swings.price,mode="markers+text",text=[str(i+1) for i in range(len(swings))],textposition="top center",marker={"size":6,"color":"#f0b44d"},name="Confirmed swings"))
+    SIGNAL_STYLE={"STRONG_BUY_CANDIDATE":{"symbol":"triangle-up","color":"#26c281"},"HISTORICAL_EXTREME":{"symbol":"star","color":"#f0b44d"},"HIGH_RISK_DISTRIBUTION":{"symbol":"triangle-down","color":"#ee5a67"}}
+    if "Signals" in layers:
+        path=ROOT/"data"/"reports"/"master5_signal_book.csv"
+        if path.exists():
+            sig=pd.read_csv(path,parse_dates=["timestamp"]);sig=sig[sig.signal.isin(SIGNAL_STYLE) & (sig.false_signal==False)]
+            for kind,style in SIGNAL_STYLE.items():
+                rows=sig[sig.signal==kind]
+                if not rows.empty:fig.add_trace(go.Scatter(x=rows.timestamp,y=rows.price,mode="markers",marker={"size":10,"symbol":style["symbol"],"color":style["color"],"line":{"width":1,"color":"#070b12"}},name=kind.replace("_"," ").title()))
+    fig.add_hline(y=live_price,line_color="#f0b44d",line_width=1,annotation_text=f"LIVE ${live_price:,.0f}",annotation_position="top right")
+    fig.update_layout(height=555,margin={"l":8,"r":8,"t":15,"b":8},paper_bgcolor="#070b12",plot_bgcolor="#070b12",font={"color":"#8d9bb0","size":10},dragmode="pan",newshape={"line":{"color":"#f0b44d","width":1.5}},xaxis={"rangeslider":{"visible":False},"gridcolor":"#142033","showspikes":True,"spikemode":"across","spikesnap":"cursor","spikecolor":"#4da3ff","spikethickness":1},yaxis={"side":"right","gridcolor":"#142033","tickformat":",.0f","type":"log" if scale=="LOG" else "linear","showspikes":True,"spikemode":"across","spikesnap":"cursor","spikecolor":"#4da3ff","spikethickness":1},legend={"orientation":"h","y":1.02,"x":0},hovermode="x unified")
+    st.plotly_chart(fig,width="stretch",config={"displaylogo":False,"scrollZoom":True,"displayModeBar":True,"modeBarButtonsToAdd":["v1hovermode","toggleSpikelines","drawline","drawopenpath","drawrect","drawcircle","eraseshape"],"modeBarButtonsToRemove":["lasso2d","select2d"]})
+    st.caption("Drawings are your own annotations · independent of system zones/signals · not saved across sessions in this build")
+
+cycle=cycles["current"];closest=hq.get("closest_historical_entries",[]);rsi_d=mom["daily"]["rsi"];rsi_w=mom["weekly"]["rsi"];rsi_m=mom["monthly"]["rsi"];ma200=float(frame.close.rolling(200).mean().iloc[-1]);ma200w=float(frame.close.rolling(1400).mean().iloc[-1]);data_status=state["data_status"]
+b1,b2,b3,b4=st.columns(4,gap="small")
+with b1:st.markdown(f"<div class='bottomcard'><h4>CYCLE</h4><div class='bottomgrid'><span>REGIME</span><b>{fusion['regime']}</b><span>ELLIOTT</span><b>{elliott['primary']['name'].replace('Possible ','')[:20]}</b><span>DRAWDOWN</span><b>{cycle['drawdown']:.1%}</b><span>SINCE ATH</span><b>{cycle['days_since_ath']}d</b><span>SINCE HALVING</span><b>{cycles['days_since_halving']}d</b></div></div>",unsafe_allow_html=True)
+with b2:st.markdown(f"<div class='bottomcard'><h4>HISTORICAL</h4><div class='bottomgrid'><span>ENTRY QUALITY</span><b>{hq['score']:.0f} / 100</b><span>STATE</span><b>{hq['state']}</b><span>ARCHETYPE</span><b>{m5['buy']['archetype'].replace('_',' ')}</b><span>CLOSEST</span><b>{' · '.join(str(pd.Timestamp(x['date']).year) for x in closest[:3]) or '—'}</b><span>ACTIVE PATTERNS</span><b>{len(fusion['active_historical_patterns'])}</b></div></div>",unsafe_allow_html=True)
+with b3:st.markdown(f"<div class='bottomcard'><h4>MOMENTUM</h4><div class='bottomgrid'><span>RSI D</span><b>{rsi_d or '—'}</b><span>RSI W</span><b>{rsi_w or '—'}</b><span>RSI M</span><b>{rsi_m or '—'}</b><span>VS 200D</span><b>{live_price/ma200-1:+.1%}</b><span>VS 200W</span><b>{live_price/ma200w-1:+.1%}</b></div></div>",unsafe_allow_html=True)
+with b4:st.markdown(f"<div class='bottomcard'><h4>DATA</h4><div class='bottomgrid'><span>MT5</span><b class='{'positive' if usable else 'negative'}'>{'LIVE' if usable else 'OFFLINE'}</b><span>ONCHAIN</span><b>{data_status['onchain']['status']}</b><span>DERIVATIVES</span><b>{data_status['derivatives']['status']}</b><span>MACRO</span><b>{data_status['macro']['status']}</b><span>NEWS</span><b>{data_status['news']['status']}</b></div></div>",unsafe_allow_html=True)
+
+tabs=st.tabs(["CHART","CYCLES","HISTORY","EVENTS","RESEARCH","SYSTEM"])
 with tabs[0]:
-    st.subheader("Precision Engine 2.3")
-    st.json({key:intelligence["precision"].get(key) for key in ("market_state","system_conclusion","value","regime","timing","risk","uncertainty","data_health")})
-    st.subheader("Bitcoin Market State Matrix")
-    st.dataframe(pd.Series(intelligence["dimensions"], name="value"))
-    st.subheader("Independent Confluence")
-    st.json(intelligence["confluence"])
-    st.subheader("Main Drivers and State Changes")
-    st.json(intelligence["explainability"])
-    st.bar_chart(pd.Series(result["score"].components))
+    st.subheader("Macro scenario map")
+    scenario_rows=[{"Scenario":x["name"],"Status":x["status"],"Why this zone exists":x["price_zone"]["support"],"Zone":f"${x['price_zone']['low']:,.0f} – ${x['price_zone']['high']:,.0f}","Support":x["confidence_state"],"Activates if":" · ".join(x["activation_conditions"]),"Invalidated if":" · ".join(x["invalidation_conditions"]),"Historical context":" · ".join(x["historical_analogues"]) or "UNAVAILABLE","Elliott context":x["elliott_context"]} for x in macro7["scenarios"]]
+    st.dataframe(pd.DataFrame(scenario_rows),hide_index=True)
+    detail_name=st.selectbox("SCENARIO DETAILS",[s["name"] for s in macro7["scenarios"]])
+    detail=next(s for s in macro7["scenarios"] if s["name"]==detail_name)
+    dleft,dright=st.columns(2)
+    dleft.markdown(f"""**WHY THIS SCENARIO EXISTS**  \n{detail['price_zone']['support']}  \n\n**ACTIVATES IF**  \n{' · '.join(detail['activation_conditions'])}  \n\n**INVALIDATED IF**  \n{' · '.join(detail['invalidation_conditions'])}""")
+    dright.markdown(f"""**TARGET / PRICE REGION**  \n${detail['price_zone']['low']:,.0f} – ${detail['price_zone']['high']:,.0f}  \n\n**HISTORICAL ANALOGUES**  \n{' · '.join(detail['historical_analogues']) or 'UNAVAILABLE'}  \n\n**ELLIOTT CONTEXT**  \n{detail['elliott_context']}  \n\n**DRAWDOWN CONTEXT**  \n{detail['drawdown_context']:.1%}""" if isinstance(detail['drawdown_context'],float) else f"**DRAWDOWN CONTEXT**  \n{detail['drawdown_context']}")
+    st.divider()
+    z=macro7["zones"];zone_rows=[{"Horizon":name.replace("_"," ").title(),"Zone":"UNAVAILABLE" if zone is None else f"${zone['low']:,.0f} – ${zone['high']:,.0f}","Support":"UNAVAILABLE" if zone is None else zone["support"]} for name,zone in (("tactical",z["tactical_buy"]),("swing",z["swing_buy"]),("macro accumulation",z["macro_accumulation"]),("deep value",z["deep_value"]),("extreme cycle",z["extreme_cycle"]))];st.dataframe(pd.DataFrame(zone_rows),hide_index=True)
+    st.subheader("Macro price map · 50k / 40k / 30k conditional context")
+    level_rows=[]
+    for target in (50000,40000,30000):
+        closest_level=min(macro7["drawdown_ladder"]["levels"],key=lambda x:abs(x["price"]-target));level_rows.append({"BTC level":f"${target:,.0f}","ATH drawdown":f"{target/macro7['indicators']['ath']-1:.1%}","Distance to 200W":f"{target/macro7['indicators']['ma200w']-1:.1%}","Historical context":"Deep-cycle band" if target<macro7['indicators']['ma200w'] else "200W vicinity","Currently active":"NO","Scenario":"DORMANT — NOT AN ACTIVE TARGET · conditional context only","Nearest historical ladder":f"{closest_level['drawdown']:.0%}"})
+    st.dataframe(pd.DataFrame(level_rows),hide_index=True);st.caption("These levels are conditional context, never a forecast · CONTROL 3 remains Champion · MACRO SWING 7 remains Research Challenger · Execution DISABLED")
 with tabs[1]:
-    st.json(intelligence["cycle"])
+    cyc_tabs=st.tabs(["ELLIOTT","CYCLE LAB"])
+    with cyc_tabs[1]:
+        st.subheader("Historical Bitcoin cycle laboratory")
+        view=st.segmented_control("CYCLE VIEW",["Full BTC History","Halving Cycles","ATH Drawdowns","Bottom Recoveries","Yearly Candles"],default="Full BTC History")
+        halvings=[pd.Timestamp("2012-11-28",tz="UTC"),pd.Timestamp("2016-07-09",tz="UTC"),pd.Timestamp("2020-05-11",tz="UTC"),pd.Timestamp("2024-04-20",tz="UTC")]
+        if view=="Yearly Candles":
+            yearly=frame.resample("YE").agg({"open":"first","high":"max","low":"min","close":"last"}).dropna();yf=go.Figure(go.Candlestick(x=yearly.index,open=yearly.open,high=yearly.high,low=yearly.low,close=yearly.close));yf.update_layout(height=560,paper_bgcolor="#070b12",plot_bgcolor="#070b12",font={"color":"#8d9bb0"},yaxis_type="log");st.plotly_chart(yf,width="stretch")
+            annual=yearly.assign(year=yearly.index.year,ret=yearly.close/yearly.open-1,max_drawdown=yearly.low/yearly.open-1)[["year","open","high","low","close","ret","max_drawdown"]].rename(columns={"ret":"Return","max_drawdown":"Max Drawdown"})
+            st.dataframe(annual,hide_index=True)
+        elif view=="Halving Cycles":
+            cf=go.Figure();hn=cycles.get("halving_normalized",[])
+            for i,cycle_item in enumerate(hn):
+                pts=pd.DataFrame(cycle_item["points"]);is_current=i==len(hn)-1
+                cf.add_trace(go.Scatter(x=pts.day,y=pts.normalized,name=str(cycle_item["halving"])[:10]+(" · CURRENT" if is_current else ""),line={"width":3 if is_current else 1.4,"color":"#f0b44d" if is_current else None}))
+            cf.update_layout(height=560,paper_bgcolor="#070b12",plot_bgcolor="#070b12",font={"color":"#8d9bb0"},xaxis_title="Days from halving",yaxis_title="Halving price = 1.0");st.plotly_chart(cf,width="stretch");st.caption("Research context only. No mechanical four-year-cycle assumption. Current cycle highlighted, not extrapolated.")
+        elif view=="ATH Drawdowns":
+            cf=go.Figure()
+            for item in cycles.get("ath_normalized",[]):
+                pts=pd.DataFrame(item["points"]);cf.add_trace(go.Scatter(x=pts.day,y=pts.normalized-1,name=f"Cycle {item['cycle']}"))
+            cf.update_layout(height=560,paper_bgcolor="#070b12",plot_bgcolor="#070b12",font={"color":"#8d9bb0"},xaxis_title="Days from ATH",yaxis_title="Drawdown");st.plotly_chart(cf,width="stretch")
+        elif view=="Bottom Recoveries":
+            cf=go.Figure()
+            for item in cycles.get("bottom_recovery_normalized",[]):
+                pts=pd.DataFrame(item["points"]);cf.add_trace(go.Scatter(x=pts.day,y=pts.normalized,name=f"Cycle {item['cycle']}"))
+            cf.update_layout(height=560,paper_bgcolor="#070b12",plot_bgcolor="#070b12",font={"color":"#8d9bb0"},xaxis_title="Days from major low",yaxis_title="Low price = 1.0");st.plotly_chart(cf,width="stretch")
+        else:
+            cyclefig=go.Figure(go.Scatter(x=frame.index,y=frame.close,line={"color":"#4da3ff","width":1},name="BTC"))
+            ath_running=frame.close.cummax();ath_points=frame[frame.close>=ath_running.shift(1).fillna(0)]
+            cyclefig.add_trace(go.Scatter(x=ath_points.index,y=ath_points.close,mode="markers",marker={"size":5,"color":"#26c281"},name="New ATH"))
+            for h in halvings:
+                if h>=frame.index.min() and h<=frame.index.max():cyclefig.add_vline(x=h,line_color="#7f8ea3",line_dash="dot",annotation_text="HALVING",annotation_position="top")
+            cycle_rows=cycles.get("cycles",[])
+            if cycle_rows:latest_cycle=cycle_rows[-1];cyclefig.add_trace(go.Scatter(x=[pd.Timestamp(latest_cycle["major_low"])],y=[latest_cycle["trough_price"]],mode="markers",marker={"size":11,"color":"#ee5a67","symbol":"x"},name="Most recent major low"))
+            cyclefig.add_trace(go.Scatter(x=[frame.index[-1]],y=[live_price],mode="markers+text",text=["NOW"],textposition="top center",marker={"size":9,"color":"#f0b44d"},name="Current drawdown path"))
+            cyclefig.update_layout(height=560,paper_bgcolor="#070b12",plot_bgcolor="#070b12",font={"color":"#8d9bb0"},yaxis_type="log",legend={"orientation":"h","y":1.02,"x":0});st.plotly_chart(cyclefig,width="stretch",key="cycles_full_history")
+            st.caption("New ATHs, halvings and the current cycle low are structural markers, not predictions of the next one.")
+    with cyc_tabs[0]:
+        st.subheader("Elliott · full BTC history · RESEARCH_ONLY / CONTEXT_ONLY — not a trading signal")
+        degree_labels=["MACRO","PRIMARY","INTERMEDIATE"];degree_key={"MACRO":"MACRO_CYCLE","PRIMARY":"PRIMARY","INTERMEDIATE":"INTERMEDIATE"};degree_color={"MACRO":"#f0b44d","PRIMARY":"#4da3ff","INTERMEDIATE":"#9b7bff"}
+        degrees=st.multiselect("DEGREES",degree_labels,default=["MACRO","PRIMARY"],label_visibility="collapsed")
+        show_alt=st.toggle("Show Alternative count overlay",False)
+        piv=pd.DataFrame(macro_e["macro_pivots"]);primary=macro_e["primary"];alt=(macro_e["alternatives"] or [{}])[0];ex=macro_e["explanation"]
+        efig=go.Figure(go.Scatter(x=frame.index,y=frame.close,line={"color":"#33475f","width":1},name="BTC"))
+        if "MACRO" in degrees and not piv.empty:
+            efig.add_trace(go.Scatter(x=piv.timestamp,y=piv.price,mode="markers+text",text=piv.algorithmic_label,textposition="top center",marker={"size":9,"color":degree_color["MACRO"],"symbol":"diamond"},name="MACRO confirmed pivots"))
+            last_piv=piv.iloc[-1];efig.add_trace(go.Scatter(x=[last_piv.timestamp,frame.index[-1]],y=[last_piv.price,live_price],mode="lines",line={"color":degree_color["MACRO"],"width":2,"dash":"dot"},name="Current wave · unconfirmed"))
+        for key in ("PRIMARY","INTERMEDIATE"):
+            if key in degrees:
+                sw=pd.DataFrame(macro_e["hierarchy"][degree_key[key]]["evidence"]["confirmed_swings"])
+                if not sw.empty:efig.add_trace(go.Scatter(x=pd.to_datetime(sw.pivot_time),y=sw.price,mode="markers",marker={"size":6,"color":degree_color[key]},name=f"{key} confirmed swings"))
+        if primary.get("invalidation_level") is not None:efig.add_hline(y=primary["invalidation_level"],line_color="#ee5a67",line_dash="dash",annotation_text=f"INVALIDATES PRIMARY · ${primary['invalidation_level']:,.0f}",annotation_position="bottom right")
+        if primary.get("confirmation_level") is not None:efig.add_hline(y=primary["confirmation_level"],line_color="#26c281",line_dash="dash",annotation_text=f"CONFIRMS NEXT PHASE · ${primary['confirmation_level']:,.0f}",annotation_position="top right")
+        if show_alt:
+            if alt.get("invalidation_level") is not None:efig.add_hline(y=alt["invalidation_level"],line_color="#9b7bff",line_dash="dot",annotation_text=f"ALT INVALIDATION · ${alt['invalidation_level']:,.0f}",annotation_position="bottom left")
+            if alt.get("confirmation_level") is not None:efig.add_hline(y=alt["confirmation_level"],line_color="#9b7bff",line_dash="dot",annotation_text=f"ALT CONFIRMATION · ${alt['confirmation_level']:,.0f}",annotation_position="top left")
+        efig.update_layout(height=600,margin={"l":8,"r":8,"t":15,"b":8},paper_bgcolor="#070b12",plot_bgcolor="#070b12",font={"color":"#8d9bb0","size":10},xaxis={"gridcolor":"#142033"},yaxis={"gridcolor":"#142033","type":"log","side":"right","tickformat":",.0f"},legend={"orientation":"h","y":1.02,"x":0},hovermode="x unified")
+        e1,e2=st.columns([3,1])
+        with e1:st.plotly_chart(efig,width="stretch",key="elliott_full_history",config={"displaylogo":False,"scrollZoom":True})
+        with e2:
+            revision_rate=macro_e["quality"].get("historical_revision_rate");revision_text="UNAVAILABLE" if revision_rate is None else str(revision_rate)
+            st.markdown(f"""**PRIMARY COUNT**  \n{primary.get('name','Unresolved')}  \n\n**ALTERNATIVE COUNT**  \n{alt.get('name',ex['abc_alternative'])}  \n\n**WAVE ANCHOR / START**  \n{str(ex['wave_start'])[:10]} · {'—' if ex['wave_start_price'] is None else f"${ex['wave_start_price']:,.0f}"}  \n\n**INVALIDATION**  \n{'—' if primary.get('invalidation_level') is None else f"${primary['invalidation_level']:,.0f}"} · {primary.get('invalidation_reason','—')}  \n\n**CONFIRMATION**  \n{'—' if primary.get('confirmation_level') is None else f"${primary['confirmation_level']:,.0f}"}  \n\n**COUNT STABILITY**  \n{macro_e['quality']['count_stability']}  \n\n**HISTORICAL REVISION RATE**  \n{revision_text}  \n\n**STATUS**  \n{macro_e['status']} · {macro_e['production_role']}""")
+            with st.expander("WHY THIS COUNT?"):
+                st.markdown(f"""**Rules passed**  \n{' · '.join(primary.get('rules_passed',[])) or '—'}  \n\n**Guidelines matched**  \n{' · '.join(primary.get('guidelines_matched',[])) or '—'}  \n\n**Guidelines missed**  \n{' · '.join(primary.get('guidelines_missed',[])) or '—'}  \n\n**Fibonacci alignment**  \n{macro_e['quality'].get('fib_alignment','UNAVAILABLE')}  \n\n**Structural validity**  \n{macro_e['quality'].get('structural_validity','UNAVAILABLE')}  \n\n**What would destroy this count**  \n{ex['why']}  \n\n**Alternative interpretation**  \n{ex['abc_alternative']}""")
+            st.caption("Elliott remains RESEARCH_ONLY / CONTEXT_ONLY · never a production or execution driver · labels are revisable")
 with tabs[2]:
-    data = result["data"]
-    fig = go.Figure(go.Candlestick(x=data.index, open=data.open, high=data.high, low=data.low, close=data.close))
-    for zone in result["confluence_zones"][:5]:
-        fig.add_hrect(y0=zone["low"], y1=zone["high"], opacity=.15, line_width=0)
-    st.plotly_chart(fig, use_container_width=True)
-    st.subheader("Elliott scenarios")
-    st.dataframe(pd.DataFrame(result["elliott_scenarios"]))
+    hist_tabs=st.tabs(["ENTRY LAB","RISK / TOP LAB"])
+    with hist_tabs[0]:
+        st.subheader("Historical analogues · normalized comparison")
+        compare=go.Figure()
+        for item in closest[:3]:
+            date=pd.Timestamp(item["date"]);date=date.tz_localize("UTC") if date.tzinfo is None else date;path=frame.loc[date-pd.Timedelta(days=90):date+pd.Timedelta(days=365)].close
+            if not path.empty:compare.add_trace(go.Scatter(x=[(x-date).days for x in path.index],y=path/path.loc[date],name=str(date.date())))
+        compare.update_layout(height=460,paper_bgcolor="#070b12",plot_bgcolor="#070b12",font={"color":"#8d9bb0"},xaxis_title="Days from entry",yaxis_title="Normalized price");st.plotly_chart(compare,width="stretch");st.caption("Historical outcome – not forecast.")
+        signal_book_path=ROOT/"data"/"reports"/"master5_signal_book.csv"
+        if signal_book_path.exists():
+            book=pd.read_csv(signal_book_path,parse_dates=["timestamp"]);buy_book=book[book.direction=="BUY"] if "direction" in book else book[book.signal.isin(SIGNAL_STYLE)]
+            show_failures=st.toggle("SHOW FAILURES",False,key="entry_show_failures")
+            entry_view=buy_book if show_failures else buy_book[buy_book.get("false_signal",False)==False]
+            st.dataframe(entry_view[[c for c in ("timestamp","signal","price","archetype","return_365d","MAE","false_signal","status") if c in entry_view.columns]].sort_values("timestamp",ascending=False),hide_index=True)
+            st.caption(f"{(~buy_book.get('false_signal',pd.Series(dtype=bool))).sum() if 'false_signal' in buy_book else len(buy_book)} historically successful · {buy_book.get('false_signal',pd.Series(dtype=bool)).sum() if 'false_signal' in buy_book else 0} failed candidates · toggle SHOW FAILURES to include both")
+        else:
+            st.info("Signal book not available in this environment.")
+    with hist_tabs[1]:
+        st.subheader("Historical Top / Risk episodes")
+        if signal_book_path.exists():
+            risk_book=book[book.direction=="RISK"] if "direction" in book else book.iloc[0:0]
+            show_risk_failures=st.toggle("SHOW FAILURES",False,key="risk_show_failures")
+            risk_view=risk_book if show_risk_failures else risk_book[risk_book.get("false_signal",False)==False]
+            st.dataframe(risk_view[[c for c in ("timestamp","signal","price","archetype","return_365d","MAE","false_signal","status") if c in risk_view.columns]].sort_values("timestamp",ascending=False),hide_index=True)
+            st.caption("Historical distribution / top-risk research episodes · outcomes only, never a prediction of the next top.")
+        else:
+            st.info("Signal book not available in this environment.")
 with tabs[3]:
-    st.json(intelligence["modules"]["onchain"])
+    st.subheader("Point-in-time Event Explorer");categories=sorted(event_rows.category.unique()) if not event_rows.empty else [];selected=st.multiselect("EVENT FILTER",categories,default=categories);shown=event_rows[event_rows.category.isin(selected)] if selected else event_rows.iloc[0:0];st.caption(f"{event_health['events']} verified sourced events · {event_health['reactions']} matured BTC reactions · {event_health['from']} to {event_health['to']}")
+    if not shown.empty:
+        event_times=pd.to_datetime(shown.available_at,utc=True);event_prices=frame.close.reindex(event_times,method="ffill");event_fig=go.Figure(go.Scatter(x=frame.index,y=frame.close,name="BTC",line={"color":"#4da3ff","width":1.2}));event_fig.add_trace(go.Scatter(x=event_times,y=event_prices,mode="markers",text=shown.headline,customdata=shown.category,hovertemplate="%{customdata}<br>%{text}<extra></extra>",marker={"color":"#f0b44d","size":9,"symbol":"diamond"},name="PIT events"));event_fig.update_layout(height=460,paper_bgcolor="#070b12",plot_bgcolor="#070b12",font={"color":"#8d9bb0"},yaxis_type="log");st.plotly_chart(event_fig,width="stretch")
+        selected_event=st.selectbox("EVENT DETAILS",shown.event_id,format_func=lambda eid:shown.loc[shown.event_id==eid,"headline"].iloc[0]);detail=shown.loc[shown.event_id==selected_event].iloc[0];reactions=event_db.reactions(selected_event);eleft,eright=st.columns([1,2]);eleft.markdown(f"**EVENT**  \n{detail.headline}  \n\n**DATE**  \n{detail.event_time}  \n\n**REGIME INPUT TIME**  \n{detail.available_at}  \n\n**SOURCE QUALITY**  \n{detail.source_quality}  \n\n[SOURCE]({detail.source_url})");eright.dataframe(reactions[[x for x in ("horizon","asset","return","max_drawdown","resolution") if x in reactions]],hide_index=True)
+    st.dataframe(shown[["event_time","available_at","category","headline","source_quality","source_name","source_url"]],hide_index=True,column_config={"source_url":st.column_config.LinkColumn("SOURCE")});st.write("Calendar context",state["modules"]["seasonality"]);st.caption("Only information known by available_at is eligible. Missing historical cases remain unresolved, never invented.")
 with tabs[4]:
-    st.json(intelligence["modules"]["derivatives"])
+    res_tabs=st.tabs(["PATTERNS","SIGNAL BOOK","DATA QUALITY","BACKTEST","AI COPILOT"])
+    with res_tabs[0]:
+        disc=feeds["fusion_discovery"];patterns_df=pd.DataFrame(disc["patterns"]);stable=patterns_df[patterns_df.longevity=="STABLE"];st.subheader("Stable historical patterns");st.dataframe(stable[["pattern_id","hypothesis","sample_size","effect_lift","era_coverage","longevity","status"]],hide_index=True);st.metric("Hypotheses tested",disc["hypotheses_tested"]);show_rejected=st.toggle("Show rejected patterns",False);visible_patterns=patterns_df if show_rejected else patterns_df[(patterns_df.status.isin(["PROMISING","DISCOVERED"]))|(patterns_df.longevity=="STABLE")];st.dataframe(visible_patterns[["pattern_id","hypothesis","sample_size","effect_lift","era_coverage","longevity","status"]],hide_index=True);st.caption("Exploratory multiple-testing risk: HIGH. RESEARCH_NEXT cannot affect the live decision.")
+    with res_tabs[1]:
+        p=ROOT/"data"/"reports"/"master5_signal_book.csv";st.dataframe(pd.read_csv(p) if p.exists() else pd.DataFrame(),hide_index=True)
+    with res_tabs[2]:st.dataframe(pd.DataFrame(data_status).T)
+    with res_tabs[3]:st.info("Research reports remain available under data/reports. Champion rules are unchanged.")
+    with res_tabs[4]:
+        ai=BitcoinAIRouter(values=env_values(ROOT/".env"),cache_dir=ROOT/"runtime"/"ai_cache");st.caption("AI Copilot explains engine state only · never decides · OpenAI is optional and explanation-only · execution DISABLED.")
+        nano_button,deep_button=st.columns(2)
+        if nano_button.button("AKTUELLE KURZFASSUNG",use_container_width=True):st.session_state["p8_nano"]=ai.explain("NANO",state)
+        if deep_button.button("DEEP ANALYSIS",use_container_width=True):st.session_state["p8_analysis"]=ai.explain("ANALYSIS",state,deep=True)
+        for key,title in (("p8_nano","KURZFASSUNG"),("p8_analysis","DEEP ANALYSIS")):
+            result=st.session_state.get(key)
+            if result:
+                st.subheader(title);st.write(result.text);st.caption(f"{result.model or 'deterministic fallback'} · {result.status} · cache={'HIT' if result.cached else 'MISS'} · contradiction={result.contradiction_guard} · hallucination={result.hallucination_guard}")
 with tabs[5]:
-    st.json(intelligence["modules"]["etf"])
-with tabs[6]:
-    st.subheader("Macro State")
-    st.json(intelligence["modules"]["macro"].get("state", {}))
-    st.dataframe(pd.DataFrame(intelligence["modules"]["macro"].get("metrics", {})).T)
-with tabs[7]:
-    heatmap = monthly_heatmap(frame)
-    heatmap_fig = go.Figure(data=go.Heatmap(z=heatmap.values, x=[str(x) for x in heatmap.columns], y=[str(x) for x in heatmap.index], colorscale="RdYlGn", zmid=0))
-    st.plotly_chart(heatmap_fig, use_container_width=True)
-    st.json(intelligence["modules"]["seasonality"])
-with tabs[8]:
-    st.dataframe(result["similar_cases"])
-    sample_n = result["forward_summary_365d"].get("count", 0)
-    st.caption(f"Historical sample size: n={sample_n} – {evidence_label(sample_n)}")
-    if sample_n:
-        positive = result["forward_summary_365d"]["positive"]
-        st.write(f"{positive} von {sample_n} ähnlichen Situationen waren nach 365 Tagen positiv ({positive/sample_n:.0%}).")
-    st.json(result["forward_summary_365d"])
-with tabs[9]:
-    st.json(intelligence["modules"]["news"])
-with tabs[10]:
-    report_path = Path(__file__).resolve().parents[1] / "data" / "reports" / "real_validation.json"
-    if report_path.exists():
-        import json
-        validation = json.loads(report_path.read_text(encoding="utf-8"))
-        summary = pd.DataFrame({threshold: {"signals": value["signal_count"], "365d median": value.get("365d", {}).get("median"), "365d positive rate": value.get("365d", {}).get("positive_rate"), "worst drawdown": value["drawdown"]["worst"]} for threshold, value in validation["thresholds"].items()}).T
-        st.dataframe(summary)
-    else:
-        st.info("Noch kein echter Validierungsbericht vorhanden.")
-with tabs[11]:
-    st.dataframe(pd.DataFrame(intelligence["data_status"]).T)
-    st.subheader("External source coverage")
-    coverage = external_store.coverage()
-    st.dataframe(coverage if not coverage.empty else pd.DataFrame([{"status": "UNAVAILABLE", "note": "Run scripts/update_external_data.py"}]))
-    health_path = Path(__file__).resolve().parents[1] / "data" / "reports" / "external_data_health.json"
-    if health_path.exists():
-        import json
-        st.json(json.loads(health_path.read_text(encoding="utf-8")))
-    quality_path = Path(__file__).resolve().parents[1] / "data" / "reports" / "data_quality.json"
-    if quality_path.exists():
-        import json
-        st.json(json.loads(quality_path.read_text(encoding="utf-8")))
-with tabs[12]:
-    signal_book,master_errors=build_master_historical_signal_book(frame.loc[:analysis_cutoff]);st.caption("MASTER HISTORICAL RESEARCH - never mixed with forward validation")
-    st.dataframe(signal_book[[c for c in ("date","master_signal","price","regime","return_30d","return_90d","return_365d","MAE_90d","MFE_90d") if c in signal_book]])
-    if not signal_book.empty:st.bar_chart(signal_book.assign(year=pd.to_datetime(signal_book.date).dt.year).groupby(["year","master_signal"]).size().unstack(fill_value=0))
-    st.subheader("ERROR TAXONOMY / REJECTED SELLS");st.dataframe(master_errors)
-with tabs[13]:
-    st.caption("PIT-formed historical zones; later touches create new versions")
-    st.dataframe(pd.DataFrame(advanced["historical_zones"]))
-with tabs[14]:
-    st.caption("RESEARCH_ONLY - future prices label outcomes; production logic is unchanged")
-    root=Path(__file__).resolve().parents[1];episode_path=root/"BITCOIN_ENTRY_EPISODES.csv";factor_path=root/"BITCOIN_ENTRY_FACTOR_MATRIX.csv"
-    if not episode_path.exists():
-        st.info("Run scripts/run_best_entry_study.py to generate the historical explorer.")
-    else:
-        episodes=pd.read_csv(episode_path,parse_dates=["date","start","end"]);factors=pd.read_csv(factor_path)
-        st.subheader("Ranked independent entry episodes")
-        st.dataframe(episodes[[c for c in ("rank","date","entry_price","return_365d","return_730d","MAE_365d","entry_archetype","recognized_master") if c in episodes]])
-        chart=go.Figure(go.Candlestick(x=frame.index,open=frame.open,high=frame.high,low=frame.low,close=frame.close,name="BTC"))
-        chart.add_trace(go.Scatter(x=episodes.date,y=episodes.entry_price,mode="markers",name="Top historical entry",marker={"size":10,"color":"green","symbol":"triangle-up"}))
-        st.plotly_chart(chart,use_container_width=True)
-        labels={f"#{int(row['rank'])} {pd.Timestamp(row['date']).date()}":int(i) for i,row in episodes.iterrows()};choices=st.multiselect("Compare two episodes",list(labels),default=list(labels)[:2],max_selections=2)
-        if choices:
-            detail_cols=[c for c in ("date","entry_price","drawdown","distance_200d","distance_200w","rsi_daily","rsi_weekly","rsi_monthly","bollinger_daily_position","bollinger_weekly_position","bollinger_monthly_position","major_support","zone_strength","zone_distance","fib_confluence","regime","cycle","capitulation_state","recovery_state","mvrv","funding","open_interest","recognized_2_3","recognized_2_5","recognized_master") if c in episodes]
-            st.dataframe(episodes.loc[[labels[x] for x in choices],detail_cols].set_index("date").T.astype(str))
-        st.subheader("Research factor ranking");st.dataframe(factors)
+    st.subheader("SYSTEM HEALTH")
+    heartbeat=ROOT/"runtime"/"production8"/"heartbeat.json";watcher_age=None if not heartbeat.exists() else pd.Timestamp.now(tz="UTC").timestamp()-heartbeat.stat().st_mtime
+    ai=ai if "ai" in dir() else BitcoinAIRouter(values=env_values(ROOT/".env"),cache_dir=ROOT/"runtime"/"ai_cache")
+    usage=ai.usage_today();health_rows=[
+        {"Component":"MT5 / BTC Tick","Status":f"{live['status']} / {tick.get('freshness','OFFLINE')}","Provenance":"MetaTrader 5"},
+        {"Component":"Confirmed H4 / D1 / W1","Status":" / ".join("FRESH" if live.get(key) is not None else "UNAVAILABLE" for key in ("last_confirmed_h4","last_confirmed_d1","last_confirmed_w1")),"Provenance":"MT5, closed candles only"},
+        {"Component":"Production 8 Watcher","Status":"ONLINE" if watcher_age is not None and watcher_age<180 else "OFFLINE","Provenance":"runtime/production8/heartbeat.json"},
+        {"Component":"Event DB","Status":"ONLINE" if event_health.get('events',0)>0 else "INSUFFICIENT DATA","Provenance":"Primary-source PIT database"},
+        {"Component":"Forward Ledger","Status":"ONLINE","Provenance":"Append-only SQLite"},
+        {"Component":"OpenAI","Status":"ENABLED" if ai.enabled else "DISABLED","Provenance":f"{ai.models['NANO']} / {ai.models['ANALYSIS']}"},
+        {"Component":"Execution","Status":"DISABLED","Provenance":"Hard lock"},
+    ];st.dataframe(pd.DataFrame(health_rows),hide_index=True,use_container_width=True)
+    st.subheader("AI HEUTE");u1,u2,u3,u4,u5=st.columns(5);u1.metric("Requests",usage["calls"]);u2.metric("Nano",usage["nano_requests"]);u3.metric("Deep",usage["deep_requests"]);u4.metric("Cache Hits",usage["cache_hits"]);u5.metric("Kosten",f"${usage['estimated_cost_usd']:.4f}")
+    st.caption(f"Tokens: {usage['input_tokens']:,} input · {usage['output_tokens']:,} output · Fallbacks: {usage['fallbacks']} · Frozen engines unchanged")
+    st.divider();st.subheader("Machine-readable state · RESEARCH_ONLY exports")
+    registry=rule_registry(macro7);indicator_state=build_indicator_state_v1(state,macro7)
+    reg_col,ind_col=st.columns(2)
+    with reg_col:
+        st.markdown("**Rule Registry**");st.caption(f"{len(registry['scenarios'])} scenario rules · {len(registry['zones'])} zone definitions")
+        st.download_button("Download rule_registry.json",json.dumps(registry,indent=2,default=str),file_name="rule_registry.json",mime="application/json")
+    with ind_col:
+        st.markdown("**BitcoinIndicatorStateV1**");st.caption(f"signal_state={indicator_state['signal_state']} · evidence={indicator_state['evidence']}")
+        st.download_button("Download indicator_state.json",json.dumps(indicator_state,indent=2,default=str),file_name="indicator_state.json",mime="application/json")
+    st.markdown("**Pine / MQL5 export capability matrix**")
+    st.dataframe(pd.DataFrame(PINE_MQL_CAPABILITY_MATRIX),hide_index=True)
+    st.caption("Capability matrix only — no Pine Script or MQL5 code is generated by this build. Execution remains DISABLED in all cases.")
+    st.divider();st.subheader("Decision Rule Registry")
+    st.dataframe(pd.DataFrame(DECISION_RULE_REGISTRY),hide_index=True,use_container_width=True)
+    st.download_button("Download decision_state.json",json.dumps(decision_intel,indent=2,default=str),file_name="decision_state.json",mime="application/json")
+    st.caption(f"{len(DECISION_RULE_REGISTRY)} auditable decision rules · every DecisionState traces back to a rule_id here · Elliott remains RESEARCH_ONLY / CONTEXT_ONLY")

@@ -1,11 +1,14 @@
 __pycache__/
 .pytest_cache/
+.pytest_tmp/
 *.pyc
 *.egg-info/
 database/*.db
 data/analyses/*.json
 data/reports/*.json
 data/reports/*.csv
+data/reports/*.jsonl
+runtime/
 .streamlit/
 .venv/
 .runtime/
