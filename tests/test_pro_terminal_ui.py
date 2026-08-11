@@ -28,7 +28,7 @@ def test_terminal_apptest_renders_without_exception():
 
 def test_macro7_timeframes_layers_and_plain_language_surfaces():
     for token in ('"1Y"','"ALL"','"Macro Zones"','"Swing Zones"','"Fib"','"Events"','"CYCLES"'):assert token in SOURCE
-    assert "Macro scenario map" in SOURCE and "Long-Swing BUY bleibt ohne validierten Edge gesperrt" in SOURCE
+    assert "Macro scenario map" in SOURCE and "Long-Swing BUY stays locked without a validated edge" in SOURCE
 
 def test_navigation_is_simplified_to_six_top_level_sections():
     assert 'st.tabs(["CHART","CYCLES","HISTORY","EVENTS","RESEARCH","SYSTEM"])' in SOURCE
@@ -48,7 +48,7 @@ def test_dormant_conditional_targets_are_labelled_not_predicted():
     assert "DORMANT — NOT AN ACTIVE TARGET" in SOURCE
 
 def test_decision_card_is_wired_and_traceable():
-    assert "BITCOIN DECISION" in SOURCE and "build_decision_intelligence" in SOURCE
+    assert "DECISION DETAIL" in SOURCE and "build_decision_intelligence" in SOURCE
     assert "Decision Rule Registry" in SOURCE and "DECISION_RULE_REGISTRY" in SOURCE
 
 def test_simple_and_research_modes_exist_and_default_to_research():
