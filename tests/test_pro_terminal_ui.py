@@ -26,6 +26,29 @@ def test_terminal_apptest_renders_without_exception():
     assert not at.exception
     assert sum(1 for t in at.tabs if t.label in top_level)==6
 
+def test_terminal_apptest_renders_without_exception_with_mixed_drawing_types():
+    # Regression test: rendering the drawing list once crashed with KeyError
+    # whenever HLINE/RECTANGLE/FIB drawings coexisted, because the description
+    # lookup was a dict literal that eagerly evaluated every branch. app.py
+    # always opens ROOT/runtime/drawings/BTCUSD.json, so seed that real file
+    # (backing up and restoring whatever was already there).
+    from bitcoin_cycle_analyzer.drawing_state import UserDrawingStore
+    drawings_path = ROOT / "runtime" / "drawings" / "BTCUSD.json"
+    backup = drawings_path.read_text(encoding="utf-8") if drawings_path.exists() else None
+    try:
+        store = UserDrawingStore(ROOT, "BTCUSD")
+        store._write([])
+        store.add("HLINE", "ALL", {"price": 60000.0})
+        store.add("RECTANGLE", "ALL", {"low": 58000.0, "high": 62000.0})
+        store.add("FIB", "ALL", {"price_a": 50000.0, "price_b": 70000.0})
+        at = AppTest.from_file(ROOT / "dashboard" / "app.py", default_timeout=40).run()
+        assert not at.exception
+    finally:
+        if backup is not None:
+            drawings_path.write_text(backup, encoding="utf-8")
+        elif drawings_path.exists():
+            drawings_path.unlink()
+
 def test_macro7_timeframes_layers_and_plain_language_surfaces():
     for token in ('"1Y"','"ALL"','"Macro Zones"','"Swing Zones"','"Fib"','"Events"','"CYCLES"'):assert token in SOURCE
     assert "Macro scenario map" in SOURCE and "Long-Swing BUY stays locked without a validated edge" in SOURCE

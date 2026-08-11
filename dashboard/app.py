@@ -21,8 +21,10 @@ from bitcoin_cycle_analyzer.decision_intelligence import build_decision_state as
 from bitcoin_cycle_analyzer.ui_state import LAYER_PRESETS,get_chart_view_state
 from bitcoin_cycle_analyzer.glossary import GLOSSARY
 from bitcoin_cycle_analyzer.event_intelligence import classify_causality,expected_vs_observed,event_evidence_family
+from bitcoin_cycle_analyzer.drawing_state import UserDrawingStore,compute_fib_levels
 
 ROOT=Path(__file__).resolve().parents[1]
+drawing_store=UserDrawingStore(ROOT,"BTCUSD")
 st.set_page_config(page_title="BTC Intelligence Terminal",page_icon="₿",layout="wide",initial_sidebar_state="collapsed")
 st.markdown("""<style>
 :root{--bg:#070b12;--panel:#0d1420;--panel2:#111a28;--line:#223047;--text:#e6edf7;--muted:#7f8ea3;--green:#26c281;--amber:#f0b44d;--red:#ee5a67;--blue:#4da3ff}
@@ -141,12 +143,67 @@ if "Events" in layers and not event_rows.empty:
     ev_prices=frame.close.reindex(ev_times,method="ffill")
     if not ev.empty:fig.add_trace(go.Scatter(x=ev_times,y=ev_prices,mode="markers",text=ev.headline,customdata=ev.category,hovertemplate="%{customdata}<br>%{text}<extra></extra>",marker={"size":9,"symbol":"diamond-open","color":"#f0b44d","line":{"width":2}},name="Events"))
 fig.add_hline(y=live_price,line_color="#f0b44d",line_width=1,annotation_text=f"LIVE ${live_price:,.0f}",annotation_position="top right")
+# User drawings (P1 chart interaction pass) — pure annotations, never fed into any engine/decision function.
+user_drawings=drawing_store.list(timeframe=tf) if not simple else []
+for ud in user_drawings:
+    c=ud["coordinates"]
+    if ud["type"]=="HLINE":
+        fig.add_hline(y=c["price"],line_color="#e6edf7",line_width=1,line_dash="solid",annotation_text=f"MY: {ud['text'] or 'line'}",annotation_position="bottom left")
+    elif ud["type"]=="RECTANGLE":
+        fig.add_hrect(y0=c["low"],y1=c["high"],fillcolor="rgba(230,237,247,.07)",line_color="#e6edf7",line_width=1,annotation_text=f"MY ZONE: {ud['text']}" if ud["text"] else "MY ZONE",annotation_position="bottom left")
+    elif ud["type"]=="FIB":
+        for lvl in compute_fib_levels(c["price_a"],c["price_b"]):
+            fig.add_hline(y=lvl["price"],line_color="#c9a0ff",line_width=1,line_dash="dot",annotation_text=f"MY FIB {lvl['ratio']}",annotation_position="top left")
 fig.update_layout(height=620 if simple else 555,margin={"l":8,"r":8,"t":15,"b":8},paper_bgcolor="#070b12",plot_bgcolor="#070b12",font={"color":"#8d9bb0","size":10},dragmode="pan",newshape={"line":{"color":"#f0b44d","width":1.5}},xaxis={"rangeslider":{"visible":False},"gridcolor":"#142033","showspikes":True,"spikemode":"across","spikesnap":"cursor","spikecolor":"#4da3ff","spikethickness":1},yaxis={"side":"right","gridcolor":"#142033","tickformat":",.0f","type":"log" if scale=="LOG" else "linear","showspikes":True,"spikemode":"across","spikesnap":"cursor","spikecolor":"#4da3ff","spikethickness":1},legend={"orientation":"h","y":1.02,"x":0},hovermode="x unified")
 st.plotly_chart(fig,width="stretch",config={"displaylogo":False,"scrollZoom":True,"displayModeBar":True,"modeBarButtonsToAdd":["v1hovermode","toggleSpikelines","drawline","drawopenpath","drawrect","drawcircle","eraseshape"],"modeBarButtonsToRemove":["lasso2d","select2d"]})
-st.caption("Green/amber/red band = active decision zone · dashed red = invalidation · dotted blue = targets · your own drawings are independent annotations, not saved across sessions in this build")
+st.caption("Green/amber/red band = active decision zone · dashed red = invalidation · dotted blue = targets · white/purple MY lines = your saved drawings (add them below) · the chart's own pencil-icon toolbar draws scratch annotations that are NOT saved — use DRAWING TOOLS below for anything you want to keep")
 
 if simple:
     st.stop()
+
+ma200w_ref=float(frame.close.rolling(1400).mean().iloc[-1])
+with st.expander(f"DRAWING TOOLS ({len(user_drawings)} saved on {tf})"):
+    st.caption("Your drawings are annotations only — they never change the Decision, Evidence Families, or any Elliott/zone output above.")
+    dcol1,dcol2=st.columns([1,2])
+    tool=dcol1.radio("TOOL",["Horizontal Line","Rectangle Zone","Fibonacci"],label_visibility="collapsed")
+    with dcol2:
+        if tool=="Horizontal Line":
+            price=st.number_input("Price",value=float(live_price),step=1.0,key="draw_hline_price")
+            label=st.text_input("Label (optional)",key="draw_hline_label")
+            if st.button("Add line",key="draw_hline_add"):drawing_store.add("HLINE",tf,{"price":price},text=label);st.session_state.setdefault("drawing_undo_stack",[]).append(("delete_last",));st.rerun()
+        elif tool=="Rectangle Zone":
+            c1,c2=st.columns(2);low=c1.number_input("Low",value=float(live_price)*0.95,step=1.0,key="draw_rect_low");high=c2.number_input("High",value=float(live_price)*1.05,step=1.0,key="draw_rect_high")
+            label=st.text_input("Label (optional)",key="draw_rect_label")
+            if st.button("Add rectangle",key="draw_rect_add"):
+                if high>low:drawing_store.add("RECTANGLE",tf,{"low":low,"high":high},text=label);st.rerun()
+                else:st.error("High must be above Low")
+        else:
+            c1,c2=st.columns(2);price_a=c1.number_input("Point A price",value=float(live_price)*0.9,step=1.0,key="draw_fib_a");price_b=c2.number_input("Point B price",value=float(live_price),step=1.0,key="draw_fib_b")
+            label=st.text_input("Label (optional)",key="draw_fib_label")
+            st.caption("MY FIB — your own retracement, independent of any Elliott/engine-derived target (see SYSTEM zones/targets above for those).")
+            if st.button("Add Fibonacci",key="draw_fib_add"):drawing_store.add("FIB",tf,{"price_a":price_a,"price_b":price_b},text=label);st.rerun()
+    if user_drawings:
+        st.divider()
+        for ud in user_drawings:
+            row=st.columns([3,1,1,1])
+            c=ud["coordinates"]
+            desc=f"Line @ ${c['price']:,.0f}" if ud["type"]=="HLINE" else f"Zone ${c['low']:,.0f}–${c['high']:,.0f}" if ud["type"]=="RECTANGLE" else f"Fib ${c['price_a']:,.0f}→${c['price_b']:,.0f}"
+            row[0].write(f"{'🔒 ' if ud['locked'] else ''}{desc}"+(f" · {ud['text']}" if ud["text"] else ""))
+            if ud["type"]=="RECTANGLE" and row[1].button("Analyze",key=f"draw_analyze_{ud['drawing_id']}"):
+                low,high=ud["coordinates"]["low"],ud["coordinates"]["high"]
+                facts=[]
+                if low<=ma200w_ref<=high:facts.append("overlaps 200W")
+                if dz and dz.get("lower") is not None and not (high<dz["lower"] or low>dz["upper"]):facts.append(f"overlaps active {dz['zone_type'].replace('_',' ').lower()}")
+                if di.get("invalidation_level") and low<=di["invalidation_level"]<=high:facts.append("contains the invalidation level")
+                st.info("This zone " + (", ".join(facts) if facts else "has no current engine-recognized overlap") + " — informational only, does not create a signal.")
+            if row[2].button("🔓" if ud["locked"] else "🔒",key=f"draw_lock_{ud['drawing_id']}"):drawing_store.update(ud["drawing_id"],locked=not ud["locked"]);st.rerun()
+            if not ud["locked"] and row[3].button("Delete",key=f"draw_del_{ud['drawing_id']}"):
+                deleted=drawing_store.delete(ud["drawing_id"]);st.session_state.setdefault("drawing_undo_stack",[]).append(("restore",deleted));st.rerun()
+        if st.session_state.get("drawing_undo_stack") and st.button("Undo last change",key="draw_undo"):
+            action=st.session_state["drawing_undo_stack"].pop()
+            if action[0]=="restore":drawing_store.restore(action[1])
+            elif action[0]=="delete_last" and user_drawings:drawing_store.delete(user_drawings[-1]["drawing_id"])
+            st.rerun()
 
 with st.expander("WHY?"):
     st.markdown("**Supporting**  \n"+("\n".join(decision_explanation["why_positive"]) or "—"))
