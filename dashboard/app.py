@@ -20,6 +20,7 @@ from bitcoin_cycle_analyzer.indicator_state import build_decision_state_v1,build
 from bitcoin_cycle_analyzer.decision_intelligence import build_decision_state as build_decision_intelligence,build_explanation_facts,RULE_REGISTRY as DECISION_RULE_REGISTRY
 from bitcoin_cycle_analyzer.ui_state import LAYER_PRESETS,get_chart_view_state
 from bitcoin_cycle_analyzer.glossary import GLOSSARY
+from bitcoin_cycle_analyzer.event_intelligence import classify_causality,expected_vs_observed,event_evidence_family
 
 ROOT=Path(__file__).resolve().parents[1]
 st.set_page_config(page_title="BTC Intelligence Terminal",page_icon="₿",layout="wide",initial_sidebar_state="collapsed")
@@ -80,6 +81,14 @@ if simple:
     with st.expander("Explain the terms used above"):
         for term in ("Cycle","Invalidation","Confirmation","Reclaim"):
             st.markdown(f"**{term}** — {GLOSSARY.get(term,'')}")
+    recent_events=event_rows[pd.to_datetime(event_rows.event_time,utc=True)>=pd.Timestamp.now(tz="UTC")-pd.Timedelta(days=90)] if not event_rows.empty else event_rows
+    with st.expander(f"WHAT MATTERS FOR BITCOIN NOW ({len(recent_events)} recent events)"):
+        if recent_events.empty:
+            st.markdown("No sourced events on record in the last 90 days.")
+        else:
+            for _,ev in recent_events.sort_values("event_time",ascending=False).iterrows():
+                st.markdown(f"**{ev.get('importance') or 'UNCLASSIFIED'}** — {ev.headline} ({str(ev.event_time)[:10]})")
+        st.caption("IMPACT ON CURRENT DECISION: event context is informative only in this build — it does not change the decision above (see EVENT_CONTEXT evidence family, not yet weighted pending an ablation study).")
     layers=[];tf=st.segmented_control("TIMEFRAME",["1D","1W","1M","1Y","ALL"],default="ALL",label_visibility="collapsed");scale="LOG" if tf in {"ALL","1Y"} else "LIN"
 else:
     preset_row=st.columns([1,1,1,1,3])
@@ -124,6 +133,13 @@ if "Signals" in layers:
         for kind,style in SIGNAL_STYLE.items():
             rows=sig[sig.signal==kind]
             if not rows.empty:fig.add_trace(go.Scatter(x=rows.timestamp,y=rows.price,mode="markers",marker={"size":10,"symbol":style["symbol"],"color":style["color"],"line":{"width":1,"color":"#070b12"}},name=kind.replace("_"," ").title()))
+if "Events" in layers and not event_rows.empty:
+    # Standard view (ALL/1Y): only HIGH/CRITICAL or HALVING to avoid marker flood. Shorter
+    # timeframes show everything in range — at 11 events total this is still sparse.
+    ev=event_rows if tf not in {"ALL","1Y"} else event_rows[event_rows.importance.isin(["HIGH","CRITICAL"]) | (event_rows.category=="HALVING")]
+    ev_times=pd.to_datetime(ev.available_at,utc=True)
+    ev_prices=frame.close.reindex(ev_times,method="ffill")
+    if not ev.empty:fig.add_trace(go.Scatter(x=ev_times,y=ev_prices,mode="markers",text=ev.headline,customdata=ev.category,hovertemplate="%{customdata}<br>%{text}<extra></extra>",marker={"size":9,"symbol":"diamond-open","color":"#f0b44d","line":{"width":2}},name="Events"))
 fig.add_hline(y=live_price,line_color="#f0b44d",line_width=1,annotation_text=f"LIVE ${live_price:,.0f}",annotation_position="top right")
 fig.update_layout(height=620 if simple else 555,margin={"l":8,"r":8,"t":15,"b":8},paper_bgcolor="#070b12",plot_bgcolor="#070b12",font={"color":"#8d9bb0","size":10},dragmode="pan",newshape={"line":{"color":"#f0b44d","width":1.5}},xaxis={"rangeslider":{"visible":False},"gridcolor":"#142033","showspikes":True,"spikemode":"across","spikesnap":"cursor","spikecolor":"#4da3ff","spikethickness":1},yaxis={"side":"right","gridcolor":"#142033","tickformat":",.0f","type":"log" if scale=="LOG" else "linear","showspikes":True,"spikemode":"across","spikesnap":"cursor","spikecolor":"#4da3ff","spikethickness":1},legend={"orientation":"h","y":1.02,"x":0},hovermode="x unified")
 st.plotly_chart(fig,width="stretch",config={"displaylogo":False,"scrollZoom":True,"displayModeBar":True,"modeBarButtonsToAdd":["v1hovermode","toggleSpikelines","drawline","drawopenpath","drawrect","drawcircle","eraseshape"],"modeBarButtonsToRemove":["lasso2d","select2d"]})
@@ -271,7 +287,13 @@ with tabs[3]:
     st.subheader("Point-in-time Event Explorer");categories=sorted(event_rows.category.unique()) if not event_rows.empty else [];selected=st.multiselect("EVENT FILTER",categories,default=categories);shown=event_rows[event_rows.category.isin(selected)] if selected else event_rows.iloc[0:0];st.caption(f"{event_health['events']} verified sourced events · {event_health['reactions']} matured BTC reactions · {event_health['from']} to {event_health['to']}")
     if not shown.empty:
         event_times=pd.to_datetime(shown.available_at,utc=True);event_prices=frame.close.reindex(event_times,method="ffill");event_fig=go.Figure(go.Scatter(x=frame.index,y=frame.close,name="BTC",line={"color":"#4da3ff","width":1.2}));event_fig.add_trace(go.Scatter(x=event_times,y=event_prices,mode="markers",text=shown.headline,customdata=shown.category,hovertemplate="%{customdata}<br>%{text}<extra></extra>",marker={"color":"#f0b44d","size":9,"symbol":"diamond"},name="PIT events"));event_fig.update_layout(height=460,paper_bgcolor="#070b12",plot_bgcolor="#070b12",font={"color":"#8d9bb0"},yaxis_type="log");st.plotly_chart(event_fig,width="stretch")
-        selected_event=st.selectbox("EVENT DETAILS",shown.event_id,format_func=lambda eid:shown.loc[shown.event_id==eid,"headline"].iloc[0]);detail=shown.loc[shown.event_id==selected_event].iloc[0];reactions=event_db.reactions(selected_event);eleft,eright=st.columns([1,2]);eleft.markdown(f"**EVENT**  \n{detail.headline}  \n\n**DATE**  \n{detail.event_time}  \n\n**REGIME INPUT TIME**  \n{detail.available_at}  \n\n**SOURCE QUALITY**  \n{detail.source_quality}  \n\n[SOURCE]({detail.source_url})");eright.dataframe(reactions[[x for x in ("horizon","asset","return","max_drawdown","resolution") if x in reactions]],hide_index=True)
+        selected_event=st.selectbox("EVENT DETAILS",shown.event_id,format_func=lambda eid:shown.loc[shown.event_id==eid,"headline"].iloc[0]);detail=shown.loc[shown.event_id==selected_event].iloc[0];reactions=event_db.reactions(selected_event);eleft,eright=st.columns([1,2])
+        eleft.markdown(f"**EVENT**  \n{detail.headline}  \n\n**DATE**  \n{detail.event_time}  \n\n**REGIME INPUT TIME**  \n{detail.available_at}  \n\n**CATEGORY / IMPORTANCE**  \n{detail.category} · {detail.get('importance') or 'NOT CLASSIFIED'}  \n\n**STATUS**  \n{detail.get('status') or 'NOT CLASSIFIED'}  \n\n**SOURCE QUALITY**  \n{detail.source_quality}  \n\n[SOURCE]({detail.source_url})")
+        reaction_24h=reactions.loc[reactions.horizon=="24H","return"].iloc[0] if not reactions.empty and "24H" in reactions.get("horizon",pd.Series()).values else None
+        evo=expected_vs_observed(detail.get("expected_direction"),reaction_24h)
+        causality=classify_causality(1,True,False)
+        eright.dataframe(reactions[[x for x in ("horizon","asset","return","max_drawdown","resolution") if x in reactions]],hide_index=True)
+        eright.markdown(f"**EXPECTED VS OBSERVED (24H)**  \n{evo['comparison']} — {evo['note']}  \n\n**CAUSALITY CONFIDENCE**  \n{causality['causality_level']} — {causality['note']}")
     st.dataframe(shown[["event_time","available_at","category","headline","source_quality","source_name","source_url"]],hide_index=True,column_config={"source_url":st.column_config.LinkColumn("SOURCE")});st.write("Calendar context",state["modules"]["seasonality"]);st.caption("Only information known by available_at is eligible. Missing historical cases remain unresolved, never invented.")
 with tabs[4]:
     res_tabs=st.tabs(["PATTERNS","SIGNAL BOOK","DATA QUALITY","BACKTEST","AI COPILOT"])

@@ -75,6 +75,11 @@ def test_ui_state_module_separates_chart_view_state_from_engine_state():
     ui_state_source = Path("src/bitcoin_cycle_analyzer/ui_state.py").read_text(encoding="utf-8")
     assert "ENGINE STATE" in ui_state_source and "DECISION STATE" in ui_state_source and "CHART VIEW STATE" in ui_state_source
 
+def test_events_layer_renders_on_main_chart_and_is_informative_only():
+    assert '"Events" in layers' in SOURCE
+    assert "event_evidence_family" in SOURCE
+    assert "classify_causality" in SOURCE and "expected_vs_observed" in SOURCE
+
 def test_no_zone_classification_logic_is_reimplemented_in_the_ui():
     # app.py may only READ zone_type/decision/entry_status from the decision_intelligence
     # dicts (di/dz) — it must never itself branch on price to decide STRONG_BUY_ZONE etc.
