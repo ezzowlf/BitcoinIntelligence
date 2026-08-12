@@ -21,10 +21,19 @@ def test_raw_debug_is_not_exposed_in_production_terminal():
     assert 'DEBUG · raw state' not in SOURCE and 'st.json(state)' not in SOURCE
 
 def test_terminal_apptest_renders_without_exception():
+    # Default is now SIMPLE Mode (Explain & Action Layer pass), which st.stop()s
+    # before the tab strip — switch to RESEARCH to verify the full app still renders.
     at=AppTest.from_file(ROOT / "dashboard" / "app.py",default_timeout=40).run()
+    assert not at.exception
+    view_toggle=next(w for w in at.segmented_control if list(w.options)==["SIMPLE","RESEARCH"])
+    at=view_toggle.set_value("RESEARCH").run()
     top_level={"CHART","CYCLES","HISTORY","EVENTS","RESEARCH","SYSTEM"}
     assert not at.exception
     assert sum(1 for t in at.tabs if t.label in top_level)==6
+
+def test_terminal_apptest_renders_without_exception_in_default_simple_mode():
+    at=AppTest.from_file(ROOT / "dashboard" / "app.py",default_timeout=40).run()
+    assert not at.exception
 
 def test_terminal_apptest_renders_without_exception_with_mixed_drawing_types():
     # Regression test: rendering the drawing list once crashed with KeyError
@@ -74,10 +83,10 @@ def test_decision_card_is_wired_and_traceable():
     assert "DECISION DETAIL" in SOURCE and "build_decision_intelligence" in SOURCE
     assert "Decision Rule Registry" in SOURCE and "DECISION_RULE_REGISTRY" in SOURCE
 
-def test_simple_and_research_modes_exist_and_default_to_research():
+def test_simple_and_research_modes_exist_and_default_to_simple():
     assert '["SIMPLE","RESEARCH"]' in SOURCE
     from bitcoin_cycle_analyzer.ui_state import default_chart_view_state
-    assert default_chart_view_state()["mode"] == "RESEARCH"  # existing daily workflow stays the default
+    assert default_chart_view_state()["mode"] == "SIMPLE"  # Explain & Action Layer: product explains itself first
 
 def test_decision_zone_and_invalidation_render_unconditionally_on_chart():
     # These must NOT be inside an `if X in layers:` gate — they are P0 priority
@@ -102,6 +111,14 @@ def test_events_layer_renders_on_main_chart_and_is_informative_only():
     assert '"Events" in layers' in SOURCE
     assert "event_evidence_family" in SOURCE
     assert "classify_causality" in SOURCE and "expected_vs_observed" in SOURCE
+
+def test_simple_mode_uses_the_german_action_story_layer():
+    assert "WAS SOLL ICH JETZT TUN?" in SOURCE
+    assert "STRATEGISCH (langfristige Lage)" in SOURCE and "AKTION JETZT" in SOURCE
+    assert "WARUM NICHT JETZT KAUFEN?" in SOURCE
+    assert "KAUFSIGNAL AKTIV" in SOURCE
+    assert "ELLIOTT EINFACH ERKLÄRT" in SOURCE
+    assert "WAS MUSS PASSIEREN" in SOURCE
 
 def test_no_zone_classification_logic_is_reimplemented_in_the_ui():
     # app.py may only READ zone_type/decision/entry_status from the decision_intelligence

@@ -120,7 +120,7 @@ def test_default_view_state_is_well_defined_not_implicit():
     from bitcoin_cycle_analyzer.ui_state import default_chart_view_state
     state = default_chart_view_state()
     assert state["preset"] == "SWING"  # deliberate default, not CLEAN or RESEARCH
-    assert state["mode"] == "RESEARCH"
+    assert state["mode"] == "SIMPLE"  # Explain & Action Layer: product explains itself first
 
 
 # ---------------------------------------------------------------- Explanation fallback (Section 17)

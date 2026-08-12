@@ -22,6 +22,7 @@ from bitcoin_cycle_analyzer.ui_state import LAYER_PRESETS,get_chart_view_state
 from bitcoin_cycle_analyzer.glossary import GLOSSARY
 from bitcoin_cycle_analyzer.event_intelligence import classify_causality,expected_vs_observed,event_evidence_family
 from bitcoin_cycle_analyzer.drawing_state import UserDrawingStore,compute_fib_levels
+from bitcoin_cycle_analyzer.action_story import translate_decision,translate_macro_action,translate_entry_status,zone_message_de,what_must_happen_de,why_text_de,why_not_now_de,buy_playbook_de,elliott_roadmap_de,event_relevance_de,ELLIOTT_BASICS_DE
 
 ROOT=Path(__file__).resolve().parents[1]
 drawing_store=UserDrawingStore(ROOT,"BTCUSD")
@@ -73,24 +74,65 @@ view_state["mode"]=mode;qp["mode"]=mode
 simple=mode=="SIMPLE"
 
 if simple:
-    missing_conf=[t["description"] for t in di["confirmation"]["triggers"].values() if not t["met"]]
-    st.markdown(f"""<div class='simplecard'><div class='micro'>CURRENT VIEW</div><div class='bigstate' style='color:{dec_color}'>{di['decision']}</div><div class='simplerow'>
-    <div><label>GOOD AREA</label><b>{zone_line}</b></div>
-    <div><label>ENTRY</label><b>{di['entry_status'].replace('_',' ')}</b></div>
-    <div><label>WAITING FOR</label><b>{missing_conf[0] if missing_conf else '—'}</b></div>
-    <div><label>WRONG IF BELOW</label><b>{'—' if di['invalidation_level'] is None else f"${di['invalidation_level']:,.0f}"}</b></div>
-    </div><div class='micro' style='margin-top:.6rem'><b>WHY?</b> {len(di['evidence_agreement']['supporting_families'])} positive factors, {len(di['evidence_agreement']['contradicting_families'])} against — {decision_explanation['conclusion']}</div></div>""",unsafe_allow_html=True)
-    with st.expander("Explain the terms used above"):
+    strategic_de=translate_macro_action(decision_state["macro"]);tactical_de=translate_decision(di["decision"])
+    is_buy=di["decision"] in ("BUY","STRONG_BUY");zone_msg=zone_message_de(di["active_zone"]);must_happen=what_must_happen_de(di["confirmation"])
+    st.markdown(f"""<div class='simplecard'><div class='micro'>WAS SOLL ICH JETZT TUN?</div>
+    <div class='simplerow' style='margin-top:.3rem'>
+    <div><label>STRATEGISCH (langfristige Lage)</label><b>{strategic_de}</b></div>
+    <div><label>AKTION JETZT</label><b style='color:{dec_color}'>{tactical_de}</b></div>
+    </div>
+    <div class='micro' style='margin-top:.6rem'>{why_text_de(di,decision_explanation)}</div>
+    <div class='simplerow' style='margin-top:.6rem'>
+    <div><label>INTERESSANTE ZONE</label><b>{zone_msg}</b></div>
+    <div><label>JETZT KAUFEN?</label><b>{'JA' if is_buy else 'NEIN'}</b></div>
+    <div><label>THESE FALSCH UNTER</label><b>{'—' if di['invalidation_level'] is None else f"${di['invalidation_level']:,.0f}"}</b></div>
+    <div><label>ZIELE DANACH</label><b>{', '.join(f"${t['price']:,.0f}" for t in di['targets'][:3]) or '—'}</b></div>
+    </div></div>""",unsafe_allow_html=True)
+
+    if is_buy:
+        pb=buy_playbook_de(di)
+        st.markdown(f"""<div class='simplecard' style='border-color:{dec_color}'><div class='micro'>KAUFSIGNAL AKTIV</div><div class='bigstate' style='color:{dec_color}'>{tactical_de}</div>
+        <div class='simplerow' style='margin-top:.5rem'>
+        <div><label>ENTRY-TYP</label><b>{pb['entry_type']}</b></div>
+        <div><label>ENTRY-ZONE</label><b>{pb['entry_zone']}</b></div>
+        <div><label>STOP / INVALIDIERUNG</label><b>{pb['invalidation']}</b></div>
+        <div><label>ERSTES ZIEL (T1)</label><b>{pb['first_target']}</b></div>
+        <div><label>RISIKO</label><b>{pb['risk']}</b></div>
+        </div>
+        <div class='micro' style='margin-top:.5rem'><b>WARUM:</b> {' · '.join(pb['why'])}</div>
+        <div class='micro'><b>WAS TUN?</b> Einstieg innerhalb der Zone möglich. Nicht oberhalb von {pb['dont_chase_above']} hinterherlaufen.</div>
+        </div>""",unsafe_allow_html=True)
+    else:
+        with st.expander("WARUM NICHT JETZT KAUFEN?"):
+            st.markdown(why_not_now_de(di))
+            if must_happen["missing"]:
+                st.markdown("**Fehlende Bestätigung:**")
+                for m in must_happen["missing"]:st.markdown(f"- {m}")
+        st.markdown("Es gibt aktuell keinen hochwertigen, bestätigten Trade. Das System wartet bewusst auf bessere Bedingungen." if di["decision"] in ("WAIT","NO_EDGE") else "")
+
+    with st.expander("WAS MUSS PASSIEREN, DAMIT SICH DAS ÄNDERT?"):
+        for m in must_happen["missing"]:st.markdown(f"1. {m}")
+        st.caption(must_happen["closing"])
+
+    with st.expander("ELLIOTT EINFACH ERKLÄRT"):
+        st.markdown(ELLIOTT_BASICS_DE)
+        roadmap=elliott_roadmap_de(di["elliott_structure"])
+        st.markdown(f"**WO SIND WIR VERMUTLICH?**  \n{roadmap['current_hypothesis']}  \n\n**PASST DAS ZUM ZYKLUS?**  \n{roadmap['consistency_note']}")
+        st.markdown("**WAS KÖNNTE DANACH KOMMEN?**")
+        for step in roadmap["possible_next_steps"]:st.markdown(f"- {step}")
+        st.caption(roadmap["limitation"])
+
+    with st.expander("Begriffe erklärt"):
         for term in ("Cycle","Invalidation","Confirmation","Reclaim"):
             st.markdown(f"**{term}** — {GLOSSARY.get(term,'')}")
     recent_events=event_rows[pd.to_datetime(event_rows.event_time,utc=True)>=pd.Timestamp.now(tz="UTC")-pd.Timedelta(days=90)] if not event_rows.empty else event_rows
-    with st.expander(f"WHAT MATTERS FOR BITCOIN NOW ({len(recent_events)} recent events)"):
+    with st.expander(f"WICHTIGE NEWS / EVENTS ({len(recent_events)})"):
         if recent_events.empty:
-            st.markdown("No sourced events on record in the last 90 days.")
+            st.markdown("Keine erfassten Ereignisse in den letzten 90 Tagen.")
         else:
             for _,ev in recent_events.sort_values("event_time",ascending=False).iterrows():
-                st.markdown(f"**{ev.get('importance') or 'UNCLASSIFIED'}** — {ev.headline} ({str(ev.event_time)[:10]})")
-        st.caption("IMPACT ON CURRENT DECISION: event context is informative only in this build — it does not change the decision above (see EVENT_CONTEXT evidence family, not yet weighted pending an ablation study).")
+                st.markdown(f"**{ev.get('importance') or 'UNKLASSIFIZIERT'}** — {ev.headline} ({str(ev.event_time)[:10]})")
+        st.caption(event_relevance_de(recent_events))
     layers=[];tf=st.segmented_control("TIMEFRAME",["1D","1W","1M","1Y","ALL"],default="ALL",label_visibility="collapsed");scale="LOG" if tf in {"ALL","1Y"} else "LIN"
 else:
     preset_row=st.columns([1,1,1,1,3])

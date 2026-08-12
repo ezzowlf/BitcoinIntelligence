@@ -32,11 +32,11 @@ def test_query_params_seed_mode_and_preset_on_first_load():
     assert state["layers"] == LAYER_PRESETS["MACRO"]
 
 
-def test_invalid_mode_in_query_params_falls_back_to_research():
+def test_invalid_mode_in_query_params_falls_back_to_simple():
     session_state = {}
     query_params = {"mode": "NOT_A_REAL_MODE"}
     state = get_chart_view_state(session_state, query_params)
-    assert state["mode"] == "RESEARCH"
+    assert state["mode"] == "SIMPLE"
 
 
 def test_view_modes_are_exactly_simple_and_research():

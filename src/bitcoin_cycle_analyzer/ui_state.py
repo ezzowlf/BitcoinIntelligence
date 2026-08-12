@@ -27,15 +27,17 @@ VIEW_MODES = ("SIMPLE", "RESEARCH")
 
 
 def default_chart_view_state(preset: str = "SWING") -> dict:
-    return {"timeframe": "ALL", "scale": None, "preset": preset, "layers": LAYER_PRESETS.get(preset, []), "mode": "RESEARCH"}
+    # Simple Mode is the default (Explain & Action Layer pass): the product should
+    # explain itself first. Research Mode remains one click away, unchanged in depth.
+    return {"timeframe": "ALL", "scale": None, "preset": preset, "layers": LAYER_PRESETS.get(preset, []), "mode": "SIMPLE"}
 
 
 def get_chart_view_state(session_state: dict, query_params) -> dict:
     if CHART_VIEW_STATE_KEY not in session_state:
         preset = query_params.get("preset", "SWING")
-        mode = query_params.get("mode", "RESEARCH")
+        mode = query_params.get("mode", "SIMPLE")
         state = default_chart_view_state(preset)
-        state["mode"] = mode if mode in VIEW_MODES else "RESEARCH"
+        state["mode"] = mode if mode in VIEW_MODES else "SIMPLE"
         state["timeframe"] = query_params.get("tf", "ALL")
         session_state[CHART_VIEW_STATE_KEY] = state
     return session_state[CHART_VIEW_STATE_KEY]
