@@ -17,3 +17,6 @@ python-*-amd64.exe
 .env
 .env.*
 !.env.example
+.agents/
+.claude/
+dashboard/*.png

@@ -9,7 +9,7 @@ def _flag(name: str, default: bool = False, values=None) -> bool:
     source=os.environ if values is None else values
     return source.get(name, str(default)).strip().lower() in {"1", "true", "yes", "on"}
 
-def _env_values(path:Path):
+def env_values(path: Path):
     values=dict(os.environ)
     if not path.exists():return values
     for raw in path.read_text(encoding="utf-8-sig").splitlines():
@@ -39,7 +39,7 @@ class RuntimeSettings:
     @classmethod
     def from_env(cls, project_root: Path | None = None):
         root = Path(project_root or Path.cwd()).resolve()
-        values=_env_values(root/".env")
+        values=env_values(root/".env")
         if _flag("BITCOIN_EXECUTION_ENABLED",values=values) or values.get("EXECUTION","DISABLED").upper()!="DISABLED":raise RuntimeError("Trading execution is not implemented and must remain DISABLED")
         home = Path(values.get("BITCOIN_HOME", root))
         token = values.get("TELEGRAM_BOT_TOKEN") or None

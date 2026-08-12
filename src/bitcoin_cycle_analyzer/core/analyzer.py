@@ -21,6 +21,11 @@ from ..advanced import HistoricalZoneEngine,DrawdownCycleEngine,multi_timeframe_
 from ..rare_signals import RareSignalEngine
 from ..master import BitcoinMasterEngine
 from ..master.historical_entry_quality import evaluate_historical_entry_quality
+from ..elliott_wave import analyze_elliott_intelligence
+from ..cycles import analyze_cycle_history
+from ..master5 import Master5Challenger
+from ..fusion6 import BitcoinFusionEngine
+from ..macro7 import MacroSwingEngine
 
 
 def _seasonality(frame: pd.DataFrame, as_of) -> dict:
@@ -89,7 +94,15 @@ def analyze_intelligence(frame: pd.DataFrame, config: dict, as_of=None, feeds: d
     state["advanced"]={"historical_zones":HistoricalZoneEngine().analyze(frame,cutoff),"drawdown":DrawdownCycleEngine().analyze(frame,cutoff),"momentum":multi_timeframe_indicators(frame,cutoff,feeds.get("four_hour"))}
     state["rare_signal"]=RareSignalEngine().evaluate(state,technical,state["advanced"])
     state["historical_entry_quality"]=evaluate_historical_entry_quality(frame,state,technical,feeds.get("project_root"))
+    state["elliott_cycle"]={"elliott":analyze_elliott_intelligence(frame,cutoff,feeds.get("price_provider","BITSTAMP historical dataset")),
+                            "cycle_history":analyze_cycle_history(frame,cutoff)}
+    state["live_market"]=feeds.get("live_market",{"status":"UNAVAILABLE","reason":"NO_LIVE_PROVIDER","provenance":{"historical_provider":"BITSTAMP","execution":"DISABLED"}})
+    state["precision"]["live_timing_gate"]=state["live_market"].get("timing_confirmation","BLOCKED")
     state["master"]=BitcoinMasterEngine().analyze(state,technical)
+    live_tick=state["live_market"].get("tick",{});live_price=live_tick.get("mid") if live_tick.get("freshness") in {"LIVE","DELAYED"} else None
+    state["master5_challenger"]=Master5Challenger().evaluate(state,frame.loc[:cutoff],live_price)
+    state["fusion6"]=BitcoinFusionEngine().evaluate(state,feeds.get("fusion_discovery"))
+    state["macro7"]=MacroSwingEngine().analyze(frame.loc[:cutoff],state["master"],state["master5_challenger"],state["fusion6"],feeds.get("four_hour"))
     return state
 
 

@@ -39,7 +39,28 @@ def command_message(command,state,health=None):
     if command=="/value":return f"VALUE {p['value']['score']} {p['value']['state']}\nPercentile {p['value']['historical_percentile']}\nATH drawdown {p['value']['inputs']['ath_drawdown']:.2%}\nEpisodes {p['analogues']['independent_episodes']}"
     if command=="/timing":return f"TIMING {p['timing']['state']} ({p['timing']['score']})\nMissing: {', '.join(p['timing']['missing_conditions'])}\nModel status: {p['timing'].get('status','RESEARCH')}"
     if command=="/risk":return f"RISK 7D {p['risk']['horizons']['7d']} | 30D {p['risk']['horizons']['30d']} | 90D {p['risk']['horizons']['90d']}\nTail {p['risk']['tail_state']}\nVolatility percentile {p['risk']['volatility_percentile']}\nModel status: RESEARCH"
-    if command=="/cycle":return f"CYCLE {p['cycle']['primary_regime']}\nREGIME {p['regime']['current']}\nSupport {p['regime']['relative_support']}\nStability {p['regime']['stability']}\nTransition {p['regime']['transition_status']}"
+    if command=="/cycle":
+        ec=state.get("elliott_cycle",{});ell=ec.get("elliott",{});ch=ec.get("cycle_history",{}).get("current",{})
+        primary=ell.get("primary",{})
+        return f"BITCOIN CYCLE · RESEARCH\nREGIME {p['regime']['current']}\nELLIOTT {primary.get('name','UNAVAILABLE')}\nRelative Support {primary.get('relative_support','UNAVAILABLE')} (not probability)\nDrawdown {ch.get('drawdown','UNAVAILABLE')}\nDays since ATH {ch.get('days_since_ath','UNAVAILABLE')}\nExecution DISABLED"
+    if command=="/elliott":
+        e=state.get("elliott_cycle",{}).get("elliott",{});primary=e.get("primary",{});alt=(e.get("alternatives") or [{}])[0]
+        return f"ELLIOTT WAVE · RESEARCH_ONLY\nPrimary: {primary.get('name','UNAVAILABLE')}\nAlternative: {alt.get('name','UNAVAILABLE')}\nDegree: {primary.get('degree','UNAVAILABLE')}\nRelative Support: {primary.get('relative_support','UNAVAILABLE')} (not probability)\nInvalidation: {primary.get('invalidation_level','UNAVAILABLE')}\nConfirmation: {primary.get('confirmation_level','UNAVAILABLE')}\nExecution: DISABLED"
+    if command=="/analyse":
+        return master_message(state)+"\n\nDeterministische MASTER-Erklärung. OpenAI Mini wird ausschließlich in einem konfigurierten Bot-Runtime-Adapter aufgerufen; kein Modell ist hier vorgetäuscht.\nExecution: DISABLED"
+    if command=="/shadow":
+        c=state.get("master5_challenger",{});b=c.get("buy",{});r=c.get("risk",{});zone=b.get("zone") or {}
+        return f"BITCOIN MASTER 5.0 SHADOW\nBTC {money(state['master']['state']['btc_price'])}\nBUY OPPORTUNITY {b.get('state','UNAVAILABLE')}\nBUY QUALITY {b.get('quality','UNAVAILABLE')} / 100 (not probability)\nARCHETYPE {b.get('archetype','UNAVAILABLE')}\nENTRY {c.get('entry_confirmation',{}).get('state','UNAVAILABLE')}\nSELL-OFF RISK {r.get('sell_off_risk','UNAVAILABLE')}\nDISTRIBUTION {r.get('distribution','UNAVAILABLE')}\nEXISTING POSITION {r.get('existing_position_action','UNAVAILABLE')}\nBUY ZONE {_range(zone)}\nStatus SHADOW / RESEARCH\nExecution DISABLED"
+    if command=="/fusion":
+        f=state.get("fusion6",{});m3=state["master"]["decision"];m5=state.get("master5_challenger",{});patterns=f.get("active_historical_patterns",[])
+        s=state["master"]["state"];zone=m5.get("buy",{}).get("zone") or {};support=s.get("nearest_support");resistance=s.get("nearest_resistance")
+        return f"₿ FUSION 6\n\nBTC\n{money(s['btc_price'])}\n\nLONG TERM\n{f.get('long_term','UNAVAILABLE')}\n\nNEW ENTRY\n{f.get('new_entry','UNAVAILABLE')}\n\nRARE BUY\n{f.get('rare_buy','UNAVAILABLE')}\n\nRISK\n{f.get('risk','UNAVAILABLE')}\n\nREGIME\n{f.get('regime','UNAVAILABLE')}\n\nTIMING\n{f.get('timing','UNAVAILABLE')}\n\nCONTROL 3\n{m3['long_term_action']}\n\nSPECIALIST 5\n{m5.get('buy',{}).get('state','UNAVAILABLE')}\n\nACTIVE PATTERNS\n{len(patterns)}\n\nNEXT BUY ZONE\n{_range(zone)}\n\nSUPPORT\n{_range(support)}\n\nRESISTANCE\n{_range(resistance)}\n\nExecution: DISABLED"
+    if command=="/patterns":
+        patterns=state.get("fusion6",{}).get("active_historical_patterns",[])
+        return "FUSION 6 ACTIVE RESEARCH PATTERNS\n"+("No active promoted research pattern." if not patterns else "\n".join(f"{p['pattern_id']} | {' + '.join(p['factors'])} | {p['status']} | n={p['sample_size']}" for p in patterns))+"\nNot probability. Execution DISABLED"
+    if command=="/events":
+        news=state.get("modules",{}).get("news",{});season=state.get("modules",{}).get("seasonality",{})
+        return f"FUSION 6 EVENT CONTEXT\nNEWS {news.get('status','UNAVAILABLE')}\nCALENDAR {season.get('status','UNAVAILABLE')}\nHistorical sourced event DB: INSUFFICIENT_DATA\nNo event-only signal. Execution DISABLED"
     if command=="/zones":return str(d["zones"])
     if command=="/why":return f"POSITIVE {d['why']['positive']}\nNEGATIVE {d['why']['negative']}\nUNCERTAIN {d['why']['uncertain']}\nMISSING {p['confluence']['unavailable']}"
     if command=="/health":return str(health or {"data_health":p["data_health"],"frozen_model":"2.3-FROZEN","execution":"DISABLED"})
@@ -63,4 +84,4 @@ def command_message(command,state,health=None):
     if command=="/drawdown":
         s=state["master"]["state"];draw=state["advanced"]["drawdown"]
         return f"BITCOIN DRAWDOWN\nCurrent: {s['drawdown']:.1%}\nHistorical percentile: {s['drawdown_percentile']}\nMaximum: {draw['maximum_historical_drawdown']:.1%}\nDays under water: {draw['days_below_previous_ath']}\nRecovery: {draw['recovery_from_major_low']:.1%}\nState: {s['recovery_state']}\nExecution: DISABLED"
-    return "Supported: /master /history /buy /sell /levels /drawdown /btc /decision /value /timing /risk /cycle /zones /why /health /candidates /signals"
+    return "Supported: /master /shadow /fusion /patterns /events /analyse /elliott /history /buy /sell /levels /drawdown /btc /decision /value /timing /risk /cycle /zones /why /health /candidates /signals"

@@ -1,0 +1,25 @@
+{
+  "model_id": "MACRO_SWING_7_0_RESEARCH_FROZEN",
+  "champion": "MASTER_3_0_FROZEN",
+  "specialist": "MASTER_5_0_CHALLENGER_FROZEN",
+  "fusion": "FUSION_6_RESEARCH_FROZEN",
+  "source_head_at_freeze": "7319011136900559a85c3b8b28f13f33f41b7a04",
+  "freeze_timestamp": "2026-08-09T22:20:02.541Z",
+  "forward_start": "2026-08-09T22:20:02.541Z",
+  "config_hash": "e9a5e4414bb1f78df665d7ff51ae319927193a4bb74284a70f9fa95877134ac3",
+  "code_manifest_sha256": {
+    "__init__.py": "755104905C1B3F07137688BFB6F3C8EBEE74C238F0C7C9B0A3F8A4E79D77E343",
+    "elliott.py": "E58AAC6F66EECE7F4DB152ED6C75089282E06EC142FFA165FA7361B952928C1F",
+    "engine.py": "22F94C74D2DE37D80364C11283B05E57EDA5334D4683C4265E653608EC324060",
+    "research.py": "731D7224EF2AEF3A8ECA1A0600F89261976A8040F53DFE9467D89A611C0B5091"
+  },
+  "coverage": {"from": "2011-08-18", "to": "2026-08-07", "rows": 5469},
+  "historical_validation": {
+    "long_swing_rule": "REJECTED_NO_POSITIVE_MEDIAN_EDGE",
+    "elliott_incremental_edge": "NOT_ESTABLISHED_CONTEXT_ONLY",
+    "elliott_replay_points": 13,
+    "elliott_revisions": 8
+  },
+  "promotion": "RESEARCH_CHALLENGER_ONLY",
+  "execution": "DISABLED"
+}

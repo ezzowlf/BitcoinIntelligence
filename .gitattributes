@@ -1,0 +1,10 @@
+# Force LF line endings for text files regardless of local core.autocrlf.
+# Without this, Windows' common core.autocrlf=true silently converts LF->CRLF
+# on checkout, changing file bytes -- which breaks the SHA256 code-manifest
+# checks inside frozen/*.json (e.g. test_frozen_definition_exists_after_freeze).
+# This does not touch any source or frozen file content; it only makes future
+# checkouts byte-identical to what is committed now.
+* text=auto eol=lf
+*.json -text
+*.db binary
+*.png binary

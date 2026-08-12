@@ -9,4 +9,3 @@ def ohlcv():
     close = 500 * np.exp(np.cumsum(rng.normal(.001, .025, len(index))))
     spread = close * rng.uniform(.005, .03, len(index))
     return pd.DataFrame({"open": close * (1 + rng.normal(0, .005, len(index))), "high": close + spread, "low": close - spread, "close": close, "volume": rng.lognormal(10, .5, len(index))}, index=index)
-

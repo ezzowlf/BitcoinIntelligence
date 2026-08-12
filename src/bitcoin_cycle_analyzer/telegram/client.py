@@ -36,8 +36,20 @@ class TelegramClient:
         response.raise_for_status();payload=response.json()
         return payload.get("result",[]) if payload.get("ok") else []
 
+    def get_me(self):
+        response=self.session.get(f"https://api.telegram.org/bot{self.token}/getMe",timeout=15);response.raise_for_status();payload=response.json()
+        if not payload.get("ok"):raise RuntimeError("Telegram getMe rejected the token")
+        return payload["result"]
+
     def authorized_command(self, update):
         message=update.get("message",{});chat=message.get("chat",{})
         if str(chat.get("id"))!=self.chat_id:return None
+        text=message.get("text","").split("@",1)[0].strip().split()[0] if message.get("text") else ""
+        return text if text.startswith("/") else None
+
+    @staticmethod
+    def allowlisted_command(update,allowed_chat_ids):
+        message=update.get("message",{});chat_id=str(message.get("chat",{}).get("id"))
+        if chat_id not in set(map(str,allowed_chat_ids)):return None
         text=message.get("text","").split("@",1)[0].strip().split()[0] if message.get("text") else ""
         return text if text.startswith("/") else None
