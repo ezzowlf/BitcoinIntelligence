@@ -63,7 +63,16 @@ Ein Pivot bei `pivot_time` ist erst bei `confirmed_at` verwendbar. Indikatoren s
 
 Primär wird die öffentliche Bitstamp-BTC/USD-OHLC-API ab 2011 verwendet. Kraken bleibt als zweiter Provider verfügbar. Alle Kerzen werden mit Provider, Quelle, Importzeitpunkt und Datenversion in SQLite gespeichert; 1W und 1M entstehen ausschließlich aus abgeschlossenen kanonischen Daily-Kerzen. Lizenz- und Nutzungsgrenzen sowie die echte Mehrzyklusvalidierung stehen in `REAL_DATA_VALIDATION_REPORT.md`.
 
-Elliott-Wellen bleiben subjektiv: Die Engine liefert nur plausible regelbasierte Szenarien, Confidence und Invalidierungen. On-chain-Daten, Derivate, ETF-Flows und Makrodaten sind Erweiterungspunkte, aber nicht Teil dieses MVP.
+Elliott-Wellen bleiben subjektiv: Die Engine liefert nur plausible regelbasierte Szenarien, Confidence und Invalidierungen. On-chain-Daten, Derivate und ETF-Flows sind Erweiterungspunkte, aber nicht Teil dieses MVP.
+
+### Makro- und News-Datenstatus
+
+Das Dashboard zeigt unter SYSTEM/DATEN den Status `AVAILABLE`/`UNAVAILABLE` für jedes Datenmodul. Diese Werte kommen ausschließlich aus dem echten Runtime-State (`state["data_status"]`), niemals hardcodiert.
+
+- **MAKRO**: 20 vorbereitete Makroserien (`src/bitcoin_cycle_analyzer/macro/engine.py::MACRO_METRICS`), 18 davon direkt über die FRED-API abrufbar (`macro/fred_provider.py`), vintage-sicher gecacht in `database/macro.db` (`macro/store.py`). Benötigt `FRED_API_KEY` in `.env` (kostenlos unter fred.stlouisfed.org). **Ohne Key**: `MAKRO = UNAVAILABLE`, Grund `FRED_API_KEY_MISSING_OR_NO_RELEASES` — kein Absturz, kein vorgetäuschter Wert. Ist bereits einmal erfolgreich ein Fetch gelaufen, nutzt das System den letzten Cache aus `macro.db`, auch ohne aktiven Key.
+- **NEWS**: verwendet die lokale, quellenbelegte Ereignis-Datenbank (`database/historical_event_evidence.db`, `event_evidence.PointInTimeEventDatabase`) — keine externe News-API. `NEWS = AVAILABLE`, sobald die Datenbank mindestens einen Eintrag enthält. Das ist bewusst getrennt von der Frage, ob es *aktuell relevante* Ereignisse gibt (siehe „WICHTIGE NEWS / EREIGNISSE“ im Dashboard, das die letzten 90 Tage separat prüft). `MEANPULSE_NEWS_URL`/`MEANPULSE_NEWS_FILE` in `.env.example` sind ein vorgesehener, aber noch nicht implementierter Anschlusspunkt für einen echten Live-News-Feed.
+
+Lokal prüfen: `python -c "from bitcoin_cycle_analyzer.macro import load_macro_series, analyze_macro; ..."` oder im Dashboard den Tab SYSTEM öffnen.
 
 ## Backtest-Interpretation
 

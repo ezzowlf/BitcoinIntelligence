@@ -14,6 +14,7 @@ from bitcoin_cycle_analyzer.data_provider import OHLCVStore
 from bitcoin_cycle_analyzer.external_store import ExternalMetricStore
 from bitcoin_cycle_analyzer.live import MT5MarketDataProvider
 from bitcoin_cycle_analyzer.onchain import StoreOnChainProvider
+from bitcoin_cycle_analyzer.macro import load_macro_series
 from bitcoin_cycle_analyzer.fusion6 import HistoricalPatternDiscoveryEngine
 from bitcoin_cycle_analyzer.event_evidence import PointInTimeEventDatabase
 from bitcoin_cycle_analyzer.fusion_live import Fusion6ForwardLedger
@@ -45,14 +46,19 @@ div[data-testid="stButtonGroup"] button{min-height:44px}div[role="radiogroup"] l
 
 config=load_config(ROOT/"config.yaml");store=OHLCVStore(ROOT/config["data"]["database"]);canonical=store.load_canonical("1d");frame=canonical[["open","high","low","close","volume"]] if not canonical.empty else store.load("1d")
 if frame.empty:st.error("Keine BTC-Daten verfügbar.");st.stop()
-external=ExternalMetricStore(ROOT/config["data"]["external_database"]);mt5=MT5MarketDataProvider(values=env_values(ROOT/".env"));mh=mt5.connect();tick=mt5.tick() if mh.status=="ONLINE" else {"status":"UNAVAILABLE","reason":mh.reason};h4=mt5.confirmed_candles("4h",1000) if mh.status=="ONLINE" else store.load("4h");d1=mt5.confirmed_candles("1d",700) if mh.status=="ONLINE" else frame.iloc[0:0];w1=mt5.confirmed_candles("1w",260) if mh.status=="ONLINE" else frame.iloc[0:0];m1=mt5.confirmed_candles("1mo",180) if mh.status=="ONLINE" else frame.iloc[0:0];div=MT5MarketDataProvider.divergence(tick.get("mid"),float(frame.close.iloc[-1]));usable=mh.status=="ONLINE" and tick.get("freshness") in {"LIVE","DELAYED"} and not d1.empty and div.get("status")!="CRITICAL"
+env=env_values(ROOT/".env")
+external=ExternalMetricStore(ROOT/config["data"]["external_database"]);mt5=MT5MarketDataProvider(values=env);mh=mt5.connect();tick=mt5.tick() if mh.status=="ONLINE" else {"status":"UNAVAILABLE","reason":mh.reason};h4=mt5.confirmed_candles("4h",1000) if mh.status=="ONLINE" else store.load("4h");d1=mt5.confirmed_candles("1d",700) if mh.status=="ONLINE" else frame.iloc[0:0];w1=mt5.confirmed_candles("1w",260) if mh.status=="ONLINE" else frame.iloc[0:0];m1=mt5.confirmed_candles("1mo",180) if mh.status=="ONLINE" else frame.iloc[0:0];div=MT5MarketDataProvider.divergence(tick.get("mid"),float(frame.close.iloc[-1]));usable=mh.status=="ONLINE" and tick.get("freshness") in {"LIVE","DELAYED"} and not d1.empty and div.get("status")!="CRITICAL"
 if usable:frame=pd.concat([frame.loc[frame.index<d1.index[0]],d1]).sort_index();frame=frame[~frame.index.duplicated(keep="last")]
 live={"status":"ONLINE" if usable else mh.status,"health":mh.__dict__,"tick":tick,"divergence":div,"last_confirmed_h4":None if mh.status!="ONLINE" or h4.empty else h4.index[-1],"last_confirmed_d1":None if mh.status!="ONLINE" or d1.empty else d1.index[-1],"last_confirmed_w1":None if mh.status!="ONLINE" or w1.empty else w1.index[-1],"last_confirmed_1m":None if mh.status!="ONLINE" or m1.empty else m1.index[-1],"timing_confirmation":"ENABLED" if usable else "BLOCKED","provenance":mt5.provenance()};mt5.close()
 @st.cache_data(show_spinner=False)
 def discovery(data):return HistoricalPatternDiscoveryEngine().discover(data)
-feeds={"onchain_provider":StoreOnChainProvider(external),"four_hour":h4,"funding":external.load("funding_rate_8h"),"open_interest":external.load("open_interest_usd"),"etf":external.load("etf_net_flow_usd"),"macro":{},"live_market":live,"price_provider":"MT5 confirmed D1 + BITSTAMP historical" if usable else "BITSTAMP historical dataset","project_root":ROOT,"fusion_discovery":discovery(frame)}
-state=analyze_intelligence(frame,config,feeds=feeds);m3=state["master"];ms=m3["state"];md=m3["decision"];m5=state["master5_challenger"];fusion=state["fusion6"];macro7=state["macro7"];hq=state["historical_entry_quality"];cycles=state["elliott_cycle"]["cycle_history"];elliott=state["elliott_cycle"]["elliott"];mom=state["advanced"]["momentum"]
 event_db=PointInTimeEventDatabase(ROOT/"database"/"historical_event_evidence.db");event_health=event_db.health();event_rows=event_db.as_of(pd.Timestamp.now(tz="UTC"));fusion_live=Fusion6ForwardLedger(ROOT/"database"/"fusion6_live.db",json.loads((ROOT/"frozen"/"fusion_6_research_frozen.json").read_text(encoding="utf-8"))["forward_start"]);fusion_health=fusion_live.health()
+try:macro_series=load_macro_series(env.get("FRED_API_KEY"),ROOT/"database"/"macro.db",frame.index[-1])
+except Exception:macro_series={}
+news_status="AVAILABLE" if event_health["status"]=="AVAILABLE" else "UNAVAILABLE"
+news_summary={"status":news_status,"reason":None if news_status=="AVAILABLE" else "NO_EVENTS_IN_DATABASE","risk":None,"score":None,"source":"event_evidence.PointInTimeEventDatabase","records":event_health.get("events",0),"last_updated":event_health.get("to")}
+feeds={"onchain_provider":StoreOnChainProvider(external),"four_hour":h4,"funding":external.load("funding_rate_8h"),"open_interest":external.load("open_interest_usd"),"etf":external.load("etf_net_flow_usd"),"macro":macro_series,"news_summary":news_summary,"live_market":live,"price_provider":"MT5 confirmed D1 + BITSTAMP historical" if usable else "BITSTAMP historical dataset","project_root":ROOT,"fusion_discovery":discovery(frame)}
+state=analyze_intelligence(frame,config,feeds=feeds);m3=state["master"];ms=m3["state"];md=m3["decision"];m5=state["master5_challenger"];fusion=state["fusion6"];macro7=state["macro7"];hq=state["historical_entry_quality"];cycles=state["elliott_cycle"]["cycle_history"];elliott=state["elliott_cycle"]["elliott"];mom=state["advanced"]["momentum"]
 live_price=tick.get("mid") if usable else ms["btc_price"];spread=tick.get("spread");day_change=float(frame.close.iloc[-1]/frame.close.iloc[-2]-1) if len(frame)>1 else 0
 status_class="live" if usable else "";tick_label=str(tick.get("timestamp","—"))[11:19];confirmed=str(live.get("last_confirmed_h4") or "—")[:16]
 feed_label="LIVE-KURSDATEN: AKTIV" if usable and tick.get("freshness")=="LIVE" else "LIVE-KURSDATEN: VERZÖGERT" if usable else "LIVE-KURSDATEN: NICHT VERFÜGBAR"
