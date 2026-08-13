@@ -22,7 +22,33 @@ DECISION_LABELS_DE = {
     "NO_EDGE": "KEIN VORTEIL ERKENNBAR",
 }
 
-MACRO_ACTION_LABELS_DE = {"ACCUMULATE": "AKKUMULATION INTERESSANT", "REDUCE": "REDUZIEREN", "HOLD": "HALTEN"}
+MACRO_ACTION_LABELS_DE = {"ACCUMULATE": "AKKUMULATION INTERESSANT", "REDUCE": "REDUZIEREN", "HOLD": "HALTEN", "WAIT": "WARTEN"}
+
+TIMING_LABELS_DE = {"CONFIRMED": "BESTÄTIGT", "CONFIRMING": "BESTÄTIGT SICH", "EARLY": "FRÜHE PHASE", "WAIT": "ABWARTEN"}
+
+RISK_LABELS_DE = {"LOW": "NIEDRIG", "CAUTION": "VORSICHT", "NORMAL": "NORMAL", "MODERATE": "MODERAT", "HIGH": "HOCH", "EXTREME": "EXTREM"}
+
+PLAYBOOK_NAME_LABELS_DE = {
+    "CYCLE_BOTTOM_ENTRY": "Einstieg am Zyklustief",
+    "RECOVERY_ENTRY": "Einstieg nach Erholung",
+    "WAVE2_RETRACEMENT_ENTRY": "Einstieg bei Welle-2-Rücksetzer",
+    "BREAKOUT_RECLAIM_ENTRY": "Einstieg nach Ausbruch/Rückeroberung",
+    "DEEP_VALUE_ACCUMULATION": "Akkumulation im Tiefstwertbereich",
+    "MAJOR_SUPPORT_RETEST": "Einstieg bei Test der Hauptunterstützung",
+    "POST_CAPITULATION_ENTRY": "Einstieg nach Kapitulation",
+}
+
+SCENARIO_STATUS_LABELS_DE = {"ACTIVE": "AKTIV", "WATCH": "BEOBACHTEN", "DORMANT": "INAKTIV", "INVALIDATED": "UNGÜLTIG"}
+
+# Display-only translation of MACRO 7 scenario names. The engine's own scenario["name"] values
+# (asserted on directly in tests/test_macro7.py) are never changed - this dict only relabels
+# them for the UI.
+SCENARIO_NAME_LABELS_DE = {
+    "BULL RECOVERY": "BULLISCHE ERHOLUNG",
+    "BASE CONSOLIDATION": "BASISKONSOLIDIERUNG",
+    "DEEP BEAR": "TIEFER BÄRENMARKT",
+    "EXTREME CYCLE": "EXTREMER ZYKLUS",
+}
 
 ENTRY_STATUS_LABELS_DE = {
     "CONFIRMED": "Einstieg bestätigt",
@@ -64,6 +90,68 @@ def translate_decision(decision: str) -> str:
 
 def translate_macro_action(action: str) -> str:
     return MACRO_ACTION_LABELS_DE.get(action, action)
+
+
+def translate_timing(timing: str) -> str:
+    return TIMING_LABELS_DE.get(timing, timing)
+
+
+def translate_risk(risk: str) -> str:
+    return RISK_LABELS_DE.get(risk, risk)
+
+
+def translate_scenario_status(status: str) -> str:
+    return SCENARIO_STATUS_LABELS_DE.get(status, status)
+
+
+def translate_scenario_name(name: str) -> str:
+    return SCENARIO_NAME_LABELS_DE.get(name, name)
+
+
+MARKET_PHASE_LABELS_DE = {
+    "ACCUMULATION": "AKKUMULATION",
+    "CAPITULATION": "KAPITULATION",
+    "EARLY_RECOVERY": "FRÜHE ERHOLUNG",
+    "BEAR": "BÄRENMARKT",
+    "BULL": "BULLENMARKT",
+    "EXPANSION": "EXPANSION",
+    "TRANSITION": "ÜBERGANG",
+}
+
+FRESHNESS_LABELS_DE = {"LIVE": "LIVE", "DELAYED": "VERZÖGERT", "STALE": "VERALTET", "OFFLINE": "OFFLINE"}
+
+# Regex patterns matching the fixed English sentence templates the frozen macro7 engine
+# produces in its "why" facts (e.g. macro7/engine.py). We never touch that frozen file -
+# these facts are only reworded here, after they leave the engine, for display purposes.
+# Any pattern that doesn't match is returned unchanged (safe fallback, never crashes).
+import re as _re
+
+_WHY_FACT_PATTERNS = [
+    (_re.compile(r"^Macro phase: (.+)$"), lambda m: f"Marktphase: {MARKET_PHASE_LABELS_DE.get(m.group(1), m.group(1))}"),
+    (_re.compile(r"^ATH drawdown: (.+)$"), lambda m: f"Rückgang seit dem Allzeithoch: {m.group(1)}"),
+    (_re.compile(r"^Distance to 200W: (.+)$"), lambda m: f"Abstand zum 200-Wochen-Durchschnitt: {m.group(1)}"),
+    (_re.compile(r"^Weekly RSI: (.+)$"), lambda m: f"Wochen-RSI: {m.group(1)}"),
+]
+
+
+def translate_why_fact(text: str) -> str:
+    for pattern, build in _WHY_FACT_PATTERNS:
+        m = pattern.match(text)
+        if m:
+            return build(m)
+    return text
+
+
+def translate_freshness(freshness: str) -> str:
+    return FRESHNESS_LABELS_DE.get(freshness, freshness)
+
+
+def translate_regime(regime: str) -> str:
+    return MARKET_PHASE_LABELS_DE.get(regime, regime)
+
+
+def translate_playbook_name(name: str) -> str:
+    return PLAYBOOK_NAME_LABELS_DE.get(name, name.replace("_", " ").title())
 
 
 def translate_entry_status(status: str) -> str:
@@ -122,12 +210,12 @@ def buy_playbook_de(decision_intel: dict) -> dict:
     targets = d.get("targets", [])
     reasons = [f"{fam} unterstützt" for fam in d["evidence_agreement"]["supporting_families"]]
     return {
-        "entry_type": (d["playbooks_matched"][0]["name"].replace("_", " ").title() if d.get("playbooks_matched") else "Bestätigter Einstieg"),
+        "entry_type": (translate_playbook_name(d["playbooks_matched"][0]["name"]) if d.get("playbooks_matched") else "Bestätigter Einstieg"),
         "entry_zone": f"${zone.get('lower', 0):,.0f} – ${zone.get('upper', 0):,.0f}" if zone.get("lower") is not None else "—",
         "why": reasons or ["Ausreichende Bestätigung liegt vor"],
         "invalidation": f"${d['invalidation_level']:,.0f}" if d.get("invalidation_level") is not None else "—",
         "first_target": f"${targets[0]['price']:,.0f}" if targets else "—",
-        "risk": d.get("risk_state", "—"),
+        "risk": translate_risk(d.get("risk_state", "—")),
         "dont_chase_above": f"${zone.get('upper', 0):,.0f}" if zone.get("upper") is not None else "—",
     }
 
