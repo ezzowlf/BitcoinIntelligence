@@ -21,11 +21,19 @@ class FredVintageProvider:
         if not self.api_key:
             raise RuntimeError("FRED_API_KEY is required for release-time/vintage-safe macro data")
         response = requests.get(self.url, params={"series_id":series_id,"api_key":self.api_key,"file_type":"json","output_type":4,"realtime_start":"1776-07-04","realtime_end":"9999-12-31"}, timeout=self.timeout)
+        if response.status_code == 400:
+            # FRED's ALFRED vintage endpoint (output_type=4) only supports series that carry
+            # a revision history. Market-quoted series (rates, indices, commodities) are never
+            # revised and FRED rejects the vintage query for them with a 400 - fall back to a
+            # plain observations query. For these series the observation date itself is the
+            # only meaningful "available_at" (there is no separate initial-release vintage to
+            # track), which matches how they are actually published.
+            response = requests.get(self.url, params={"series_id":series_id,"api_key":self.api_key,"file_type":"json"}, timeout=self.timeout)
         response.raise_for_status(); records=[]
         for row in response.json()["observations"]:
             if row["value"] == ".": continue
-            event = pd.Timestamp(row["date"], tz="UTC"); available = pd.Timestamp(row["realtime_start"], tz="UTC")
-            records.append(MarketDataRecord(series_id.lower(), float(row["value"]), event, available, available, self.name, f"{series_id}:{row['date']}:{row['realtime_start']}", "HIGH", "initial"))
+            event = pd.Timestamp(row["date"], tz="UTC"); available = pd.Timestamp(row.get("realtime_start", row["date"]), tz="UTC")
+            records.append(MarketDataRecord(series_id.lower(), float(row["value"]), event, available, available, self.name, f"{series_id}:{row['date']}:{row.get('realtime_start', row['date'])}", "HIGH", "initial"))
         return records
 
     def fetch_macro_initial(self, series_id: str, metric: str) -> list[MacroObservation]:
