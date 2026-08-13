@@ -10,7 +10,7 @@ SOURCE=Path("dashboard/app.py").read_text(encoding="utf-8")
 
 def test_terminal_has_compact_decision_and_live_confirmed_distinction():
     assert "terminal-head" in SOURCE and "decision" in SOURCE
-    assert "MT5 LIVE" in SOURCE and "Confirmed H4" in SOURCE
+    assert "LIVE-KURSDATEN" in SOURCE and "Bestätigt H4" in SOURCE
 
 def test_chart_is_dominant_and_has_required_overlays():
     assert "height=620 if simple else 555" in SOURCE
@@ -25,9 +25,9 @@ def test_terminal_apptest_renders_without_exception():
     # before the tab strip — switch to RESEARCH to verify the full app still renders.
     at=AppTest.from_file(ROOT / "dashboard" / "app.py",default_timeout=40).run()
     assert not at.exception
-    view_toggle=next(w for w in at.segmented_control if list(w.options)==["SIMPLE","RESEARCH"])
-    at=view_toggle.set_value("RESEARCH").run()
-    top_level={"CHART","CYCLES","HISTORY","EVENTS","RESEARCH","SYSTEM"}
+    view_toggle=next(w for w in at.segmented_control if list(w.options)==["EINFACH","FORSCHUNG"])
+    at=view_toggle.set_value("FORSCHUNG").run()
+    top_level={"CHART","ZYKLEN","HISTORIE","EREIGNISSE","FORSCHUNG","SYSTEM"}
     assert not at.exception
     assert sum(1 for t in at.tabs if t.label in top_level)==6
 
@@ -59,11 +59,11 @@ def test_terminal_apptest_renders_without_exception_with_mixed_drawing_types():
             drawings_path.unlink()
 
 def test_macro7_timeframes_layers_and_plain_language_surfaces():
-    for token in ('"1Y"','"ALL"','"Macro Zones"','"Swing Zones"','"Fib"','"Events"','"CYCLES"'):assert token in SOURCE
-    assert "Macro scenario map" in SOURCE and "Long-Swing BUY stays locked without a validated edge" in SOURCE
+    for token in ('"1Y"','"ALL"','"Macro Zones"','"Swing Zones"','"Fib"','"Events"','"ZYKLEN"'):assert token in SOURCE
+    assert "Makro-Szenariokarte" in SOURCE and "Ein langfristiges Kaufsignal bleibt gesperrt" in SOURCE
 
 def test_navigation_is_simplified_to_six_top_level_sections():
-    assert 'st.tabs(["CHART","CYCLES","HISTORY","EVENTS","RESEARCH","SYSTEM"])' in SOURCE
+    assert 'st.tabs(["CHART","ZYKLEN","HISTORIE","EREIGNISSE","FORSCHUNG","SYSTEM"])' in SOURCE
 
 def test_indicator_state_and_rule_registry_are_exported_and_not_executed():
     assert "build_decision_state_v1" in SOURCE and "build_indicator_state_v1" in SOURCE and "rule_registry" in SOURCE
@@ -77,11 +77,11 @@ def test_layer_presets_and_drawing_tools_present():
     assert "drawline" in SOURCE and "drawrect" in SOURCE and "eraseshape" in SOURCE
 
 def test_dormant_conditional_targets_are_labelled_not_predicted():
-    assert "DORMANT — NOT AN ACTIVE TARGET" in SOURCE
+    assert "INAKTIV — KEIN AKTIVES ZIEL" in SOURCE
 
 def test_decision_card_is_wired_and_traceable():
-    assert "DECISION DETAIL" in SOURCE and "build_decision_intelligence" in SOURCE
-    assert "Decision Rule Registry" in SOURCE and "DECISION_RULE_REGISTRY" in SOURCE
+    assert "ENTSCHEIDUNGSBEGRÜNDUNG" in SOURCE and "build_decision_intelligence" in SOURCE
+    assert "Entscheidungs-Regelverzeichnis" in SOURCE and "DECISION_RULE_REGISTRY" in SOURCE
 
 def test_simple_and_research_modes_exist_and_default_to_simple():
     assert '["SIMPLE","RESEARCH"]' in SOURCE

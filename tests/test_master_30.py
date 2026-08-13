@@ -106,7 +106,13 @@ def test_candidate_completion_is_labeled_not_probability(current):
 
 
 def test_master_forward_ledger_and_cutoff(current,tmp_path):
-    ledger=ForwardLedger(tmp_path/"forward.db");early=deepcopy(current["master"])
+    # `early` must be strictly before the frozen ForwardLedger.FORWARD_START cutoff
+    # (2026-08-10T00:00:00Z). It used to just be today's live `current` state, which
+    # worked only while "today" was still before that frozen date — once real time
+    # passed 2026-08-10 the fixture stopped being "early" and the test silently broke.
+    # Pin an explicit pre-cutoff timestamp instead so the test is time-independent.
+    ledger=ForwardLedger(tmp_path/"forward.db")
+    early=deepcopy(current["master"]);early["state"]["timestamp"]="2026-08-09T00:00:00Z"
     with pytest.raises(ValueError):ledger.append_master_snapshot(early)
     eligible=deepcopy(early);eligible["state"]["timestamp"]="2026-08-10T00:00:00Z";ledger.append_master_snapshot(eligible);assert ledger.health()["master_snapshots"]==1
     with pytest.raises(Exception):ledger.append_master_snapshot(eligible)

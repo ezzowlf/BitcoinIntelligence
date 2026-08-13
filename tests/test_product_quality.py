@@ -25,12 +25,12 @@ def test_no_leftover_german_strings_in_primary_ui():
         assert forbidden not in SOURCE, f"German string leaked into the UI: {forbidden!r}"
 
 
-def test_wait_labels_are_plain_english():
+def test_wait_labels_are_german():
     match = re.search(r'wait_labels=\{([^}]+)\}', SOURCE)
     assert match, "wait_labels dict not found"
     body = match.group(1)
-    # crude but effective: German uses these characters, English display copy must not
-    assert not any(ch in body for ch in "äöüß")
+    # Master-Auftrag (live data/mobile/German pass): display copy must be German now
+    assert any(ch in body for ch in "äöüß")
 
 
 # ---------------------------------------------------------------- One primary answer / no duplication (Sections 2, 3)
@@ -40,22 +40,22 @@ def test_next_buy_zone_duplicate_card_was_removed():
 
 
 def test_decision_detail_card_replaces_the_old_competing_bitcoin_decision_label():
-    assert "DECISION DETAIL" in SOURCE
-    assert "explains the champion signal above" in SOURCE  # explicit bridge, not a second verdict
+    assert "ENTSCHEIDUNGSBEGRÜNDUNG" in SOURCE
+    assert "erklärt das Leitsignal oben" in SOURCE  # explicit bridge, not a second verdict
     assert "research synthesis" not in SOURCE  # old, ambiguous framing removed
 
 
 def test_champion_signal_is_explicitly_labelled_as_such():
-    assert "CHAMPION SIGNAL (CONTROL 3 / MACRO 7)" in SOURCE
+    assert "LEITSIGNAL (CONTROL 3 / MACRO 7)" in SOURCE
 
 
 # ---------------------------------------------------------------- Decision Story chain (Section 4)
 
 def test_decision_detail_card_shows_full_story_chain():
-    # ZONE (where), ENTRY (interesting vs confirmed), INVALIDATION (wrong-if), CONFIDENCE
-    card_start = SOURCE.index("DECISION DETAIL <span")
+    # ZONE (where), EINSTIEG (interesting vs confirmed), UNGÜLTIG AB (wrong-if), VERTRAUEN
+    card_start = SOURCE.index("ENTSCHEIDUNGSBEGRÜNDUNG <span")
     card_region = SOURCE[card_start:card_start + 1200]
-    for field in ("ZONE</span>", "ENTRY</span>", "INVALIDATION</span>", "CONFIDENCE</span>"):
+    for field in ("ZONE</span>", "EINSTIEG</span>", "UNGÜLTIG AB</span>", "VERTRAUEN</span>"):
         assert field in card_region
 
 
@@ -78,7 +78,7 @@ def test_chart_and_card_read_the_same_di_object():
     # never a second independently-fetched decision value
     chart_region = SOURCE[SOURCE.index("Decision Intelligence zone/invalidation/targets ALWAYS render"):SOURCE.index("Decision Intelligence zone/invalidation/targets ALWAYS render") + 800]
     assert 'di["invalidation_level"]' in chart_region or "di.get(\"invalidation_level\")" in chart_region
-    card_region = SOURCE[SOURCE.index("DECISION DETAIL <span"):SOURCE.index("DECISION DETAIL <span") + 1200]
+    card_region = SOURCE[SOURCE.index("ENTSCHEIDUNGSBEGRÜNDUNG <span"):SOURCE.index("ENTSCHEIDUNGSBEGRÜNDUNG <span") + 1200]
     assert "di['invalidation_level']" in card_region or 'di["invalidation_level"]' in card_region
 
 
