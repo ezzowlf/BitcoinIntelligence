@@ -42,7 +42,7 @@ def test_load_macro_series_provider_error_never_crashes(tmp_path, monkeypatch):
     from bitcoin_cycle_analyzer.macro import loader as loader_module
 
     class ExplodingProvider:
-        def __init__(self, api_key):
+        def __init__(self, api_key, **kwargs):
             pass
 
         def fetch_macro_initial(self, series_id, metric):

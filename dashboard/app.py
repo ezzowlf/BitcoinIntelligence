@@ -59,9 +59,12 @@ if usable:frame=pd.concat([frame.loc[frame.index<d1.index[0]],d1]).sort_index();
 live={"status":"ONLINE" if usable else mh.status,"health":mh.__dict__,"tick":tick,"divergence":div,"last_confirmed_h4":None if mh.status!="ONLINE" or h4.empty else h4.index[-1],"last_confirmed_d1":None if mh.status!="ONLINE" or d1.empty else d1.index[-1],"last_confirmed_w1":None if mh.status!="ONLINE" or w1.empty else w1.index[-1],"last_confirmed_1m":None if mh.status!="ONLINE" or m1.empty else m1.index[-1],"timing_confirmation":"ENABLED" if usable else "BLOCKED","provenance":mt5.provenance()};mt5.close()
 @st.cache_data(show_spinner=False)
 def discovery(data):return HistoricalPatternDiscoveryEngine().discover(data)
+@st.cache_data(ttl=3600,show_spinner=False)
+def cached_macro_series(api_key,cache_bucket):
+    try:return load_macro_series(api_key,ROOT/"database"/"macro.db",pd.Timestamp.now(tz="UTC"))
+    except Exception:return {}
 event_db=PointInTimeEventDatabase(ROOT/"database"/"historical_event_evidence.db");event_health=event_db.health();event_rows=event_db.as_of(pd.Timestamp.now(tz="UTC"));fusion_live=Fusion6ForwardLedger(ROOT/"database"/"fusion6_live.db",json.loads((ROOT/"frozen"/"fusion_6_research_frozen.json").read_text(encoding="utf-8"))["forward_start"]);fusion_health=fusion_live.health()
-try:macro_series=load_macro_series(env.get("FRED_API_KEY"),ROOT/"database"/"macro.db",frame.index[-1])
-except Exception:macro_series={}
+macro_series=cached_macro_series(env.get("FRED_API_KEY"),pd.Timestamp.now(tz="UTC").strftime("%Y%m%d%H"))
 news_status="AVAILABLE" if event_health["status"]=="AVAILABLE" else "UNAVAILABLE"
 news_summary={"status":news_status,"reason":None if news_status=="AVAILABLE" else "NO_EVENTS_IN_DATABASE","risk":None,"score":None,"source":"event_evidence.PointInTimeEventDatabase","records":event_health.get("events",0),"last_updated":event_health.get("to")}
 feeds={"onchain_provider":StoreOnChainProvider(external),"four_hour":h4,"funding":external.load("funding_rate_8h"),"open_interest":external.load("open_interest_usd"),"etf":external.load("etf_net_flow_usd"),"macro":macro_series,"news_summary":news_summary,"live_market":live,"price_provider":"MT5 confirmed D1 + BITSTAMP historical" if usable else "BITSTAMP historical dataset","project_root":ROOT,"fusion_discovery":discovery(frame)}
