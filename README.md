@@ -74,6 +74,20 @@ Das Dashboard zeigt unter SYSTEM/DATEN den Status `AVAILABLE`/`UNAVAILABLE` für
 
 Lokal prüfen: `python -c "from bitcoin_cycle_analyzer.macro import load_macro_series, analyze_macro; ..."` oder im Dashboard den Tab SYSTEM öffnen.
 
+### Telegram Signal-Progress-Alerts
+
+Ein reiner Beobachter oberhalb der bestehenden Engine (`src/bitcoin_cycle_analyzer/telegram/progress*.py`) — er berechnet nichts selbst, sondern liest ausschließlich `state["rare_signal"]` und `state["master5_challenger"]` und meldet nur, wenn sich ein Setup **materiell** verbessert. Läuft alle 4 Stunden zusammen mit der bestehenden `h4`-Analyse (`scripts/shadow_service.py h4`).
+
+- **Progress-Level** (pro Richtung BUY/SELL separat): `NOTHING → WATCH → EARLY → B → A → A+ → PRODUCTION`, abgeleitet aus den bestehenden Feldern `rare_signal.level_b` (Kandidat/Completion), `buy_state`/`sell.state`, `level_a.strength` (VERY_HIGH/EXCEPTIONAL) und `level_a.signal` (Produktions-Gate). Keine neuen Zustände erfunden.
+- **Environment-Variablen** (siehe `.env.example`): `TELEGRAM_PROGRESS_ENABLED` (Default `false`), `TELEGRAM_MIN_SCORE_DELTA` (Default `10`, Score = `master5_challenger.buy.quality` bzw. `rare_signal.sell.distribution_score`, beide 0–100), `TELEGRAM_COOLDOWN_HOURS` (Default `6`), `TELEGRAM_NOTIFY_EARLY` (Default `false` — unterdrückt die schwache WATCH-Stufe), `TELEGRAM_NOTIFY_INVALIDATION` (Default `true`), `BITCOIN_TELEGRAM_CHAT_ID` (optionaler eigener Kanal, sonst `TELEGRAM_CHAT_ID`). Nutzt denselben `TelegramClient`/`TELEGRAM_BOT_TOKEN`/`TELEGRAM_DRY_RUN` wie die bestehende Telegram-Infrastruktur.
+- **Cooldown**: eine kleine Verbesserung am selben Level wird für `TELEGRAM_COOLDOWN_HOURS` unterdrückt; ein Sprung von mindestens 2 Leveln oder das Erreichen von A/A+/PRODUCTION überschreibt den Cooldown sofort.
+- **Dedup**: ein Fingerprint aus Richtung, Level, Zyklus-Regime, Kauf-/Verkaufszone und Invalidation-Niveau — bewusst **ohne** den aktuellen BTC-Preis, damit gewöhnliche Kursbewegung zwischen zwei Läufen kein "neues" Setup erzeugt.
+- **First-run-Verhalten**: Beim allerersten Lauf für eine Richtung wird nur eine Baseline gespeichert (`BASELINE_INITIALIZED`) — keine Telegram-Nachricht, unabhängig vom aktuellen Zustand.
+- **Invalidation**: nur wenn ein zuvor tatsächlich gemeldetes Setup auf `NOTHING` zurückfällt; danach genau einmal, keine Wiederholung für denselben Zustand.
+- **State-Speicherort**: `%BITCOIN_DATA_DIR%\signal_progress.db` (SQLite, atomare Transaktionen, ein Datensatz pro Richtung — keine Preise, keine Secrets).
+- **Testnachricht**: `python scripts/shadow_service.py signal-progress-test` sendet einmalig eine feste Verbindungsbestätigung, unabhängig vom aktuellen Marktzustand.
+- **Fehlersuche**: jeder Lauf wird in `logs/audit.jsonl` unter dem Event `SIGNAL_PROGRESS` protokolliert (Level, Score, Grund, Send/No-Send — nie Secrets); ein fehlgeschlagener Telegram-Versand oder eine defekte Konfiguration wird abgefangen und loggt `SIGNAL_PROGRESS_ERROR`, ohne die Analyse zu unterbrechen. Dashboard-Status im Tab SYSTEM unter "Telegram Signal-Alerts" (`DISABLED`/`DRY RUN`/`ACTIVE` + Zeitpunkt des letzten Alerts).
+
 ## Backtest-Interpretation
 
 Der echte Mehrzykluslauf liegt lokal unter `data/reports/` und ist in `REAL_DATA_VALIDATION_REPORT.md` vollständig zusammengefasst. Die Resultate zeigen deskriptiven Wert, aber keinen robusten Beweis einer stabilen Überlegenheit gegenüber Buy & Hold oder einfachen Regeln.

@@ -18,8 +18,9 @@ from bitcoin_cycle_analyzer.config import load_config
 from bitcoin_cycle_analyzer.forward import ForwardLedger
 from bitcoin_cycle_analyzer.precision.storage import PrecisionStore
 from bitcoin_cycle_analyzer.runtime import RuntimeSettings
-from bitcoin_cycle_analyzer.telegram import TelegramClient,TelegramDecisionBot
+from bitcoin_cycle_analyzer.telegram import TelegramClient,TelegramDecisionBot,SignalProgressStore,config_from_env,run_signal_progress_check,send_test_message
 from bitcoin_cycle_analyzer.telegram.events import detect_events,event_id,event_message
+from bitcoin_cycle_analyzer.runtime import env_values
 import bitcoin_intelligence
 
 EXPECTED_CONFIG_HASH="db4b6ed6e40fd9f6ce7efe4b0748c61dee83ddcf0603962eb836eeafa8e3ee5f"
@@ -92,8 +93,22 @@ def daily(cfg):
     timestamp=str(state["precision"]["timestamp"])
     if store.latest_snapshot() and store.latest_snapshot()["timestamp"]==timestamp:return {"status":"DEDUPLICATED","timestamp":timestamp}
     payload=store.append_snapshot(state,commit,EXPECTED_CONFIG_HASH);master=store.append_master_snapshot(state["master"]);audit(cfg,"SNAPSHOT",timestamp=timestamp);return {"snapshot":payload,"master":master,"alerts":dispatch_alerts(cfg,state)}
+def dispatch_signal_progress(cfg,state):
+    try:
+        values=env_values(ROOT/".env")
+        chat_id=values.get("BITCOIN_TELEGRAM_CHAT_ID") or cfg.telegram_chat_id
+        client=TelegramClient(cfg.telegram_token,chat_id,cfg.telegram_enabled,cfg.telegram_dry_run)
+        store=SignalProgressStore(cfg.data_dir/"signal_progress.db")
+        progress_cfg=config_from_env(values)
+        results=run_signal_progress_check(state,progress_cfg,client,store)
+        audit(cfg,"SIGNAL_PROGRESS",results=[{"direction":r["direction"],"type":r["type"],"send":r["send"],"reason":r.get("reason")} for r in results])
+        return results
+    except Exception as exc:
+        logging.exception("Signal-progress notifier failed - analysis continues normally")
+        audit(cfg,"SIGNAL_PROGRESS_ERROR",error=type(exc).__name__)
+        return [{"send":False,"type":"ERROR","reason":["notifier_setup_failed"]}]
 def h4(cfg):
-    state=run_analysis(cfg,"h4");return {"decision":state["decision"],"alerts":dispatch_alerts(cfg,state)}
+    state=run_analysis(cfg,"h4");return {"decision":state["decision"],"alerts":dispatch_alerts(cfg,state),"signal_progress":dispatch_signal_progress(cfg,state)}
 def backup(cfg):
     current=datetime.now(timezone.utc);stamp=current.strftime("%Y%m%dT%H%M%SZ");tiers=[("daily",7)]
     if current.weekday()==6:tiers.append(("weekly",4))
@@ -111,6 +126,10 @@ def connection_test(cfg):
     verify_frozen();client=TelegramClient(cfg.telegram_token,cfg.telegram_chat_id,cfg.telegram_enabled,cfg.telegram_dry_run)
     result=client.send("₿ Bitcoin Intelligence Telegram connection successful.\nExecution remains DISABLED.")
     audit(cfg,"TELEGRAM_CONNECTION_TEST",status=result["status"]);return result
+def signal_progress_test(cfg):
+    values=env_values(ROOT/".env");chat_id=values.get("BITCOIN_TELEGRAM_CHAT_ID") or cfg.telegram_chat_id
+    client=TelegramClient(cfg.telegram_token,chat_id,cfg.telegram_enabled,cfg.telegram_dry_run)
+    result=send_test_message(client);audit(cfg,"SIGNAL_PROGRESS_TEST",status=result["status"]);return result
 def refresh(cfg,external=False):
     script=ROOT/"scripts"/("update_external_data.py" if external else "update_data.py")
     process=subprocess.run([sys.executable,str(script)],cwd=ROOT,text=True,capture_output=True,timeout=900)
@@ -126,9 +145,9 @@ def poll(cfg):
     if offset is not None:offset_file.write_text(str(offset),encoding="ascii")
     return {"handled":handled,"unauthorized_ignored":True}
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument("action",choices=("startup","daily","h4","health","backup","telegram-test","command","poll","refresh-price","refresh-providers"));parser.add_argument("--command",default="/decision");parser.add_argument("--send",action="store_true");args=parser.parse_args();cfg=settings()
+    parser=argparse.ArgumentParser();parser.add_argument("action",choices=("startup","daily","h4","health","backup","telegram-test","signal-progress-test","command","poll","refresh-price","refresh-providers"));parser.add_argument("--command",default="/decision");parser.add_argument("--send",action="store_true");args=parser.parse_args();cfg=settings()
     try:
-        result={"startup":lambda:startup(cfg,args.send),"daily":lambda:daily(cfg),"h4":lambda:h4(cfg),"health":lambda:health(cfg),"backup":lambda:backup(cfg),"telegram-test":lambda:connection_test(cfg),"command":lambda:command(cfg,args.command),"poll":lambda:poll(cfg),"refresh-price":lambda:refresh(cfg),"refresh-providers":lambda:refresh(cfg,True)}[args.action]()
+        result={"startup":lambda:startup(cfg,args.send),"daily":lambda:daily(cfg),"h4":lambda:h4(cfg),"health":lambda:health(cfg),"backup":lambda:backup(cfg),"telegram-test":lambda:connection_test(cfg),"signal-progress-test":lambda:signal_progress_test(cfg),"command":lambda:command(cfg,args.command),"poll":lambda:poll(cfg),"refresh-price":lambda:refresh(cfg),"refresh-providers":lambda:refresh(cfg,True)}[args.action]()
         print(result if isinstance(result,str) else json.dumps(result,indent=2,default=str))
     except Exception as exc:
         logging.exception("Shadow service action failed");audit(cfg,"ERROR",action=args.action,error=type(exc).__name__);print(json.dumps({"status":"ERROR","code":str(exc),"execution":"DISABLED"}));raise SystemExit(1)

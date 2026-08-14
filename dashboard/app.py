@@ -8,6 +8,7 @@ import plotly.graph_objects as go
 import streamlit as st
 from bitcoin_cycle_analyzer.ai import BitcoinAIRouter
 from bitcoin_cycle_analyzer.runtime import env_values
+from bitcoin_cycle_analyzer.telegram import SignalProgressStore,config_from_env
 from bitcoin_cycle_analyzer.config import load_config
 from bitcoin_cycle_analyzer.core.analyzer import analyze_intelligence
 from bitcoin_cycle_analyzer.data_provider import OHLCVStore
@@ -47,6 +48,12 @@ div[data-testid="stButtonGroup"] button{min-height:44px}div[role="radiogroup"] l
 config=load_config(ROOT/"config.yaml");store=OHLCVStore(ROOT/config["data"]["database"]);canonical=store.load_canonical("1d");frame=canonical[["open","high","low","close","volume"]] if not canonical.empty else store.load("1d")
 if frame.empty:st.error("Keine BTC-Daten verfügbar.");st.stop()
 env=env_values(ROOT/".env")
+_progress_cfg_preview=config_from_env(env)
+if not _progress_cfg_preview.enabled:telegram_progress_status,telegram_progress_source="DISABLED","TELEGRAM_PROGRESS_ENABLED=false"
+elif env.get("TELEGRAM_DRY_RUN","true").strip().lower() not in {"0","false","no","off"}:telegram_progress_status,telegram_progress_source="DRY RUN","TELEGRAM_DRY_RUN=true"
+else:
+    _last_alert=SignalProgressStore(Path(env.get("BITCOIN_DATA_DIR",ROOT/"data"))/"signal_progress.db").last_alert_summary()
+    telegram_progress_status="ACTIVE";telegram_progress_source="Letzter Alert: "+(str(_last_alert["last_sent_at"])[:16] if _last_alert else "noch keiner")
 external=ExternalMetricStore(ROOT/config["data"]["external_database"]);mt5=MT5MarketDataProvider(values=env);mh=mt5.connect();tick=mt5.tick() if mh.status=="ONLINE" else {"status":"UNAVAILABLE","reason":mh.reason};h4=mt5.confirmed_candles("4h",1000) if mh.status=="ONLINE" else store.load("4h");d1=mt5.confirmed_candles("1d",700) if mh.status=="ONLINE" else frame.iloc[0:0];w1=mt5.confirmed_candles("1w",260) if mh.status=="ONLINE" else frame.iloc[0:0];m1=mt5.confirmed_candles("1mo",180) if mh.status=="ONLINE" else frame.iloc[0:0];div=MT5MarketDataProvider.divergence(tick.get("mid"),float(frame.close.iloc[-1]));usable=mh.status=="ONLINE" and tick.get("freshness") in {"LIVE","DELAYED"} and not d1.empty and div.get("status")!="CRITICAL"
 if usable:frame=pd.concat([frame.loc[frame.index<d1.index[0]],d1]).sort_index();frame=frame[~frame.index.duplicated(keep="last")]
 live={"status":"ONLINE" if usable else mh.status,"health":mh.__dict__,"tick":tick,"divergence":div,"last_confirmed_h4":None if mh.status!="ONLINE" or h4.empty else h4.index[-1],"last_confirmed_d1":None if mh.status!="ONLINE" or d1.empty else d1.index[-1],"last_confirmed_w1":None if mh.status!="ONLINE" or w1.empty else w1.index[-1],"last_confirmed_1m":None if mh.status!="ONLINE" or m1.empty else m1.index[-1],"timing_confirmation":"ENABLED" if usable else "BLOCKED","provenance":mt5.provenance()};mt5.close()
@@ -444,6 +451,7 @@ with tabs[5]:
         {"Komponente":"Forward Ledger","Status":"ONLINE","Herkunft":"Append-only SQLite"},
         {"Komponente":"OpenAI","Status":"AKTIVIERT" if ai.enabled else "DEAKTIVIERT","Herkunft":f"{ai.models['NANO']} / {ai.models['ANALYSIS']}"},
         {"Komponente":"Automatischer Handel","Status":"DEAKTIVIERT","Herkunft":"Fest gesperrt"},
+        {"Komponente":"Telegram Signal-Alerts","Status":telegram_progress_status,"Herkunft":telegram_progress_source},
     ];st.dataframe(pd.DataFrame(health_rows),hide_index=True,use_container_width=True)
     st.subheader("AI HEUTE");u1,u2,u3,u4,u5=st.columns(5);u1.metric("Anfragen",usage["calls"]);u2.metric("Nano",usage["nano_requests"]);u3.metric("Tiefenanalyse",usage["deep_requests"]);u4.metric("Cache-Treffer",usage["cache_hits"]);u5.metric("Kosten",f"${usage['estimated_cost_usd']:.4f}")
     st.caption(f"Tokens: {usage['input_tokens']:,} Eingabe · {usage['output_tokens']:,} Ausgabe · Fallbacks: {usage['fallbacks']} · Eingefrorene Engines unverändert")
