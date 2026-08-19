@@ -10,7 +10,7 @@ Ein lokales, transparentes Research-System ausschließlich für Bitcoin. Es bewe
 
 ```powershell
 $python = '.\.venv\Scripts\python.exe'
-& $python -m pip install -e '.[dev,dashboard,live]'
+& $python -m pip install -e '.[dev,dashboard,live,research]'
 & $python scripts/update_data.py
 & $python scripts/seed_golden_events.py
 & $python scripts/data_quality_report.py
@@ -35,6 +35,32 @@ WAVERUN live mode uses public Binance WebSocket streams only:
 It writes a local snapshot to `runtime/waverun/latest.json` and predictions to
 `database/waverun_predictions.db`. No order or private endpoint exists in this
 path; outputs remain `execution: DISABLED`.
+
+WAVERUN historical Binance Vision aggregate trades can be downloaded into the
+ignored Parquet lake without credentials:
+
+```powershell
+& $python scripts/download_binance_history.py --market spot --symbol BTCUSDT --data-type aggTrades --start 2026-08-18
+& $python scripts/download_binance_history.py --market um --symbol BTCUSDT --data-type aggTrades --start 2026-08-18
+& $python scripts/data_inventory.py --output WAVERUN_DATA_INVENTORY.json
+```
+
+These archives contain trades, not historical L2. The activated 30-day
+Vantage/Binance overlap is recorded in `WAVERUN_DATA_ACTIVATION_REPORT.md`.
+
+The holdout-protected precision research is reproducible with:
+
+```powershell
+& $python scripts/waverun_data_quality.py
+& $python scripts/build_waverun_research_dataset.py
+& $python scripts/run_waverun_precision_research.py
+& $python scripts/waverun_selected_diagnostics.py
+```
+
+The default dataset builder stops at 2026-08-15. It refuses the 2026-08-16/17
+final holdout without a frozen candidate, and excludes the previously viewed
+2026-08-18 exploration day. Results remain research-only with
+`execution: DISABLED`; see `WAVERUN_80_PRECISION_RESEARCH_REPORT.md`.
 
 Tests:
 

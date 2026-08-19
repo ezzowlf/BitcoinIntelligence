@@ -29,7 +29,11 @@ from bitcoin_cycle_analyzer.action_story import translate_decision,translate_mac
 ROOT=Path(__file__).resolve().parents[1]
 drawing_store=UserDrawingStore(ROOT,"BTCUSD")
 st.set_page_config(page_title="BTC Intelligence Terminal",page_icon="₿",layout="wide",initial_sidebar_state="collapsed")
-render_panel(Path(__file__).resolve().parents[1] / "runtime" / "waverun" / "latest.json")
+render_panel(
+    Path(__file__).resolve().parents[1] / "runtime" / "waverun" / "latest.json",
+    Path(__file__).resolve().parents[1] / "data" / "reports" / "waverun_precision_research.json",
+    Path(__file__).resolve().parents[1] / "data" / "reports" / "waverun_selected_diagnostics.json",
+)
 st.markdown("""<style>
 :root{--bg:#070b12;--panel:#0d1420;--panel2:#111a28;--line:#223047;--text:#e6edf7;--muted:#7f8ea3;--green:#26c281;--amber:#f0b44d;--red:#ee5a67;--blue:#4da3ff}
 .stApp{background:var(--bg);color:var(--text)}header[data-testid="stHeader"],div[data-testid="stToolbar"],.stDeployButton{display:none!important}.block-container{max-width:1900px;padding:1rem 1.35rem 2rem}

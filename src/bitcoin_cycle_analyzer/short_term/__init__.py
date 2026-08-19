@@ -4,6 +4,7 @@ This package is deliberately observation-only.  It produces forecasts and
 state transitions, never exchange orders.
 """
 
+from .binance_history import BinanceVisionHistory
 from .contracts import (
     HORIZONS_SECONDS,
     Costs,
@@ -12,23 +13,34 @@ from .contracts import (
     ModelOutput,
     SetupState,
 )
-from .engine import ShortTermEngine
-from .storage import ForecastStore
 from .data_lake import ParquetDataLake
+from .engine import ShortTermEngine
 from .microstructure import MicrostructureFeatures, UnifiedEvent
 from .mt5_ticks import MT5TickHistory
+from .pressure import (
+    DirectionalPressureEngine,
+    PressureSnapshot,
+    completed_bars,
+    macd_features,
+)
+from .storage import ForecastStore
 
 __all__ = [
     "HORIZONS_SECONDS",
+    "BinanceVisionHistory",
     "Costs",
+    "DirectionalPressureEngine",
     "Forecast",
     "ForecastStore",
+    "MT5TickHistory",
     "MarketTick",
+    "MicrostructureFeatures",
     "ModelOutput",
+    "ParquetDataLake",
+    "PressureSnapshot",
     "SetupState",
     "ShortTermEngine",
-    "MicrostructureFeatures",
-    "MT5TickHistory",
-    "ParquetDataLake",
     "UnifiedEvent",
+    "completed_bars",
+    "macd_features",
 ]

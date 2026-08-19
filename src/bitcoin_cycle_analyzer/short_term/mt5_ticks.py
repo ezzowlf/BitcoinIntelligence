@@ -5,7 +5,6 @@ from typing import Any
 
 import pandas as pd
 
-
 TICK_COLUMNS = ("time", "time_msc", "bid", "ask", "last", "volume", "flags", "volume_real")
 
 

@@ -5,7 +5,10 @@ import pytest
 
 from bitcoin_cycle_analyzer.short_term.data_lake import ParquetDataLake
 from bitcoin_cycle_analyzer.short_term.events import normalize_binance_message
-from bitcoin_cycle_analyzer.short_term.microstructure import MicrostructureFeatures, event_from_market_event
+from bitcoin_cycle_analyzer.short_term.microstructure import (
+    MicrostructureFeatures,
+    event_from_market_event,
+)
 from bitcoin_cycle_analyzer.short_term.mt5_ticks import MT5TickHistory
 
 
