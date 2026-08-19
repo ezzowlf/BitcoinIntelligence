@@ -22,12 +22,14 @@ from bitcoin_cycle_analyzer.decision_intelligence import build_decision_state as
 from bitcoin_cycle_analyzer.ui_state import LAYER_PRESETS,get_chart_view_state
 from bitcoin_cycle_analyzer.glossary import GLOSSARY
 from bitcoin_cycle_analyzer.event_intelligence import classify_causality,expected_vs_observed,event_evidence_family
+from bitcoin_cycle_analyzer.short_term.dashboard import render_panel
 from bitcoin_cycle_analyzer.drawing_state import UserDrawingStore,compute_fib_levels
 from bitcoin_cycle_analyzer.action_story import translate_decision,translate_macro_action,translate_entry_status,zone_message_de,what_must_happen_de,why_text_de,why_not_now_de,buy_playbook_de,elliott_roadmap_de,event_relevance_de,ELLIOTT_BASICS_DE
 
 ROOT=Path(__file__).resolve().parents[1]
 drawing_store=UserDrawingStore(ROOT,"BTCUSD")
 st.set_page_config(page_title="BTC Intelligence Terminal",page_icon="₿",layout="wide",initial_sidebar_state="collapsed")
+render_panel(Path(__file__).resolve().parents[1] / "runtime" / "waverun" / "latest.json")
 st.markdown("""<style>
 :root{--bg:#070b12;--panel:#0d1420;--panel2:#111a28;--line:#223047;--text:#e6edf7;--muted:#7f8ea3;--green:#26c281;--amber:#f0b44d;--red:#ee5a67;--blue:#4da3ff}
 .stApp{background:var(--bg);color:var(--text)}header[data-testid="stHeader"],div[data-testid="stToolbar"],.stDeployButton{display:none!important}.block-container{max-width:1900px;padding:1rem 1.35rem 2rem}

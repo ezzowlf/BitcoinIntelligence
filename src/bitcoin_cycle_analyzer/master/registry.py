@@ -12,7 +12,9 @@ def build_factor_registry(state,technical):
     p=state["precision"];data=state["data_status"]
     def provider(name,group,status,role):
         item=data.get(name,{"status":"UNAVAILABLE"});available=item.get("status")=="AVAILABLE"
-        return _entry(name,group,status if available else "UNAVAILABLE",role,item.get("status","UNAVAILABLE"),"CURRENT" if available else "UNKNOWN",independence=group)
+        # Availability is data health; the registry status remains the
+        # domain role. Derivatives are risk-only even when the feed is absent.
+        return _entry(name,group,status,role,item.get("status","UNAVAILABLE"),"CURRENT" if available else "UNKNOWN",independence=group)
     factors=[
       _entry("price","PRICE","VALIDATED","CONTEXT",confidence="HIGH"),_entry("structure","STRUCTURE","PARTIALLY_VALIDATED","TIMING",confidence="HIGH"),
       _entry("fibonacci","ZONES","RESEARCH_ONLY","CONTEXT",independence="PRICE_STRUCTURE"),_entry("historical_zones","ZONES","RESEARCH","CONTEXT",independence="PRICE_STRUCTURE"),

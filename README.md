@@ -10,14 +10,31 @@ Ein lokales, transparentes Research-System ausschließlich für Bitcoin. Es bewe
 
 ```powershell
 $python = '.\.venv\Scripts\python.exe'
-& $python -m pip install -e '.[dev,dashboard]'
+& $python -m pip install -e '.[dev,dashboard,live]'
 & $python scripts/update_data.py
+& $python scripts/seed_golden_events.py
 & $python scripts/data_quality_report.py
 & $python scripts/run_real_validation.py
 & $python scripts/run_intelligence_validation.py
 & $python scripts/run_analysis.py
 & $python -m streamlit run dashboard/app.py
 ```
+
+`database/*.db` is intentionally ignored because it contains generated local
+market data. A fresh checkout should run `scripts/update_data.py` to rebuild
+the public Bitstamp OHLCV baseline and `scripts/seed_golden_events.py` to add
+the small source-labelled event fixture. The dashboard and historical tests
+then use the same UTC-normalized SQLite schema.
+
+WAVERUN live mode uses public Binance WebSocket streams only:
+
+```powershell
+& $python scripts/waverun_live.py --duration 30
+```
+
+It writes a local snapshot to `runtime/waverun/latest.json` and predictions to
+`database/waverun_predictions.db`. No order or private endpoint exists in this
+path; outputs remain `execution: DISABLED`.
 
 Tests:
 
