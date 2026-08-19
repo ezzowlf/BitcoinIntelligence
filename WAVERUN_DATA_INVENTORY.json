@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-08-19T21:48:16.366434+00:00",
+  "execution": "DISABLED",
+  "rows": [
+    {
+      "source": "vantage",
+      "market": "broker",
+      "instrument": "BTCUSD",
+      "path": "runtime\\waverun_data\\vantage\\BTCUSD",
+      "exists": false,
+      "resolution": "UNKNOWN",
+      "event_count": 0,
+      "timestamp_precision": null,
+      "start": null,
+      "end": null,
+      "bid_ask_available": false,
+      "trades_available": false,
+      "orderbook_available": false,
+      "liquidations_available": false,
+      "availability_timestamp": null,
+      "gaps": null,
+      "quality": "UNAVAILABLE",
+      "research_usability": "NO_DATA"
+    },
+    {
+      "source": "binance",
+      "market": "spot",
+      "instrument": "BTCUSDT",
+      "path": "runtime\\waverun_data\\binance_spot",
+      "exists": false,
+      "resolution": "UNKNOWN",
+      "event_count": 0,
+      "timestamp_precision": null,
+      "start": null,
+      "end": null,
+      "bid_ask_available": false,
+      "trades_available": false,
+      "orderbook_available": false,
+      "liquidations_available": false,
+      "availability_timestamp": null,
+      "gaps": null,
+      "quality": "UNAVAILABLE",
+      "research_usability": "NO_DATA"
+    },
+    {
+      "source": "binance",
+      "market": "futures",
+      "instrument": "BTCUSDT",
+      "path": "runtime\\waverun_data\\binance_futures",
+      "exists": false,
+      "resolution": "UNKNOWN",
+      "event_count": 0,
+      "timestamp_precision": null,
+      "start": null,
+      "end": null,
+      "bid_ask_available": false,
+      "trades_available": false,
+      "orderbook_available": false,
+      "liquidations_available": false,
+      "availability_timestamp": null,
+      "gaps": null,
+      "quality": "UNAVAILABLE",
+      "research_usability": "NO_DATA"
+    }
+  ],
+  "notes": [
+    "No provider credentials or paid datasets were accessed.",
+    "Missing data remains unavailable; this report does not infer history."
+  ]
+}
