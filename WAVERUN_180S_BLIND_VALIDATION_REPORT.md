@@ -10,7 +10,7 @@ EXECUTION: `DISABLED`
 
 FINAL AUGUST HOLDOUT: `CLOSED / UNTOUCHED`
 
-| Period | Signals | Wins | Losses | Precision | 95% CI | Net EV | Signals/day |
+| Period | Signals | Wins | Losses | Endpoint directional precision (>0) | 95% CI | Net EV | Signals/day |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | Q1_WF | 15 | 14 | 1 | 93.33% | 70.18%–98.81% | 0.2773% | 0.94 |
 | APR_2025 | 83 | 51 | 32 | 61.45% | 50.69%–71.19% | 0.0643% | 2.77 |
@@ -32,7 +32,7 @@ No retraining, recalibration, threshold adjustment, feature change, or post-peri
 ## Key answers
 
 1. 180s remained the frozen hypothesis, but it did not survive as a high-precision edge.
-2. The original 93.33% did not persist; new OOS precision was 60.42%.
+2. The original 93.33% endpoint directional precision (>0) did not persist; new OOS endpoint directional precision was 60.42%.
 3. Independent new signals: 144.
 4. Precision fell as sample size increased; 95% CI is 52.26%–68.03%.
 5. Aggregate proxy Net EV remained positive, but June was negative.

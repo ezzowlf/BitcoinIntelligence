@@ -4,7 +4,7 @@ The product target is frozen as a research objective, not reported as achieved:
 
 | Target | Required signals/day | Required OOS precision | V1 blind result |
 |---|---:|---:|---:|
-| Primary | 3–10 | >=70% | 1.18/day at 60.42% |
+| Primary | 3–10 | >=70% for a predefined economic move | 1.18/day at 60.42% endpoint directional precision (>0); magnitude target not met |
 | Excellent | >=5 | >=75% | Not achieved |
 | Exceptional | >=3 | >=80% | Not achieved |
 
