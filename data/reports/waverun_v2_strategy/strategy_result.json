@@ -1,0 +1,291 @@
+{
+  "research_id": "WAVERUN_V2_STRATEGY_SYNTHESIS",
+  "execution": "DISABLED",
+  "final_holdout_requested": false,
+  "final_holdout_dates": [
+    "2026-08-16",
+    "2026-08-17"
+  ],
+  "v1_fingerprint": "a61a4229635da3e3869b08371e3d7dd38290091951b4488a2bda7df13c2a0f60",
+  "development_splits": {
+    "DISCOVERY": "2025-01-01..2025-02-09",
+    "TRAIN": "2025-02-10..2025-03-15",
+    "VALIDATION": "2025-03-16..2025-06-30",
+    "WALK_FORWARD": "2026-07-01..2026-07-31",
+    "FINAL_HOLDOUT": "2026-08-16..2026-08-17 CLOSED"
+  },
+  "final_decision": "NO ROBUST V2 STRATEGY FOUND",
+  "candidate_frozen": false,
+  "prefreeze_gate": {
+    "passed": false,
+    "checks": {
+      "precision": false,
+      "positive_net_ev": false,
+      "frequency": false,
+      "support": true,
+      "temporal_stability": false,
+      "parameter_stability": false
+    }
+  },
+  "best_current_configuration": {
+    "target": 200,
+    "adverse": 200,
+    "horizon": 600,
+    "precision": 0.5471698113207547,
+    "signals": 159,
+    "signals_per_day": 0.7607655502392344,
+    "successful_per_day": 0.41626794258373206,
+    "net_ev": -6.294647339622644,
+    "wilson_ci95": [
+      0.46959600192610984,
+      0.6225181323283406
+    ],
+    "lead_time": 55.0
+  },
+  "pareto_frontier": [
+    {
+      "target": 200,
+      "adverse": 200,
+      "horizon": 600,
+      "precision": 0.5471698113207547,
+      "signals": 159,
+      "signals_per_day": 0.7607655502392344,
+      "successful_per_day": 0.41626794258373206,
+      "net_ev": -6.294647339622644,
+      "wilson_ci95": [
+        0.46959600192610984,
+        0.6225181323283406
+      ],
+      "lead_time": 55.0
+    },
+    {
+      "target": 200,
+      "adverse": 150,
+      "horizon": 600,
+      "precision": 0.5031446540880503,
+      "signals": 159,
+      "signals_per_day": 0.7607655502392344,
+      "successful_per_day": 0.3827751196172249,
+      "net_ev": 0.9380570628930789,
+      "wilson_ci95": [
+        0.42627648407830593,
+        0.5798644582053241
+      ],
+      "lead_time": 50.0
+    },
+    {
+      "target": 200,
+      "adverse": 75,
+      "horizon": 600,
+      "precision": 0.4025157232704403,
+      "signals": 159,
+      "signals_per_day": 0.7607655502392344,
+      "successful_per_day": 0.3062200956937799,
+      "net_ev": 10.529252031446536,
+      "wilson_ci95": [
+        0.3294585706439542,
+        0.48017221856351483
+      ],
+      "lead_time": 45.0
+    },
+    {
+      "target": 200,
+      "adverse": 50,
+      "horizon": 600,
+      "precision": 0.34591194968553457,
+      "signals": 159,
+      "signals_per_day": 0.7607655502392344,
+      "successful_per_day": 0.2631578947368421,
+      "net_ev": 11.315415553459118,
+      "wilson_ci95": [
+        0.2763987587797403,
+        0.422695069322388
+      ],
+      "lead_time": 45.0
+    },
+    {
+      "target": 300,
+      "adverse": 50,
+      "horizon": 600,
+      "precision": 0.2578616352201258,
+      "signals": 159,
+      "signals_per_day": 0.7607655502392344,
+      "successful_per_day": 0.19617224880382775,
+      "net_ev": 15.089000459119488,
+      "wilson_ci95": [
+        0.19614185431570635,
+        0.33100558984478085
+      ],
+      "lead_time": 65.0
+    },
+    {
+      "target": 400,
+      "adverse": 75,
+      "horizon": 600,
+      "precision": 0.24528301886792453,
+      "signals": 159,
+      "signals_per_day": 0.7607655502392344,
+      "successful_per_day": 0.18660287081339713,
+      "net_ev": 16.346862094339617,
+      "wilson_ci95": [
+        0.18493596375808752,
+        0.3176477112678795
+      ],
+      "lead_time": 120.0
+    },
+    {
+      "target": 400,
+      "adverse": 50,
+      "horizon": 600,
+      "precision": 0.2138364779874214,
+      "signals": 159,
+      "signals_per_day": 0.7607655502392344,
+      "successful_per_day": 0.16267942583732056,
+      "net_ev": 21.06384322641509,
+      "wilson_ci95": [
+        0.1572520944196886,
+        0.2839221577699781
+      ],
+      "lead_time": 120.0
+    }
+  ],
+  "move_availability": {
+    "200": {
+      "moves": 14616,
+      "moves_per_day": 69.93301435406698,
+      "median_time_seconds": 415.0
+    },
+    "300": {
+      "moves": 3802,
+      "moves_per_day": 18.19138755980861,
+      "median_time_seconds": 305.0
+    },
+    "400": {
+      "moves": 2033,
+      "moves_per_day": 9.727272727272727,
+      "median_time_seconds": 335.0
+    },
+    "500": {
+      "moves": 1149,
+      "moves_per_day": 5.497607655502392,
+      "median_time_seconds": 350.0
+    },
+    "600": {
+      "moves": 687,
+      "moves_per_day": 3.287081339712919,
+      "median_time_seconds": 360.0
+    },
+    "800": {
+      "moves": 311,
+      "moves_per_day": 1.4880382775119618,
+      "median_time_seconds": 375.0
+    }
+  },
+  "opportunity_records": 159,
+  "findings": [
+    {
+      "category": "V1",
+      "statement": "Frozen V1 failed to generalize on later blind data.",
+      "evidence": {
+        "new_oos_precision": 0.6042
+      },
+      "period": "2025-04-01..2026-07-31",
+      "sample_size": 144,
+      "confidence": "HIGH",
+      "supports": "",
+      "contradicts": "V1 high-precision hypothesis",
+      "status": "REFUTED",
+      "created_at": "2026-08-21T00:00:00+00:00"
+    },
+    {
+      "category": "HARD_MOVE",
+      "statement": "Existing V1 barrier baseline peaks below the product precision gate.",
+      "evidence": {
+        "best": {
+          "target": 200,
+          "adverse": 200,
+          "horizon": 600,
+          "precision": 0.5471698113207547,
+          "signals": 159,
+          "signals_per_day": 0.7607655502392344,
+          "successful_per_day": 0.41626794258373206,
+          "net_ev": -6.294647339622644,
+          "wilson_ci95": [
+            0.46959600192610984,
+            0.6225181323283406
+          ],
+          "lead_time": 55.0
+        }
+      },
+      "period": "2025-03-16..2026-07-31",
+      "sample_size": 159,
+      "confidence": "HIGH",
+      "supports": "",
+      "contradicts": "V2 pre-freeze gate",
+      "status": "REPLICATED",
+      "created_at": "2026-08-21T00:00:00+00:00"
+    },
+    {
+      "category": "MACD",
+      "statement": "Broad MACD did not add stable OOS value; anomaly interactions remain unproven.",
+      "evidence": {
+        "hard_baseline_extreme_precision": 0.4052
+      },
+      "period": "Q1 2025..Jul 2026",
+      "sample_size": 153,
+      "confidence": "MEDIUM",
+      "supports": "",
+      "contradicts": "",
+      "status": "OBSERVED",
+      "created_at": "2026-08-21T00:00:00+00:00"
+    },
+    {
+      "category": "EXPANSION",
+      "statement": "Expansion is diagnostic but not chronologically stable enough for promotion.",
+      "evidence": {
+        "hard_baseline_early_expansion_precision": 0.425
+      },
+      "period": "Q1 2025..Jul 2026",
+      "sample_size": 120,
+      "confidence": "MEDIUM",
+      "supports": "",
+      "contradicts": "",
+      "status": "INCONCLUSIVE",
+      "created_at": "2026-08-21T00:00:00+00:00"
+    },
+    {
+      "category": "FLOW",
+      "statement": "Spot/Futures confirmation alone remains below the barrier precision gate.",
+      "evidence": {
+        "precision": 0.4659
+      },
+      "period": "Q1 2025..Jul 2026",
+      "sample_size": 88,
+      "confidence": "MEDIUM",
+      "supports": "",
+      "contradicts": "",
+      "status": "INCONCLUSIVE",
+      "created_at": "2026-08-21T00:00:00+00:00"
+    }
+  ],
+  "finding_ids": [
+    "3d3be0b0f64f96db7878b115",
+    "4a908236fd4e46d9f7ac98be",
+    "387a0463211438fd8a571302",
+    "fb8a53f255a79ad754a7e715",
+    "5759516e07348b4f59ebc7c0"
+  ],
+  "model_comparison_status": {
+    "Logistic": "PRIOR_PROVISIONAL_NOT_STABLE",
+    "GradientBoosting": "PRIOR_SCREENED_NOT_SELECTED",
+    "RandomForest": "PRIOR_SCREENED_NOT_SELECTED",
+    "HistGradientBoosting": "QUEUED_UNBIASED_DATASET_REQUIRED",
+    "ExtraTrees": "QUEUED_UNBIASED_DATASET_REQUIRED"
+  },
+  "product_status": {
+    ">=3/day_>=70%": "FAIL",
+    ">=5/day_>=75%": "FAIL",
+    ">=3/day_>=80%": "FAIL",
+    "90%_elite": "NOT_FOUND"
+  }
+}

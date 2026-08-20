@@ -1,0 +1,3259 @@
+[
+  {
+    "opportunity_id": "600f71c97d573b40ae26f82d",
+    "timestamp": "2025-03-16T16:08:35+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 549.9349999999977,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5657542318174286
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "ecdeecaacb23416b4f1f5783",
+    "timestamp": "2025-03-16T16:12:00+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 267.2850000000035,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5610452021835206
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "ded3a4e98447244358481104",
+    "timestamp": "2025-03-16T16:19:10+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 329.5899999999965,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5540029968055723
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "de2cb89cec4ca5ac4d714823",
+    "timestamp": "2025-03-16T19:17:05+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 540.8400000000111,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5820278795376255
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "473afe21011ef6dfd7069b51",
+    "timestamp": "2025-03-17T12:00:40+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 689.7799999999988,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5992080532599107
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "d02e5d9a0ffc77c7022ed198",
+    "timestamp": "2025-03-17T12:30:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 660.8050000000076,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.652589083550849
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "d10d8af44a274eeff8c82294",
+    "timestamp": "2025-03-17T12:39:20+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 129.19999999998254,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5679991609807888
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "f7b6f21b946292b4a8b5ddf0",
+    "timestamp": "2025-03-19T18:00:10+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 1138.0050000000047,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.6470054581966606
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "a33090cf76df5056751d8ee7",
+    "timestamp": "2025-03-19T18:54:00+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 222.02999999999884,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5539314785978602
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "51e3a70cf424cc1fb0c41550",
+    "timestamp": "2025-03-19T18:57:45+00:00",
+    "direction": "DOWN",
+    "setup_family": "FUTURES_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 374.4899999999907,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5557592384035166
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "3560c1be280cf151b275c27d",
+    "timestamp": "2025-03-20T00:04:15+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 282.0049999999901,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.56224192161423
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "90c84a680badf8c971f538b5",
+    "timestamp": "2025-03-20T10:21:05+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 516.3849999999948,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5514839449843135
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "862220e57adbae0efff2abba",
+    "timestamp": "2025-03-20T15:03:10+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 730.8399999999965,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5567378161069262
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "e22051d5c45924ea6ce9f3d2",
+    "timestamp": "2025-03-29T09:44:55+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 242.06500000000233,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5765633980009593
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "21215f4fd95f6c0d28ea4f31",
+    "timestamp": "2025-03-31T23:15:10+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 468.804999999993,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5644364640305405
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "4e5bd42637b18eafb1928deb",
+    "timestamp": "2025-04-02T20:12:50+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 2318.9199999999983,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5535205827025461
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "1de4b364f7e7f97500625962",
+    "timestamp": "2025-04-02T20:16:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 917.8250000000116,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5601608593203508
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "78db533f10ab7df120afb0c5",
+    "timestamp": "2025-04-02T20:19:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 2336.3600000000006,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5548073354252625
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "abbf123ff135b330c64fde10",
+    "timestamp": "2025-04-02T20:22:30+00:00",
+    "direction": "UP",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 116.59500000000116,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5575431588035239
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "ada59162fc40f6b34e159c71",
+    "timestamp": "2025-04-02T20:26:50+00:00",
+    "direction": "UP",
+    "setup_family": "FUTURES_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 0.0,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5866641666983724
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "f8cc828760c536132437b5a6",
+    "timestamp": "2025-04-02T20:29:50+00:00",
+    "direction": "UP",
+    "setup_family": "FUTURES_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 252.5399999999936,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.569576716470724
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "33f5686c455bb604f156c30c",
+    "timestamp": "2025-04-02T20:35:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_FUTURES_CONFIRMATION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 715.8650000000198,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5501479672110002
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "6d2ec833f6db1b3f573e214a",
+    "timestamp": "2025-04-02T21:23:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 443.3399999999965,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.553680329431479
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "bf6c25d77a4a6751f7968b9e",
+    "timestamp": "2025-04-04T10:22:55+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 267.7199999999866,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5539890550316714
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "6b40ee891f17b16432475c75",
+    "timestamp": "2025-04-04T12:30:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 542.1600000000035,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.6199633947932117
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "5e573cba38725254ca516187",
+    "timestamp": "2025-04-06T22:01:40+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 593.4300000000076,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5603687808681307
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "5edf188b43cb30e34d258a56",
+    "timestamp": "2025-04-06T23:21:10+00:00",
+    "direction": "UP",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 232.52999999999884,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5570358856740495
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "019ea478456947add5c7a9cd",
+    "timestamp": "2025-04-07T06:17:20+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 0.0,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5507411599118931
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "882cef4df26bcdca538e216c",
+    "timestamp": "2025-04-07T06:46:50+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 543.6399999999994,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5567176406186868
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "63fc31ec1d7ae8184012081d",
+    "timestamp": "2025-04-07T06:54:40+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 520.804999999993,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5544193593104161
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "147c1aa2b547f8e01414a5f6",
+    "timestamp": "2025-04-07T13:38:25+00:00",
+    "direction": "UP",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 197.0350000000035,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5503687179179952
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "67b9b73589403b3077f23508",
+    "timestamp": "2025-04-07T13:49:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 190.99499999999534,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5538699975710177
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "3a376d6ae77b28620cf8ef88",
+    "timestamp": "2025-04-07T13:54:00+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_FUTURES_CONFIRMATION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 99.58000000000175,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.553827683429789
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "431cb7b8368ebdf17cd43bbd",
+    "timestamp": "2025-04-07T13:57:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 290.20500000000175,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5545269507964508
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "8adfade2fb6e2b9dcf39b919",
+    "timestamp": "2025-04-07T14:09:00+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 156.4100000000035,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5541408892108203
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "cac5a01717477e416258b7da",
+    "timestamp": "2025-04-07T14:12:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 49.55500000002212,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5610406794940728
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "62dcf75bd8d0f871d88b6afe",
+    "timestamp": "2025-04-07T14:15:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 1658.4400000000023,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5677771326162296
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "b89a0c6966b17a6153d7ef39",
+    "timestamp": "2025-04-07T14:18:35+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 2584.5100000000093,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5519699196491443
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "1112d608e3e8621a8fd1d706",
+    "timestamp": "2025-04-07T14:21:45+00:00",
+    "direction": "DOWN",
+    "setup_family": "PRESSURE_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 1969.5050000000047,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5589224234725849
+    },
+    "contradictions": [
+      "SPOT_FUTURES_DIVERGENCE"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "d3cc6dbfbfadef4966d01743",
+    "timestamp": "2025-04-07T14:24:45+00:00",
+    "direction": "UP",
+    "setup_family": "SPOT_FUTURES_CONFIRMATION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 1279.4899999999907,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.6350229368694262
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "f4cc607c1cd76e35c99b0197",
+    "timestamp": "2025-04-07T14:28:30+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 378.52500000000873,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5522450939166103
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "a28fff328e4b1b1e4b4757fb",
+    "timestamp": "2025-04-07T14:31:35+00:00",
+    "direction": "DOWN",
+    "setup_family": "FUTURES_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 353.5650000000023,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5575912794821994
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "eadf67cbbb44afb460f672bb",
+    "timestamp": "2025-04-07T14:34:35+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 75.125,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.558296326069774
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "696ffbf68bb8e0275c549088",
+    "timestamp": "2025-04-07T14:39:20+00:00",
+    "direction": "UP",
+    "setup_family": "FUTURES_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 926.6050000000105,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5618974267739021
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "2d7b151e59353c06200ad87f",
+    "timestamp": "2025-04-07T14:42:45+00:00",
+    "direction": "DOWN",
+    "setup_family": "FUTURES_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 195.88499999999476,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5532325277004123
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "4c528d1d0c872712d2322ce9",
+    "timestamp": "2025-04-07T14:45:55+00:00",
+    "direction": "DOWN",
+    "setup_family": "FUTURES_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 587.0899999999965,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.555747467099788
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "8b924b39c196a23663470354",
+    "timestamp": "2025-04-07T14:54:15+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_FUTURES_CONFIRMATION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 572.4499999999971,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5501689495715331
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "6bac93222defbfb882f8d543",
+    "timestamp": "2025-04-07T15:00:25+00:00",
+    "direction": "UP",
+    "setup_family": "PRESSURE_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 303.6750000000029,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.6511317450440836
+    },
+    "contradictions": [
+      "SPOT_FUTURES_DIVERGENCE"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "abd6f101dd39aa1f68265b85",
+    "timestamp": "2025-04-07T15:09:00+00:00",
+    "direction": "UP",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 345.9550000000163,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5621392392589758
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "da968a06d9d895c3b8d6e445",
+    "timestamp": "2025-04-07T15:13:30+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_FUTURES_CONFIRMATION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 1215.6199999999953,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5601303619628126
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "2b114d350f2567304884072d",
+    "timestamp": "2025-04-07T15:17:10+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 449.3000000000029,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5538562736699421
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "d4c17d4a5a9e6bbd72b86a36",
+    "timestamp": "2025-04-07T15:21:00+00:00",
+    "direction": "DOWN",
+    "setup_family": "FUTURES_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 604.4799999999959,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5655259876179343
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "df1e6e4de7996b75ce108a74",
+    "timestamp": "2025-04-07T17:00:10+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 274.6000000000058,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5745957146907015
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "4fb7b2c57986ec4feee764bc",
+    "timestamp": "2025-04-07T17:03:25+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 505.7950000000128,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5554668827498738
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "2488dcb3d8d76ab9bb07fed1",
+    "timestamp": "2025-04-07T17:06:40+00:00",
+    "direction": "UP",
+    "setup_family": "SPOT_FUTURES_CONFIRMATION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 670.9350000000122,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5516132984585908
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "29aff6cbdb7f1f0acfe67797",
+    "timestamp": "2025-04-07T17:46:05+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 570.3249999999971,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5673424887859981
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "1230c548a874e94586a82fa7",
+    "timestamp": "2025-04-07T19:00:30+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 678.5699999999924,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5803042096308477
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "35cbbb0b1de718c132c30830",
+    "timestamp": "2025-04-08T13:36:25+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 383.8399999999965,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5501981235503924
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "01ed7076b702404a486c37c8",
+    "timestamp": "2025-04-08T17:35:25+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 232.4050000000134,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5770538126632182
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "2acc52789d2bea03915178e6",
+    "timestamp": "2025-04-08T18:30:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 356.375,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5644561759166494
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "d9d77ea1806be80bfc5afef1",
+    "timestamp": "2025-04-09T01:34:35+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 35.01999999998952,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.550662976473374
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "662d6a919ffd1a9304f27f06",
+    "timestamp": "2025-04-09T04:02:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 435.5,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5556940018087296
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "72b59368f1743205a9d03de7",
+    "timestamp": "2025-04-09T07:02:55+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 151.64499999998952,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.552676773107938
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "3c69fe19854aa5d0ef3525cb",
+    "timestamp": "2025-04-09T11:00:00+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 0.0,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5518780364195682
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "7be02085984d17287e230d5d",
+    "timestamp": "2025-04-09T11:03:00+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 149.8350000000064,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5545331288838753
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "c2f69f82027ecaf3743cd4c3",
+    "timestamp": "2025-04-09T11:06:20+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 912.3000000000029,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5629395280569366
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "0a9de849027d8a9a63ed96f3",
+    "timestamp": "2025-04-09T11:48:25+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 419.84000000001106,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5595819463788264
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "c3f78555f9345c02d16492ec",
+    "timestamp": "2025-04-09T13:51:45+00:00",
+    "direction": "DOWN",
+    "setup_family": "FUTURES_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 107.22000000000116,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5526927231470267
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "0dd0aa738cf1f7fc9a71c223",
+    "timestamp": "2025-04-09T14:23:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 291.320000000007,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5535054448901179
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "dac1f470fbabc5b1432dcf3b",
+    "timestamp": "2025-04-09T17:02:10+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 493.07500000001164,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5746738292966461
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "9e0a1caa5af7baa9af5f3592",
+    "timestamp": "2025-04-09T17:18:50+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 3446.890000000014,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.6193182646047468
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "64d5fe732b14ac87cb67cef8",
+    "timestamp": "2025-04-09T17:21:50+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 2102.5800000000017,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5835540554488734
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "0af005b8a8abfd827efa2a96",
+    "timestamp": "2025-04-09T17:24:50+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 226.91999999999825,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.6331389621674112
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "ffa6c32f1b67875fa1dfa64f",
+    "timestamp": "2025-04-09T17:27:50+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 475.25,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5544627275696172
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "c0ca83d1c968a8da2961af00",
+    "timestamp": "2025-04-09T17:33:45+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 15.129999999990105,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5503744988978687
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "40806398810b39fcaa1608d4",
+    "timestamp": "2025-04-09T17:37:10+00:00",
+    "direction": "DOWN",
+    "setup_family": "PRESSURE_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 594.0900000000111,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5506277039955181
+    },
+    "contradictions": [
+      "SPOT_FUTURES_DIVERGENCE"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "fbe9625b1db1dda24f9f426f",
+    "timestamp": "2025-04-09T17:46:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "FUTURES_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 270.09999999999127,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5527994542596552
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "41ba693750283692241c3621",
+    "timestamp": "2025-04-09T17:51:15+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_FUTURES_CONFIRMATION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 100.74000000000524,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.552462941056553
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "ffac3b742baf6992e2f78441",
+    "timestamp": "2025-04-09T17:56:35+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 40.845000000001164,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5523089144583714
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "59453f4f33cc5fcc270a343e",
+    "timestamp": "2025-04-09T17:59:40+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_FUTURES_CONFIRMATION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 517.6450000000041,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5764775536720693
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "a78af4e4da756f1118c73138",
+    "timestamp": "2025-04-10T12:30:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 558.4550000000017,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5535408319840837
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "e88f5ada393411c1c091ccb6",
+    "timestamp": "2025-04-10T14:06:35+00:00",
+    "direction": "DOWN",
+    "setup_family": "PRESSURE_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 236.4600000000064,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.9986461751347283
+    },
+    "contradictions": [
+      "SPOT_FUTURES_DIVERGENCE"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "0f5b6a941fad839fcfdab763",
+    "timestamp": "2025-04-11T01:51:10+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 70.86499999999069,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5554712411786742
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "9530218c024c8e71d8bd0187",
+    "timestamp": "2025-04-11T08:05:35+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 189.06999999999243,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5569803790003549
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "fd7e1bb92e66a998a7a0cf6d",
+    "timestamp": "2025-04-11T12:30:10+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 250.97000000000116,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5566469453676282
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "1f5b8769a08a75b71718d29d",
+    "timestamp": "2025-04-11T13:39:45+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 438.3899999999994,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5572320053349472
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "e29bf774d8d7f7ca2785e033",
+    "timestamp": "2025-04-11T14:00:05+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 202.19000000000233,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5911523023944616
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "bcddf9b65e05f37c7f45abbd",
+    "timestamp": "2025-04-11T15:00:10+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 452.39000000001397,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5635595549195516
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "d20e8075a6fad345c8457e8e",
+    "timestamp": "2025-04-12T13:43:10+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 360.11000000001513,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5679771496000565
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "cabdef1afe60aafe0420d0ea",
+    "timestamp": "2025-04-13T19:42:00+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 869.0800000000017,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5604255712799593
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "acd822ded12a4fecb813f560",
+    "timestamp": "2025-04-14T03:00:40+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 156.24999999998545,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5541593396291751
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "03eae97c3c089423952e0f87",
+    "timestamp": "2025-04-16T17:51:25+00:00",
+    "direction": "UP",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 251.29499999999825,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.559159726720076
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "b8592f6d7be765319a1dbc84",
+    "timestamp": "2025-04-21T00:29:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": -0.0,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5543229255227486
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "ed8caf6e346941a1bcd82e5e",
+    "timestamp": "2025-04-21T00:33:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "PRESSURE_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 428.0800000000163,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5502143179489226
+    },
+    "contradictions": [
+      "SPOT_FUTURES_DIVERGENCE"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "7b92ce41d4a056e3f70613f4",
+    "timestamp": "2025-04-22T21:49:25+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 81.82000000000698,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5931326839562928
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "bf99f3f0a182f4866eb42b47",
+    "timestamp": "2025-04-22T21:53:35+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 256.14000000001397,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5861157874707251
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "3f2de640a25f3fa17993daad",
+    "timestamp": "2025-04-23T04:47:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 40.30999999999767,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5532491977580652
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "96d87f111893dc1b85c955d4",
+    "timestamp": "2025-04-23T13:38:15+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 27.560000000012224,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5657358271234255
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "c83c325859e1971fdfd41fca",
+    "timestamp": "2025-05-02T12:30:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 349.7250000000058,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5589641195395153
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "b3daa9499e8433d6513fff3a",
+    "timestamp": "2025-05-05T01:54:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "PRESSURE_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 279.0650000000023,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.883297757257156
+    },
+    "contradictions": [
+      "SPOT_FUTURES_DIVERGENCE"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "0a06637a2be8a4a5b486fe58",
+    "timestamp": "2025-05-08T15:24:30+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": -0.0,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5591075075942468
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "74d9734664600f1c0bbfdc35",
+    "timestamp": "2025-05-08T15:52:15+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 137.75999999999476,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5641497466769418
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "e5b1394739d5229686d8205c",
+    "timestamp": "2025-05-08T21:18:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 397.6900000000023,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.6087816584981158
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "b86009e0fbb2d47c7898f76c",
+    "timestamp": "2025-05-08T21:21:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 910.4049999999988,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5979830933784361
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "85148f972991ba6b49082ead",
+    "timestamp": "2025-05-08T21:24:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_FUTURES_CONFIRMATION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 595.4049999999988,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5668006491316404
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "32e793c75591c251f5360e56",
+    "timestamp": "2025-05-09T11:26:50+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 172.38499999999476,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5679490793658672
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "fd4bff990cc142f35f007d75",
+    "timestamp": "2025-05-12T07:03:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 258.58499999999185,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5507837849434707
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "317ddd8b51e8e10e0ca75cf2",
+    "timestamp": "2025-05-12T14:29:10+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 693.2949999999983,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5893574448572013
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "d000614f37d357056ac0a4a0",
+    "timestamp": "2025-05-13T12:30:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": -0.0,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5555879994911352
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "a0a0533d3acccf1c4697ce66",
+    "timestamp": "2025-05-21T04:39:15+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 260.9700000000157,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5685237806856801
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "07c17b05b10581e7d6fb9474",
+    "timestamp": "2025-05-21T17:27:10+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 135.86000000001513,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5621218777603366
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "c954cac75486464e4535a016",
+    "timestamp": "2025-05-21T17:30:20+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 944.5199999999895,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.560745347512142
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "2ff0f568b25e2a1b34c77c8c",
+    "timestamp": "2025-05-21T17:40:40+00:00",
+    "direction": "UP",
+    "setup_family": "SPOT_FUTURES_CONFIRMATION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 217.44000000000233,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5638986543489852
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "b6afa94a28d6c90b98ab8841",
+    "timestamp": "2025-05-21T17:47:00+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 245.28499999998894,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5579019696219373
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "a162d5c010c98bb77e684f9a",
+    "timestamp": "2025-05-21T17:54:25+00:00",
+    "direction": "UP",
+    "setup_family": "SPOT_FUTURES_CONFIRMATION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 362.820000000007,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5519964661009961
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "0ffc41a0af0d08d35da057c9",
+    "timestamp": "2025-05-23T11:51:50+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 284.77999999999884,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5508127720550345
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "908708511096b2a6c823ce33",
+    "timestamp": "2025-05-23T12:03:15+00:00",
+    "direction": "UP",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 111.97499999999127,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.551127247126562
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "71b1e0fa5b8fca35d0c612fe",
+    "timestamp": "2025-05-23T12:15:50+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 730.929999999993,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5608270305260716
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "404d6fb213ec1580cc68f5f9",
+    "timestamp": "2025-05-23T16:18:40+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 893.6750000000029,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5565526853635189
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "fa025d830d81ef7db2b3403e",
+    "timestamp": "2025-05-27T01:24:05+00:00",
+    "direction": "UP",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 1022.4699999999866,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5584601741992129
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "f194fc9077ea8aea95fd7161",
+    "timestamp": "2025-05-27T14:33:00+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 711.4700000000012,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5572645371285939
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "2273c4613b0c12d64d4d2813",
+    "timestamp": "2025-06-05T18:13:30+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 366.5850000000064,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5595773749005228
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "b98bef39b6359ca8e01c4c4c",
+    "timestamp": "2025-06-05T19:18:30+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 570.1650000000081,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5712629482101637
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "53a3c34725acbff397c884c4",
+    "timestamp": "2025-06-09T21:27:00+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 203.3700000000099,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5725354153357346
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "18b37757d6c44ba0a82876a5",
+    "timestamp": "2025-06-09T21:30:00+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 646.1000000000058,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5939218226455582
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "22d78dcb363f188b85363518",
+    "timestamp": "2025-06-11T12:30:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 167.22000000000116,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.568889559222591
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "d4058220e5520ea968405493",
+    "timestamp": "2025-06-12T03:20:20+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 113.27999999999884,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5619372238638076
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "31dc991892b0ae86863d6e34",
+    "timestamp": "2025-06-12T20:43:50+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 148.5749999999971,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5570198242011961
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "6abddbeba40b9022bf857cda",
+    "timestamp": "2025-06-13T00:02:45+00:00",
+    "direction": "UP",
+    "setup_family": "SPOT_FUTURES_CONFIRMATION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 275.9349999999977,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5556702995779825
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "844b1e7b2cb083144d118e55",
+    "timestamp": "2025-06-13T00:18:40+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_FUTURES_CONFIRMATION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 978.5650000000023,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5558369947566734
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "3f48dedfc74f79b3825e2f01",
+    "timestamp": "2025-06-21T21:24:50+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 301.72000000000116,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5878042969139171
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "6034de541aa71d6cf5094694",
+    "timestamp": "2025-06-21T21:33:25+00:00",
+    "direction": "UP",
+    "setup_family": "SPOT_LED_BREAKOUT",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 483.3950000000041,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5514390331576184
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "437d4f1f7b5efb5596c96535",
+    "timestamp": "2025-06-22T14:24:10+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 498.3150000000023,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5521303417990824
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "aa2c031dca1c01c0a35e3cf0",
+    "timestamp": "2025-06-23T22:24:30+00:00",
+    "direction": "DOWN",
+    "setup_family": "SPOT_FUTURES_CONFIRMATION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 215.3249999999971,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5512840965462495
+    },
+    "contradictions": [],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "5b6f5b19dff8b812236a1767",
+    "timestamp": "2026-07-01T01:13:10+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 548.7049999999945,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5546653402692591
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "de19d64447da47f70f5aaa42",
+    "timestamp": "2026-07-01T22:21:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 690.3349999999919,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.6294923860328662
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "ec62282a00122074f5ea8495",
+    "timestamp": "2026-07-02T03:27:55+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 204.13999999999942,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5915030658939606
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "9262db102b75b1a76c1cfdf8",
+    "timestamp": "2026-07-03T20:06:50+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 76.06999999999243,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5802660567361427
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "8ba0ab757c3eee87388dedde",
+    "timestamp": "2026-07-06T14:25:30+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 268.3350000000064,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5598679583025354
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "69e8a091c7a8540645383ccd",
+    "timestamp": "2026-07-06T15:50:50+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": -0.0,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5792616650467727
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "b92b402a5dbb2760421e968d",
+    "timestamp": "2026-07-06T21:09:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 11.950000000004366,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.6283690156444575
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "a571e7f5adbea815a3c5f4eb",
+    "timestamp": "2026-07-08T01:36:35+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 124.31499999999505,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5517318939944985
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "7139c88adf1b6f08120e934c",
+    "timestamp": "2026-07-09T01:09:45+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 231.32000000000698,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5503547823167996
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "66605aacb843197c25f01617",
+    "timestamp": "2026-07-09T06:27:40+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 113.99499999999534,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5611307761371394
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "0eb7305999c45e2aeaa6e546",
+    "timestamp": "2026-07-09T18:07:35+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 82.2699999999968,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5674483334395062
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "a734589465d7f3666282ad16",
+    "timestamp": "2026-07-10T01:48:30+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 72.78500000000349,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.6206917885466097
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "8182978367b0334057dc9b75",
+    "timestamp": "2026-07-10T14:33:00+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 249.8399999999965,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5548843497758564
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "34fe7b9a079cb33936c42794",
+    "timestamp": "2026-07-11T15:37:15+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 14.544999999998254,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5720432162189567
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "ecc8952f516d73e6f7ebdca1",
+    "timestamp": "2026-07-13T14:16:45+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 427.5349999999962,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.583908483259578
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "08126beadda72ede7705f5d1",
+    "timestamp": "2026-07-14T12:30:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": -0.0,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5612168453606405
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "55d509e316fa8f2373c04ac2",
+    "timestamp": "2026-07-14T17:11:25+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 300.0249999999942,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5624118597712915
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "412b754010afcaa19e8eb856",
+    "timestamp": "2026-07-15T12:30:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 188.22999999999593,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.565205918026468
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "243602a31a45649c0a3343a3",
+    "timestamp": "2026-07-20T08:37:30+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 4.530000000006112,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5534343534351434
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "ebaa2f835fb31b962de0a819",
+    "timestamp": "2026-07-20T15:43:20+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 79.30999999999767,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5537134794724063
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "8cfeee3175a39debf55d6f9a",
+    "timestamp": "2026-07-21T17:47:00+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 169.02999999998428,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.6118556441852642
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "e7bc9c562ddda002bd2dbcd3",
+    "timestamp": "2026-07-25T23:35:40+00:00",
+    "direction": "DOWN",
+    "setup_family": "PRESSURE_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 17.22500000000582,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.9986461751348716
+    },
+    "contradictions": [
+      "SPOT_FUTURES_DIVERGENCE"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "8a3556c786923a1b4eb1c915",
+    "timestamp": "2026-07-26T22:00:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 63.36499999999796,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.582429585196096
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "1f9530227ed9fd9531cdf010",
+    "timestamp": "2026-07-27T22:40:40+00:00",
+    "direction": "UP",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 0.0,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.5573584430741423
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "FALSE_POSITIVE",
+    "execution": "DISABLED"
+  },
+  {
+    "opportunity_id": "e4953ae1d8cd3c3f890594f1",
+    "timestamp": "2026-07-29T18:00:05+00:00",
+    "direction": "DOWN",
+    "setup_family": "VOLATILITY_EXPANSION",
+    "primary_horizon": 600,
+    "primary_target": 200,
+    "adverse_barrier": 100,
+    "calibrated_probability": null,
+    "expected_remaining_move": 302.79999999999563,
+    "evidence": {
+      "source": "FROZEN_V1_BASELINE",
+      "v1_confidence_not_barrier_calibrated": 0.598536345892954
+    },
+    "contradictions": [
+      "POSSIBLY_LATE_EXPANSION"
+    ],
+    "state": "ABSTAIN",
+    "outcome": "TRUE_POSITIVE",
+    "execution": "DISABLED"
+  }
+]
