@@ -1,0 +1,3943 @@
+{
+  "research_id": "WAVERUN_V2_HARD_MOVE_BASELINE",
+  "status": "RESEARCH_BASELINE_ONLY",
+  "execution": "DISABLED",
+  "holdout": "CLOSED_UNTOUCHED",
+  "v1_fingerprint": "a61a4229635da3e3869b08371e3d7dd38290091951b4488a2bda7df13c2a0f60",
+  "reference": "BINANCE_RESEARCH_PROXY",
+  "cost_assumption_bp": 3.0,
+  "days": 209,
+  "target_definition": "target USD hit before adverse USD barrier within horizon",
+  "targets_usd": [
+    200,
+    300,
+    400,
+    500,
+    600,
+    800
+  ],
+  "adverse_grid_usd": [
+    50,
+    75,
+    100,
+    150,
+    200
+  ],
+  "horizons_seconds": [
+    30,
+    60,
+    90,
+    180,
+    300,
+    600
+  ],
+  "independent_move_definition": "greedy earliest $200 crossing in non-overlapping 600s windows; nested targets and continuations do not create independent moves",
+  "move_library_summary": {
+    "200": {
+      "moves": 14616,
+      "moves_per_day": 69.93301435406698,
+      "median_time_seconds": 415.0
+    },
+    "300": {
+      "moves": 3802,
+      "moves_per_day": 18.19138755980861,
+      "median_time_seconds": 305.0
+    },
+    "400": {
+      "moves": 2033,
+      "moves_per_day": 9.727272727272727,
+      "median_time_seconds": 335.0
+    },
+    "500": {
+      "moves": 1149,
+      "moves_per_day": 5.497607655502392,
+      "median_time_seconds": 350.0
+    },
+    "600": {
+      "moves": 687,
+      "moves_per_day": 3.287081339712919,
+      "median_time_seconds": 360.0
+    },
+    "800": {
+      "moves": 311,
+      "moves_per_day": 1.4880382775119618,
+      "median_time_seconds": 375.0
+    }
+  },
+  "move_library_records": 14616,
+  "precursor_records": 159,
+  "false_precursor_records_200_600_100": 93,
+  "primary_matrix_adverse_usd": 100,
+  "primary_matrix": {
+    "200": {
+      "30": {
+        "evaluated_signals": 159,
+        "wins": 24,
+        "precision": 0.1509433962264151,
+        "wilson_ci95": [
+          0.10357996237866257,
+          0.21477544413840338
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.11483253588516747,
+        "median_lead_time_seconds": 17.5,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -79.879553,
+        "UP_precision": 0.13636363636363635,
+        "DOWN_precision": 0.16129032258064516
+      },
+      "60": {
+        "evaluated_signals": 159,
+        "wins": 47,
+        "precision": 0.29559748427672955,
+        "wilson_ci95": [
+          0.2301684817722815,
+          0.37067026979176615
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.22488038277511962,
+        "median_lead_time_seconds": 30.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -36.48332658490566,
+        "UP_precision": 0.21212121212121213,
+        "DOWN_precision": 0.3548387096774194
+      },
+      "90": {
+        "evaluated_signals": 159,
+        "wins": 50,
+        "precision": 0.31446540880503143,
+        "wilson_ci95": [
+          0.24739534198587787,
+          0.39028906327994994
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.23923444976076555,
+        "median_lead_time_seconds": 35.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -30.822949226415094,
+        "UP_precision": 0.24242424242424243,
+        "DOWN_precision": 0.3655913978494624
+      },
+      "180": {
+        "evaluated_signals": 159,
+        "wins": 59,
+        "precision": 0.3710691823899371,
+        "wilson_ci95": [
+          0.299849981812304,
+          0.44837138455886455
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.2822966507177033,
+        "median_lead_time_seconds": 45.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -13.841817150943402,
+        "UP_precision": 0.3333333333333333,
+        "DOWN_precision": 0.3978494623655914
+      },
+      "300": {
+        "evaluated_signals": 159,
+        "wins": 63,
+        "precision": 0.39622641509433965,
+        "wilson_ci95": [
+          0.32351132630032897,
+          0.47383757833987994
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.3014354066985646,
+        "median_lead_time_seconds": 45.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -6.294647339622648,
+        "UP_precision": 0.3484848484848485,
+        "DOWN_precision": 0.43010752688172044
+      },
+      "600": {
+        "evaluated_signals": 159,
+        "wins": 66,
+        "precision": 0.41509433962264153,
+        "wilson_ci95": [
+          0.34139064083926335,
+          0.49280391750272573
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.3157894736842105,
+        "median_lead_time_seconds": 45.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -0.6342699811320812,
+        "UP_precision": 0.36363636363636365,
+        "DOWN_precision": 0.45161290322580644
+      }
+    },
+    "300": {
+      "30": {
+        "evaluated_signals": 159,
+        "wins": 10,
+        "precision": 0.06289308176100629,
+        "wilson_ci95": [
+          0.034517657945353726,
+          0.11189136463007116
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.04784688995215311,
+        "median_lead_time_seconds": 22.5,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -100.00533916352202,
+        "UP_precision": 0.045454545454545456,
+        "DOWN_precision": 0.07526881720430108
+      },
+      "60": {
+        "evaluated_signals": 159,
+        "wins": 20,
+        "precision": 0.12578616352201258,
+        "wilson_ci95": [
+          0.0829225435934276,
+          0.18630532465459804
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.09569377990430622,
+        "median_lead_time_seconds": 32.5,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -74.84810645911949,
+        "UP_precision": 0.09090909090909091,
+        "DOWN_precision": 0.15053763440860216
+      },
+      "90": {
+        "evaluated_signals": 159,
+        "wins": 27,
+        "precision": 0.16981132075471697,
+        "wilson_ci95": [
+          0.11940854390099338,
+          0.23579251631785275
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.1291866028708134,
+        "median_lead_time_seconds": 40.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -57.23804356603773,
+        "UP_precision": 0.12121212121212122,
+        "DOWN_precision": 0.20430107526881722
+      },
+      "180": {
+        "evaluated_signals": 159,
+        "wins": 39,
+        "precision": 0.24528301886792453,
+        "wilson_ci95": [
+          0.18493596375808752,
+          0.3176477112678795
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.18660287081339713,
+        "median_lead_time_seconds": 60.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -27.049364320754712,
+        "UP_precision": 0.19696969696969696,
+        "DOWN_precision": 0.27956989247311825
+      },
+      "300": {
+        "evaluated_signals": 159,
+        "wins": 45,
+        "precision": 0.2830188679245283,
+        "wilson_ci95": [
+          0.2187609832750424,
+          0.35751399915448506
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.215311004784689,
+        "median_lead_time_seconds": 65.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -11.955024698113208,
+        "UP_precision": 0.25757575757575757,
+        "DOWN_precision": 0.3010752688172043
+      },
+      "600": {
+        "evaluated_signals": 159,
+        "wins": 47,
+        "precision": 0.29559748427672955,
+        "wilson_ci95": [
+          0.2301684817722815,
+          0.37067026979176615
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.22488038277511962,
+        "median_lead_time_seconds": 70.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -6.923578157232704,
+        "UP_precision": 0.2727272727272727,
+        "DOWN_precision": 0.3118279569892473
+      }
+    },
+    "400": {
+      "30": {
+        "evaluated_signals": 159,
+        "wins": 6,
+        "precision": 0.03773584905660377,
+        "wilson_ci95": [
+          0.017407430277391087,
+          0.0798740540289935
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.028708133971291867,
+        "median_lead_time_seconds": 22.5,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -106.29464733962264,
+        "UP_precision": 0.015151515151515152,
+        "DOWN_precision": 0.053763440860215055
+      },
+      "60": {
+        "evaluated_signals": 159,
+        "wins": 11,
+        "precision": 0.06918238993710692,
+        "wilson_ci95": [
+          0.039066360950963205,
+          0.11962454619172176
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.05263157894736842,
+        "median_lead_time_seconds": 30.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -90.57137689937106,
+        "UP_precision": 0.06060606060606061,
+        "DOWN_precision": 0.07526881720430108
+      },
+      "90": {
+        "evaluated_signals": 159,
+        "wins": 15,
+        "precision": 0.09433962264150944,
+        "wilson_ci95": [
+          0.05800591239143811,
+          0.1498125330202872
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.07177033492822966,
+        "median_lead_time_seconds": 35.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -77.99276054716982,
+        "UP_precision": 0.07575757575757576,
+        "DOWN_precision": 0.10752688172043011
+      },
+      "180": {
+        "evaluated_signals": 159,
+        "wins": 24,
+        "precision": 0.1509433962264151,
+        "wilson_ci95": [
+          0.10357996237866257,
+          0.21477544413840338
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.11483253588516747,
+        "median_lead_time_seconds": 67.5,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -49.690873754716975,
+        "UP_precision": 0.13636363636363635,
+        "DOWN_precision": 0.16129032258064516
+      },
+      "300": {
+        "evaluated_signals": 159,
+        "wins": 32,
+        "precision": 0.20125786163522014,
+        "wilson_ci95": [
+          0.1463224983635066,
+          0.27028798469163995
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.15311004784688995,
+        "median_lead_time_seconds": 97.5,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -24.53364105031446,
+        "UP_precision": 0.19696969696969696,
+        "DOWN_precision": 0.20430107526881722
+      },
+      "600": {
+        "evaluated_signals": 159,
+        "wins": 40,
+        "precision": 0.25157232704402516,
+        "wilson_ci95": [
+          0.19052993611730956,
+          0.32433562347591754
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.19138755980861244,
+        "median_lead_time_seconds": 120.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": 0.6235916540880446,
+        "UP_precision": 0.24242424242424243,
+        "DOWN_precision": 0.25806451612903225
+      }
+    },
+    "500": {
+      "30": {
+        "evaluated_signals": 159,
+        "wins": 2,
+        "precision": 0.012578616352201259,
+        "wilson_ci95": [
+          0.003456315519739659,
+          0.04469763051760463
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.009569377990430622,
+        "median_lead_time_seconds": 22.5,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -117.61540205660377,
+        "UP_precision": 0.0,
+        "DOWN_precision": 0.021505376344086023
+      },
+      "60": {
+        "evaluated_signals": 159,
+        "wins": 7,
+        "precision": 0.0440251572327044,
+        "wilson_ci95": [
+          0.02148692054549619,
+          0.08807644832814845
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.03349282296650718,
+        "median_lead_time_seconds": 40.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -98.74747752830189,
+        "UP_precision": 0.045454545454545456,
+        "DOWN_precision": 0.043010752688172046
+      },
+      "90": {
+        "evaluated_signals": 159,
+        "wins": 9,
+        "precision": 0.05660377358490566,
+        "wilson_ci95": [
+          0.030061978119632474,
+          0.10406515988853234
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.0430622009569378,
+        "median_lead_time_seconds": 45.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -91.20030771698113,
+        "UP_precision": 0.045454545454545456,
+        "DOWN_precision": 0.06451612903225806
+      },
+      "180": {
+        "evaluated_signals": 159,
+        "wins": 16,
+        "precision": 0.10062893081761007,
+        "wilson_ci95": [
+          0.06289366475055358,
+          0.15720666522843177
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.07655502392344497,
+        "median_lead_time_seconds": 72.5,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -64.78521337735849,
+        "UP_precision": 0.09090909090909091,
+        "DOWN_precision": 0.10752688172043011
+      },
+      "300": {
+        "evaluated_signals": 159,
+        "wins": 23,
+        "precision": 0.14465408805031446,
+        "wilson_ci95": [
+          0.09836441992293368,
+          0.20770910202687218
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.11004784688995216,
+        "median_lead_time_seconds": 100.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -38.37011903773584,
+        "UP_precision": 0.15151515151515152,
+        "DOWN_precision": 0.13978494623655913
+      },
+      "600": {
+        "evaluated_signals": 159,
+        "wins": 31,
+        "precision": 0.1949685534591195,
+        "wilson_ci95": [
+          0.14089118738057677,
+          0.2634374111073097
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.14832535885167464,
+        "median_lead_time_seconds": 180.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -8.18143979245283,
+        "UP_precision": 0.22727272727272727,
+        "DOWN_precision": 0.17204301075268819
+      }
+    },
+    "600": {
+      "30": {
+        "evaluated_signals": 159,
+        "wins": 1,
+        "precision": 0.006289308176100629,
+        "wilson_ci95": [
+          0.001111081403321116,
+          0.03476098006676309
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.004784688995215311,
+        "median_lead_time_seconds": 15.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -120.76005614465409,
+        "UP_precision": 0.0,
+        "DOWN_precision": 0.010752688172043012
+      },
+      "60": {
+        "evaluated_signals": 159,
+        "wins": 4,
+        "precision": 0.025157232704402517,
+        "wilson_ci95": [
+          0.00982566952381354,
+          0.0628920456480509
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.019138755980861243,
+        "median_lead_time_seconds": 40.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -107.55250897484277,
+        "UP_precision": 0.030303030303030304,
+        "DOWN_precision": 0.021505376344086023
+      },
+      "90": {
+        "evaluated_signals": 159,
+        "wins": 5,
+        "precision": 0.031446540880503145,
+        "wilson_ci95": [
+          0.01350538616419597,
+          0.07149421357492854
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.023923444976076555,
+        "median_lead_time_seconds": 40.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -103.14999325157233,
+        "UP_precision": 0.030303030303030304,
+        "DOWN_precision": 0.03225806451612903
+      },
+      "180": {
+        "evaluated_signals": 159,
+        "wins": 9,
+        "precision": 0.05660377358490566,
+        "wilson_ci95": [
+          0.030061978119632474,
+          0.10406515988853234
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.0430622009569378,
+        "median_lead_time_seconds": 70.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -85.53993035849058,
+        "UP_precision": 0.045454545454545456,
+        "DOWN_precision": 0.06451612903225806
+      },
+      "300": {
+        "evaluated_signals": 159,
+        "wins": 12,
+        "precision": 0.07547169811320754,
+        "wilson_ci95": [
+          0.04369745269599838,
+          0.12727533901394666
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.05741626794258373,
+        "median_lead_time_seconds": 105.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -72.33238318867924,
+        "UP_precision": 0.07575757575757576,
+        "DOWN_precision": 0.07526881720430108
+      },
+      "600": {
+        "evaluated_signals": 159,
+        "wins": 19,
+        "precision": 0.11949685534591195,
+        "wilson_ci95": [
+          0.0778501996506691,
+          0.17909578403009646
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.09090909090909091,
+        "median_lead_time_seconds": 200.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -41.51477312578616,
+        "UP_precision": 0.13636363636363635,
+        "DOWN_precision": 0.10752688172043011
+      }
+    },
+    "800": {
+      "30": {
+        "evaluated_signals": 159,
+        "wins": 0,
+        "precision": 0.0,
+        "wilson_ci95": [
+          0.0,
+          0.023590176902824132
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.0,
+        "median_lead_time_seconds": null,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -125.16257186792453,
+        "UP_precision": 0.0,
+        "DOWN_precision": 0.0
+      },
+      "60": {
+        "evaluated_signals": 159,
+        "wins": 1,
+        "precision": 0.006289308176100629,
+        "wilson_ci95": [
+          0.001111081403321116,
+          0.03476098006676309
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.004784688995215311,
+        "median_lead_time_seconds": 40.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -119.50219450943396,
+        "UP_precision": 0.015151515151515152,
+        "DOWN_precision": 0.0
+      },
+      "90": {
+        "evaluated_signals": 159,
+        "wins": 3,
+        "precision": 0.018867924528301886,
+        "wilson_ci95": [
+          0.0064372109688191174,
+          0.05399861963578524
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.014354066985645933,
+        "median_lead_time_seconds": 80.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -108.18143979245282,
+        "UP_precision": 0.015151515151515152,
+        "DOWN_precision": 0.021505376344086023
+      },
+      "180": {
+        "evaluated_signals": 159,
+        "wins": 5,
+        "precision": 0.031446540880503145,
+        "wilson_ci95": [
+          0.01350538616419597,
+          0.07149421357492854
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.023923444976076555,
+        "median_lead_time_seconds": 85.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -96.8606850754717,
+        "UP_precision": 0.045454545454545456,
+        "DOWN_precision": 0.021505376344086023
+      },
+      "300": {
+        "evaluated_signals": 159,
+        "wins": 5,
+        "precision": 0.031446540880503145,
+        "wilson_ci95": [
+          0.01350538616419597,
+          0.07149421357492854
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.023923444976076555,
+        "median_lead_time_seconds": 85.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -96.8606850754717,
+        "UP_precision": 0.045454545454545456,
+        "DOWN_precision": 0.021505376344086023
+      },
+      "600": {
+        "evaluated_signals": 159,
+        "wins": 11,
+        "precision": 0.06918238993710692,
+        "wilson_ci95": [
+          0.039066360950963205,
+          0.11962454619172176
+        ],
+        "signals_per_day": 0.7607655502392344,
+        "successful_opportunities_per_day": 0.05263157894736842,
+        "median_lead_time_seconds": 365.0,
+        "median_mfe_usd": 284.77999999999884,
+        "median_mae_usd": 195.32499999998254,
+        "proxy_net_ev_usd": -62.898420924528295,
+        "UP_precision": 0.10606060606060606,
+        "DOWN_precision": 0.043010752688172046
+      }
+    }
+  },
+  "full_barrier_grid": {
+    "50": {
+      "200": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 22,
+          "precision": 0.13836477987421383,
+          "wilson_ci95": [
+            0.09318177259069108,
+            0.2006098647918547
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.10526315789473684,
+          "median_lead_time_seconds": 15.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -40.57137689937106,
+          "UP_precision": 0.10606060606060606,
+          "DOWN_precision": 0.16129032258064516
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 44,
+          "precision": 0.27672955974842767,
+          "wilson_ci95": [
+            0.21308122112132255,
+            0.35091187674094493
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.21052631578947367,
+          "median_lead_time_seconds": 32.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -5.980181930817613,
+          "UP_precision": 0.18181818181818182,
+          "DOWN_precision": 0.34408602150537637
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 47,
+          "precision": 0.29559748427672955,
+          "wilson_ci95": [
+            0.2301684817722815,
+            0.37067026979176615
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.22488038277511962,
+          "median_lead_time_seconds": 35.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -1.2632007987421412,
+          "UP_precision": 0.21212121212121213,
+          "DOWN_precision": 0.3548387096774194
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 53,
+          "precision": 0.3333333333333333,
+          "wilson_ci95": [
+            0.2647548938572549,
+            0.40977516511035317
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.2535885167464115,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 8.170761465408802,
+          "UP_precision": 0.2727272727272727,
+          "DOWN_precision": 0.3763440860215054
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 54,
+          "precision": 0.33962264150943394,
+          "wilson_ci95": [
+            0.27056987288458856,
+            0.4162420706502796
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.2583732057416268,
+          "median_lead_time_seconds": 42.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 9.74308850943396,
+          "UP_precision": 0.2727272727272727,
+          "DOWN_precision": 0.3870967741935484
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 55,
+          "precision": 0.34591194968553457,
+          "wilson_ci95": [
+            0.2763987587797403,
+            0.422695069322388
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.2631578947368421,
+          "median_lead_time_seconds": 45.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 11.315415553459118,
+          "UP_precision": 0.2727272727272727,
+          "DOWN_precision": 0.3978494623655914
+        }
+      },
+      "300": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 10,
+          "precision": 0.06289308176100629,
+          "wilson_ci95": [
+            0.034517657945353726,
+            0.11189136463007116
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.04784688995215311,
+          "median_lead_time_seconds": 22.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -53.14999325157232,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 19,
+          "precision": 0.11949685534591195,
+          "wilson_ci95": [
+            0.0778501996506691,
+            0.17909578403009646
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.09090909090909091,
+          "median_lead_time_seconds": 30.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -33.338672496855345,
+          "UP_precision": 0.07575757575757576,
+          "DOWN_precision": 0.15053763440860216
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 25,
+          "precision": 0.15723270440251572,
+          "wilson_ci95": [
+            0.10882678335810556,
+            0.22181050772622043
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.11961722488038277,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -20.131125327044032,
+          "UP_precision": 0.09090909090909091,
+          "DOWN_precision": 0.20430107526881722
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 36,
+          "precision": 0.22641509433962265,
+          "wilson_ci95": [
+            0.16826635457598224,
+            0.2974716667482046
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.1722488038277512,
+          "median_lead_time_seconds": 60.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 4.082711150943391,
+          "UP_precision": 0.16666666666666666,
+          "DOWN_precision": 0.26881720430107525
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 40,
+          "precision": 0.25157232704402516,
+          "wilson_ci95": [
+            0.19052993611730956,
+            0.32433562347591754
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.19138755980861244,
+          "median_lead_time_seconds": 65.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 12.887742597484268,
+          "UP_precision": 0.21212121212121213,
+          "DOWN_precision": 0.27956989247311825
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 41,
+          "precision": 0.2578616352201258,
+          "wilson_ci95": [
+            0.19614185431570635,
+            0.33100558984478085
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.19617224880382775,
+          "median_lead_time_seconds": 65.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 15.089000459119488,
+          "UP_precision": 0.21212121212121213,
+          "DOWN_precision": 0.2903225806451613
+        }
+      },
+      "400": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 6,
+          "precision": 0.03773584905660377,
+          "wilson_ci95": [
+            0.017407430277391087,
+            0.0798740540289935
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.028708133971291867,
+          "median_lead_time_seconds": 22.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -58.18143979245283,
+          "UP_precision": 0.015151515151515152,
+          "DOWN_precision": 0.053763440860215055
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 10,
+          "precision": 0.06289308176100629,
+          "wilson_ci95": [
+            0.034517657945353726,
+            0.11189136463007116
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.04784688995215311,
+          "median_lead_time_seconds": 30.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -46.86068507547169,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 13,
+          "precision": 0.08176100628930817,
+          "wilson_ci95": [
+            0.048402298802567155,
+            0.13485237747463794
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.06220095693779904,
+          "median_lead_time_seconds": 35.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -38.37011903773584,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.10752688172043011
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 21,
+          "precision": 0.1320754716981132,
+          "wilson_ci95": [
+            0.08803381412582828,
+            0.19347593868945745
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.10047846889952153,
+          "median_lead_time_seconds": 65.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -15.72860960377359,
+          "UP_precision": 0.10606060606060606,
+          "DOWN_precision": 0.15053763440860216
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 29,
+          "precision": 0.18238993710691823,
+          "wilson_ci95": [
+            0.1300995143315056,
+            0.2496653150218607
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.13875598086124402,
+          "median_lead_time_seconds": 100.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 6.912899830188674,
+          "UP_precision": 0.16666666666666666,
+          "DOWN_precision": 0.1935483870967742
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 34,
+          "precision": 0.2138364779874214,
+          "wilson_ci95": [
+            0.1572520944196886,
+            0.2839221577699781
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.16267942583732056,
+          "median_lead_time_seconds": 120.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 21.06384322641509,
+          "UP_precision": 0.18181818181818182,
+          "DOWN_precision": 0.23655913978494625
+        }
+      },
+      "500": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 2,
+          "precision": 0.012578616352201259,
+          "wilson_ci95": [
+            0.003456315519739659,
+            0.04469763051760463
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.009569377990430622,
+          "median_lead_time_seconds": 22.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -68.24433287421382,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 7,
+          "precision": 0.0440251572327044,
+          "wilson_ci95": [
+            0.02148692054549619,
+            0.08807644832814845
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.03349282296650718,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -50.9487353899371,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.043010752688172046
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 9,
+          "precision": 0.05660377358490566,
+          "wilson_ci95": [
+            0.030061978119632474,
+            0.10406515988853234
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.0430622009569378,
+          "median_lead_time_seconds": 45.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -44.03049639622641,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.06451612903225806
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 13,
+          "precision": 0.08176100628930817,
+          "wilson_ci95": [
+            0.048402298802567155,
+            0.13485237747463794
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.06220095693779904,
+          "median_lead_time_seconds": 60.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -30.194018408805032,
+          "UP_precision": 0.06060606060606061,
+          "DOWN_precision": 0.0967741935483871
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 20,
+          "precision": 0.12578616352201258,
+          "wilson_ci95": [
+            0.0829225435934276,
+            0.18630532465459804
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.09569377990430622,
+          "median_lead_time_seconds": 97.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -5.9801819308176185,
+          "UP_precision": 0.12121212121212122,
+          "DOWN_precision": 0.12903225806451613
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 27,
+          "precision": 0.16981132075471697,
+          "wilson_ci95": [
+            0.11940854390099338,
+            0.23579251631785275
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.1291866028708134,
+          "median_lead_time_seconds": 190.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 18.233654547169813,
+          "UP_precision": 0.18181818181818182,
+          "DOWN_precision": 0.16129032258064516
+        }
+      },
+      "600": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 1,
+          "precision": 0.006289308176100629,
+          "wilson_ci95": [
+            0.001111081403321116,
+            0.03476098006676309
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.004784688995215311,
+          "median_lead_time_seconds": 15.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -71.0745215534591,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.010752688172043012
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 4,
+          "precision": 0.025157232704402517,
+          "wilson_ci95": [
+            0.00982566952381354,
+            0.0628920456480509
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.019138755980861243,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -58.81037061006289,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 5,
+          "precision": 0.031446540880503145,
+          "wilson_ci95": [
+            0.01350538616419597,
+            0.07149421357492854
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.023923444976076555,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -54.72232029559748,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.03225806451612903
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 8,
+          "precision": 0.050314465408805034,
+          "wilson_ci95": [
+            0.025712676114661923,
+            0.09613257732624282
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.03827751196172249,
+          "median_lead_time_seconds": 62.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -42.45816935220126,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.06451612903225806
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 10,
+          "precision": 0.06289308176100629,
+          "wilson_ci95": [
+            0.034517657945353726,
+            0.11189136463007116
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.04784688995215311,
+          "median_lead_time_seconds": 87.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -34.28206872327044,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 17,
+          "precision": 0.1069182389937107,
+          "wilson_ci95": [
+            0.06783270656566828,
+            0.16454950798057713
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.08133971291866028,
+          "median_lead_time_seconds": 220.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -5.665716522012588,
+          "UP_precision": 0.10606060606060606,
+          "DOWN_precision": 0.10752688172043011
+        }
+      },
+      "800": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 0,
+          "precision": 0.0,
+          "wilson_ci95": [
+            0.0,
+            0.023590176902824132
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.0,
+          "median_lead_time_seconds": null,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -75.16257186792453,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.0
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 1,
+          "precision": 0.006289308176100629,
+          "wilson_ci95": [
+            0.001111081403321116,
+            0.03476098006676309
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.004784688995215311,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -69.81665991823898,
+          "UP_precision": 0.015151515151515152,
+          "DOWN_precision": 0.0
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 3,
+          "precision": 0.018867924528301886,
+          "wilson_ci95": [
+            0.0064372109688191174,
+            0.05399861963578524
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.014354066985645933,
+          "median_lead_time_seconds": 80.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -59.12483601886792,
+          "UP_precision": 0.015151515151515152,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 4,
+          "precision": 0.025157232704402517,
+          "wilson_ci95": [
+            0.00982566952381354,
+            0.0628920456480509
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.019138755980861243,
+          "median_lead_time_seconds": 82.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -53.77892406918239,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 4,
+          "precision": 0.025157232704402517,
+          "wilson_ci95": [
+            0.00982566952381354,
+            0.0628920456480509
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.019138755980861243,
+          "median_lead_time_seconds": 82.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -53.77892406918239,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 9,
+          "precision": 0.05660377358490566,
+          "wilson_ci95": [
+            0.030061978119632474,
+            0.10406515988853234
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.0430622009569378,
+          "median_lead_time_seconds": 365.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -27.049364320754712,
+          "UP_precision": 0.07575757575757576,
+          "DOWN_precision": 0.043010752688172046
+        }
+      }
+    },
+    "75": {
+      "200": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 24,
+          "precision": 0.1509433962264151,
+          "wilson_ci95": [
+            0.10357996237866257,
+            0.21477544413840338
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.11483253588516747,
+          "median_lead_time_seconds": 17.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -58.65313790566037,
+          "UP_precision": 0.13636363636363635,
+          "DOWN_precision": 0.16129032258064516
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 47,
+          "precision": 0.29559748427672955,
+          "wilson_ci95": [
+            0.2301684817722815,
+            0.37067026979176615
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.22488038277511962,
+          "median_lead_time_seconds": 30.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -18.8732636918239,
+          "UP_precision": 0.21212121212121213,
+          "DOWN_precision": 0.3548387096774194
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 50,
+          "precision": 0.31446540880503143,
+          "wilson_ci95": [
+            0.24739534198587787,
+            0.39028906327994994
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.23923444976076555,
+          "median_lead_time_seconds": 35.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -13.684584446540887,
+          "UP_precision": 0.24242424242424243,
+          "DOWN_precision": 0.3655913978494624
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 58,
+          "precision": 0.36477987421383645,
+          "wilson_ci95": [
+            0.2939671375667632,
+            0.44197234423714526
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.27751196172248804,
+          "median_lead_time_seconds": 42.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 0.1518935408804974,
+          "UP_precision": 0.3181818181818182,
+          "DOWN_precision": 0.3978494623655914
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 62,
+          "precision": 0.389937106918239,
+          "wilson_ci95": [
+            0.31757673651960716,
+            0.46749028355334166
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.2966507177033493,
+          "median_lead_time_seconds": 45.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 7.0701325345911865,
+          "UP_precision": 0.3333333333333333,
+          "DOWN_precision": 0.43010752688172044
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 64,
+          "precision": 0.4025157232704403,
+          "wilson_ci95": [
+            0.3294585706439542,
+            0.48017221856351483
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.3062200956937799,
+          "median_lead_time_seconds": 45.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 10.529252031446536,
+          "UP_precision": 0.3484848484848485,
+          "DOWN_precision": 0.44086021505376344
+        }
+      },
+      "300": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 10,
+          "precision": 0.06289308176100629,
+          "wilson_ci95": [
+            0.034517657945353726,
+            0.11189136463007116
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.04784688995215311,
+          "median_lead_time_seconds": 22.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -76.57766620754717,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 20,
+          "precision": 0.12578616352201258,
+          "wilson_ci95": [
+            0.0829225435934276,
+            0.18630532465459804
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.09569377990430622,
+          "median_lead_time_seconds": 32.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -52.99276054716981,
+          "UP_precision": 0.09090909090909091,
+          "DOWN_precision": 0.15053763440860216
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 27,
+          "precision": 0.16981132075471697,
+          "wilson_ci95": [
+            0.11940854390099338,
+            0.23579251631785275
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.1291866028708134,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -36.483326584905654,
+          "UP_precision": 0.12121212121212122,
+          "DOWN_precision": 0.20430107526881722
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 39,
+          "precision": 0.24528301886792453,
+          "wilson_ci95": [
+            0.18493596375808752,
+            0.3176477112678795
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.18660287081339713,
+          "median_lead_time_seconds": 60.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -8.18143979245283,
+          "UP_precision": 0.19696969696969696,
+          "DOWN_precision": 0.27956989247311825
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 44,
+          "precision": 0.27672955974842767,
+          "wilson_ci95": [
+            0.21308122112132255,
+            0.35091187674094493
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.21052631578947367,
+          "median_lead_time_seconds": 65.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 3.6110130377358405,
+          "UP_precision": 0.24242424242424243,
+          "DOWN_precision": 0.3010752688172043
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 46,
+          "precision": 0.2893081761006289,
+          "wilson_ci95": [
+            0.22445683878786274,
+            0.36410002820892484
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.22009569377990432,
+          "median_lead_time_seconds": 67.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 8.327994169811314,
+          "UP_precision": 0.25757575757575757,
+          "DOWN_precision": 0.3118279569892473
+        }
+      },
+      "400": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 6,
+          "precision": 0.03773584905660377,
+          "wilson_ci95": [
+            0.017407430277391087,
+            0.0798740540289935
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.028708133971291867,
+          "median_lead_time_seconds": 22.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -82.23804356603773,
+          "UP_precision": 0.015151515151515152,
+          "DOWN_precision": 0.053763440860215055
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 11,
+          "precision": 0.06918238993710692,
+          "wilson_ci95": [
+            0.039066360950963205,
+            0.11962454619172176
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.05263157894736842,
+          "median_lead_time_seconds": 30.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -67.30093664779874,
+          "UP_precision": 0.06060606060606061,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 15,
+          "precision": 0.09433962264150944,
+          "wilson_ci95": [
+            0.05800591239143811,
+            0.1498125330202872
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.07177033492822966,
+          "median_lead_time_seconds": 35.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -55.35125111320754,
+          "UP_precision": 0.07575757575757576,
+          "DOWN_precision": 0.10752688172043011
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 24,
+          "precision": 0.1509433962264151,
+          "wilson_ci95": [
+            0.10357996237866257,
+            0.21477544413840338
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.11483253588516747,
+          "median_lead_time_seconds": 67.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -28.464458660377353,
+          "UP_precision": 0.13636363636363635,
+          "DOWN_precision": 0.16129032258064516
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 32,
+          "precision": 0.20125786163522014,
+          "wilson_ci95": [
+            0.1463224983635066,
+            0.27028798469163995
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.15311004784688995,
+          "median_lead_time_seconds": 97.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -4.5650875911949775,
+          "UP_precision": 0.19696969696969696,
+          "DOWN_precision": 0.20430107526881722
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 39,
+          "precision": 0.24528301886792453,
+          "wilson_ci95": [
+            0.18493596375808752,
+            0.3176477112678795
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.18660287081339713,
+          "median_lead_time_seconds": 120.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 16.346862094339617,
+          "UP_precision": 0.22727272727272727,
+          "DOWN_precision": 0.25806451612903225
+        }
+      },
+      "500": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 2,
+          "precision": 0.012578616352201259,
+          "wilson_ci95": [
+            0.003456315519739659,
+            0.04469763051760463
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.009569377990430622,
+          "median_lead_time_seconds": 22.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -92.9298674654088,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 7,
+          "precision": 0.0440251572327044,
+          "wilson_ci95": [
+            0.02148692054549619,
+            0.08807644832814845
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.03349282296650718,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -74.84810645911949,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.043010752688172046
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 9,
+          "precision": 0.05660377358490566,
+          "wilson_ci95": [
+            0.030061978119632474,
+            0.10406515988853234
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.0430622009569378,
+          "median_lead_time_seconds": 45.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -67.61540205660377,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.06451612903225806
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 16,
+          "precision": 0.10062893081761007,
+          "wilson_ci95": [
+            0.06289366475055358,
+            0.15720666522843177
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.07655502392344497,
+          "median_lead_time_seconds": 72.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -42.300936647798736,
+          "UP_precision": 0.09090909090909091,
+          "DOWN_precision": 0.10752688172043011
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 23,
+          "precision": 0.14465408805031446,
+          "wilson_ci95": [
+            0.09836441992293368,
+            0.20770910202687218
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.11004784688995216,
+          "median_lead_time_seconds": 100.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -16.986471238993712,
+          "UP_precision": 0.15151515151515152,
+          "DOWN_precision": 0.13978494623655913
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 31,
+          "precision": 0.1949685534591195,
+          "wilson_ci95": [
+            0.14089118738057677,
+            0.2634374111073097
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.14832535885167464,
+          "median_lead_time_seconds": 180.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 11.944346371069182,
+          "UP_precision": 0.22727272727272727,
+          "DOWN_precision": 0.17204301075268819
+        }
+      },
+      "600": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 1,
+          "precision": 0.006289308176100629,
+          "wilson_ci95": [
+            0.001111081403321116,
+            0.03476098006676309
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.004784688995215311,
+          "median_lead_time_seconds": 15.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -95.9172888490566,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.010752688172043012
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 4,
+          "precision": 0.025157232704402517,
+          "wilson_ci95": [
+            0.00982566952381354,
+            0.0628920456480509
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.019138755980861243,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -83.18143979245282,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 5,
+          "precision": 0.031446540880503145,
+          "wilson_ci95": [
+            0.01350538616419597,
+            0.07149421357492854
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.023923444976076555,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -78.9361567735849,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.03225806451612903
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 9,
+          "precision": 0.05660377358490566,
+          "wilson_ci95": [
+            0.030061978119632474,
+            0.10406515988853234
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.0430622009569378,
+          "median_lead_time_seconds": 70.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -61.9550246981132,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.06451612903225806
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 12,
+          "precision": 0.07547169811320754,
+          "wilson_ci95": [
+            0.04369745269599838,
+            0.12727533901394666
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.05741626794258373,
+          "median_lead_time_seconds": 105.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -49.21917564150944,
+          "UP_precision": 0.07575757575757576,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 19,
+          "precision": 0.11949685534591195,
+          "wilson_ci95": [
+            0.0778501996506691,
+            0.17909578403009646
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.09090909090909091,
+          "median_lead_time_seconds": 200.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -19.50219450943397,
+          "UP_precision": 0.13636363636363635,
+          "DOWN_precision": 0.10752688172043011
+        }
+      },
+      "800": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 0,
+          "precision": 0.0,
+          "wilson_ci95": [
+            0.0,
+            0.023590176902824132
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.0,
+          "median_lead_time_seconds": null,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -100.16257186792453,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.0
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 1,
+          "precision": 0.006289308176100629,
+          "wilson_ci95": [
+            0.001111081403321116,
+            0.03476098006676309
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.004784688995215311,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -94.65942721383647,
+          "UP_precision": 0.015151515151515152,
+          "DOWN_precision": 0.0
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 3,
+          "precision": 0.018867924528301886,
+          "wilson_ci95": [
+            0.0064372109688191174,
+            0.05399861963578524
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.014354066985645933,
+          "median_lead_time_seconds": 80.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -83.65313790566037,
+          "UP_precision": 0.015151515151515152,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 5,
+          "precision": 0.031446540880503145,
+          "wilson_ci95": [
+            0.01350538616419597,
+            0.07149421357492854
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.023923444976076555,
+          "median_lead_time_seconds": 85.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -72.64684859748427,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 5,
+          "precision": 0.031446540880503145,
+          "wilson_ci95": [
+            0.01350538616419597,
+            0.07149421357492854
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.023923444976076555,
+          "median_lead_time_seconds": 85.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -72.64684859748427,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 11,
+          "precision": 0.06918238993710692,
+          "wilson_ci95": [
+            0.039066360950963205,
+            0.11962454619172176
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.05263157894736842,
+          "median_lead_time_seconds": 365.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -39.62798067295598,
+          "UP_precision": 0.10606060606060606,
+          "DOWN_precision": 0.043010752688172046
+        }
+      }
+    },
+    "100": {
+      "200": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 24,
+          "precision": 0.1509433962264151,
+          "wilson_ci95": [
+            0.10357996237866257,
+            0.21477544413840338
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.11483253588516747,
+          "median_lead_time_seconds": 17.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -79.879553,
+          "UP_precision": 0.13636363636363635,
+          "DOWN_precision": 0.16129032258064516
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 47,
+          "precision": 0.29559748427672955,
+          "wilson_ci95": [
+            0.2301684817722815,
+            0.37067026979176615
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.22488038277511962,
+          "median_lead_time_seconds": 30.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -36.48332658490566,
+          "UP_precision": 0.21212121212121213,
+          "DOWN_precision": 0.3548387096774194
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 50,
+          "precision": 0.31446540880503143,
+          "wilson_ci95": [
+            0.24739534198587787,
+            0.39028906327994994
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.23923444976076555,
+          "median_lead_time_seconds": 35.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -30.822949226415094,
+          "UP_precision": 0.24242424242424243,
+          "DOWN_precision": 0.3655913978494624
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 59,
+          "precision": 0.3710691823899371,
+          "wilson_ci95": [
+            0.299849981812304,
+            0.44837138455886455
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.2822966507177033,
+          "median_lead_time_seconds": 45.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -13.841817150943402,
+          "UP_precision": 0.3333333333333333,
+          "DOWN_precision": 0.3978494623655914
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 63,
+          "precision": 0.39622641509433965,
+          "wilson_ci95": [
+            0.32351132630032897,
+            0.47383757833987994
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.3014354066985646,
+          "median_lead_time_seconds": 45.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -6.294647339622648,
+          "UP_precision": 0.3484848484848485,
+          "DOWN_precision": 0.43010752688172044
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 66,
+          "precision": 0.41509433962264153,
+          "wilson_ci95": [
+            0.34139064083926335,
+            0.49280391750272573
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.3157894736842105,
+          "median_lead_time_seconds": 45.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -0.6342699811320812,
+          "UP_precision": 0.36363636363636365,
+          "DOWN_precision": 0.45161290322580644
+        }
+      },
+      "300": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 10,
+          "precision": 0.06289308176100629,
+          "wilson_ci95": [
+            0.034517657945353726,
+            0.11189136463007116
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.04784688995215311,
+          "median_lead_time_seconds": 22.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -100.00533916352202,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 20,
+          "precision": 0.12578616352201258,
+          "wilson_ci95": [
+            0.0829225435934276,
+            0.18630532465459804
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.09569377990430622,
+          "median_lead_time_seconds": 32.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -74.84810645911949,
+          "UP_precision": 0.09090909090909091,
+          "DOWN_precision": 0.15053763440860216
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 27,
+          "precision": 0.16981132075471697,
+          "wilson_ci95": [
+            0.11940854390099338,
+            0.23579251631785275
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.1291866028708134,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -57.23804356603773,
+          "UP_precision": 0.12121212121212122,
+          "DOWN_precision": 0.20430107526881722
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 39,
+          "precision": 0.24528301886792453,
+          "wilson_ci95": [
+            0.18493596375808752,
+            0.3176477112678795
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.18660287081339713,
+          "median_lead_time_seconds": 60.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -27.049364320754712,
+          "UP_precision": 0.19696969696969696,
+          "DOWN_precision": 0.27956989247311825
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 45,
+          "precision": 0.2830188679245283,
+          "wilson_ci95": [
+            0.2187609832750424,
+            0.35751399915448506
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.215311004784689,
+          "median_lead_time_seconds": 65.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -11.955024698113208,
+          "UP_precision": 0.25757575757575757,
+          "DOWN_precision": 0.3010752688172043
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 47,
+          "precision": 0.29559748427672955,
+          "wilson_ci95": [
+            0.2301684817722815,
+            0.37067026979176615
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.22488038277511962,
+          "median_lead_time_seconds": 70.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -6.923578157232704,
+          "UP_precision": 0.2727272727272727,
+          "DOWN_precision": 0.3118279569892473
+        }
+      },
+      "400": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 6,
+          "precision": 0.03773584905660377,
+          "wilson_ci95": [
+            0.017407430277391087,
+            0.0798740540289935
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.028708133971291867,
+          "median_lead_time_seconds": 22.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -106.29464733962264,
+          "UP_precision": 0.015151515151515152,
+          "DOWN_precision": 0.053763440860215055
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 11,
+          "precision": 0.06918238993710692,
+          "wilson_ci95": [
+            0.039066360950963205,
+            0.11962454619172176
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.05263157894736842,
+          "median_lead_time_seconds": 30.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -90.57137689937106,
+          "UP_precision": 0.06060606060606061,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 15,
+          "precision": 0.09433962264150944,
+          "wilson_ci95": [
+            0.05800591239143811,
+            0.1498125330202872
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.07177033492822966,
+          "median_lead_time_seconds": 35.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -77.99276054716982,
+          "UP_precision": 0.07575757575757576,
+          "DOWN_precision": 0.10752688172043011
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 24,
+          "precision": 0.1509433962264151,
+          "wilson_ci95": [
+            0.10357996237866257,
+            0.21477544413840338
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.11483253588516747,
+          "median_lead_time_seconds": 67.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -49.690873754716975,
+          "UP_precision": 0.13636363636363635,
+          "DOWN_precision": 0.16129032258064516
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 32,
+          "precision": 0.20125786163522014,
+          "wilson_ci95": [
+            0.1463224983635066,
+            0.27028798469163995
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.15311004784688995,
+          "median_lead_time_seconds": 97.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -24.53364105031446,
+          "UP_precision": 0.19696969696969696,
+          "DOWN_precision": 0.20430107526881722
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 40,
+          "precision": 0.25157232704402516,
+          "wilson_ci95": [
+            0.19052993611730956,
+            0.32433562347591754
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.19138755980861244,
+          "median_lead_time_seconds": 120.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 0.6235916540880446,
+          "UP_precision": 0.24242424242424243,
+          "DOWN_precision": 0.25806451612903225
+        }
+      },
+      "500": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 2,
+          "precision": 0.012578616352201259,
+          "wilson_ci95": [
+            0.003456315519739659,
+            0.04469763051760463
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.009569377990430622,
+          "median_lead_time_seconds": 22.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -117.61540205660377,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 7,
+          "precision": 0.0440251572327044,
+          "wilson_ci95": [
+            0.02148692054549619,
+            0.08807644832814845
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.03349282296650718,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -98.74747752830189,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.043010752688172046
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 9,
+          "precision": 0.05660377358490566,
+          "wilson_ci95": [
+            0.030061978119632474,
+            0.10406515988853234
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.0430622009569378,
+          "median_lead_time_seconds": 45.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -91.20030771698113,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.06451612903225806
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 16,
+          "precision": 0.10062893081761007,
+          "wilson_ci95": [
+            0.06289366475055358,
+            0.15720666522843177
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.07655502392344497,
+          "median_lead_time_seconds": 72.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -64.78521337735849,
+          "UP_precision": 0.09090909090909091,
+          "DOWN_precision": 0.10752688172043011
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 23,
+          "precision": 0.14465408805031446,
+          "wilson_ci95": [
+            0.09836441992293368,
+            0.20770910202687218
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.11004784688995216,
+          "median_lead_time_seconds": 100.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -38.37011903773584,
+          "UP_precision": 0.15151515151515152,
+          "DOWN_precision": 0.13978494623655913
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 31,
+          "precision": 0.1949685534591195,
+          "wilson_ci95": [
+            0.14089118738057677,
+            0.2634374111073097
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.14832535885167464,
+          "median_lead_time_seconds": 180.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -8.18143979245283,
+          "UP_precision": 0.22727272727272727,
+          "DOWN_precision": 0.17204301075268819
+        }
+      },
+      "600": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 1,
+          "precision": 0.006289308176100629,
+          "wilson_ci95": [
+            0.001111081403321116,
+            0.03476098006676309
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.004784688995215311,
+          "median_lead_time_seconds": 15.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -120.76005614465409,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.010752688172043012
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 4,
+          "precision": 0.025157232704402517,
+          "wilson_ci95": [
+            0.00982566952381354,
+            0.0628920456480509
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.019138755980861243,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -107.55250897484277,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 5,
+          "precision": 0.031446540880503145,
+          "wilson_ci95": [
+            0.01350538616419597,
+            0.07149421357492854
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.023923444976076555,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -103.14999325157233,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.03225806451612903
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 9,
+          "precision": 0.05660377358490566,
+          "wilson_ci95": [
+            0.030061978119632474,
+            0.10406515988853234
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.0430622009569378,
+          "median_lead_time_seconds": 70.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -85.53993035849058,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.06451612903225806
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 12,
+          "precision": 0.07547169811320754,
+          "wilson_ci95": [
+            0.04369745269599838,
+            0.12727533901394666
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.05741626794258373,
+          "median_lead_time_seconds": 105.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -72.33238318867924,
+          "UP_precision": 0.07575757575757576,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 19,
+          "precision": 0.11949685534591195,
+          "wilson_ci95": [
+            0.0778501996506691,
+            0.17909578403009646
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.09090909090909091,
+          "median_lead_time_seconds": 200.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -41.51477312578616,
+          "UP_precision": 0.13636363636363635,
+          "DOWN_precision": 0.10752688172043011
+        }
+      },
+      "800": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 0,
+          "precision": 0.0,
+          "wilson_ci95": [
+            0.0,
+            0.023590176902824132
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.0,
+          "median_lead_time_seconds": null,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -125.16257186792453,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.0
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 1,
+          "precision": 0.006289308176100629,
+          "wilson_ci95": [
+            0.001111081403321116,
+            0.03476098006676309
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.004784688995215311,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -119.50219450943396,
+          "UP_precision": 0.015151515151515152,
+          "DOWN_precision": 0.0
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 3,
+          "precision": 0.018867924528301886,
+          "wilson_ci95": [
+            0.0064372109688191174,
+            0.05399861963578524
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.014354066985645933,
+          "median_lead_time_seconds": 80.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -108.18143979245282,
+          "UP_precision": 0.015151515151515152,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 5,
+          "precision": 0.031446540880503145,
+          "wilson_ci95": [
+            0.01350538616419597,
+            0.07149421357492854
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.023923444976076555,
+          "median_lead_time_seconds": 85.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -96.8606850754717,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 5,
+          "precision": 0.031446540880503145,
+          "wilson_ci95": [
+            0.01350538616419597,
+            0.07149421357492854
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.023923444976076555,
+          "median_lead_time_seconds": 85.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -96.8606850754717,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 11,
+          "precision": 0.06918238993710692,
+          "wilson_ci95": [
+            0.039066360950963205,
+            0.11962454619172176
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.05263157894736842,
+          "median_lead_time_seconds": 365.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -62.898420924528295,
+          "UP_precision": 0.10606060606060606,
+          "DOWN_precision": 0.043010752688172046
+        }
+      }
+    },
+    "150": {
+      "200": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 25,
+          "precision": 0.15723270440251572,
+          "wilson_ci95": [
+            0.10882678335810556,
+            0.22181050772622043
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.11961722488038277,
+          "median_lead_time_seconds": 20.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -120.13112532704402,
+          "UP_precision": 0.15151515151515152,
+          "DOWN_precision": 0.16129032258064516
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 50,
+          "precision": 0.31446540880503143,
+          "wilson_ci95": [
+            0.24739534198587787,
+            0.39028906327994994
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.23923444976076555,
+          "median_lead_time_seconds": 32.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -65.09967878616352,
+          "UP_precision": 0.24242424242424243,
+          "DOWN_precision": 0.3655913978494624
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 56,
+          "precision": 0.3522012578616352,
+          "wilson_ci95": [
+            0.2822413742817141,
+            0.4291343383876742
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.2679425837320574,
+          "median_lead_time_seconds": 37.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -51.892131616352195,
+          "UP_precision": 0.30303030303030304,
+          "DOWN_precision": 0.3870967741935484
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 68,
+          "precision": 0.4276729559748428,
+          "wilson_ci95": [
+            0.3533722534825574,
+            0.5053860739939519
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.3253588516746411,
+          "median_lead_time_seconds": 45.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -25.47703727672956,
+          "UP_precision": 0.4393939393939394,
+          "DOWN_precision": 0.41935483870967744
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 75,
+          "precision": 0.4716981132075472,
+          "wilson_ci95": [
+            0.39569050738329126,
+            0.5490410120640385
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.3588516746411483,
+          "median_lead_time_seconds": 50.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -10.068232245283022,
+          "UP_precision": 0.45454545454545453,
+          "DOWN_precision": 0.4838709677419355
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 80,
+          "precision": 0.5031446540880503,
+          "wilson_ci95": [
+            0.42627648407830593,
+            0.5798644582053241
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.3827751196172249,
+          "median_lead_time_seconds": 50.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": 0.9380570628930789,
+          "UP_precision": 0.4696969696969697,
+          "DOWN_precision": 0.5268817204301075
+        }
+      },
+      "300": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 11,
+          "precision": 0.06918238993710692,
+          "wilson_ci95": [
+            0.039066360950963205,
+            0.11962454619172176
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.05263157894736842,
+          "median_lead_time_seconds": 25.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -144.0304963962264,
+          "UP_precision": 0.06060606060606061,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 21,
+          "precision": 0.1320754716981132,
+          "wilson_ci95": [
+            0.08803381412582828,
+            0.19347593868945745
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.10047846889952153,
+          "median_lead_time_seconds": 30.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -115.72860960377358,
+          "UP_precision": 0.10606060606060606,
+          "DOWN_precision": 0.15053763440860216
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 30,
+          "precision": 0.18867924528301888,
+          "wilson_ci95": [
+            0.13548323958403496,
+            0.25656347433659143
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.14354066985645933,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -90.25691149056603,
+          "UP_precision": 0.16666666666666666,
+          "DOWN_precision": 0.20430107526881722
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 42,
+          "precision": 0.2641509433962264,
+          "wilson_ci95": [
+            0.20177129915956804,
+            0.33765802956817925
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.20095693779904306,
+          "median_lead_time_seconds": 62.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -56.294647339622635,
+          "UP_precision": 0.24242424242424243,
+          "DOWN_precision": 0.27956989247311825
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 53,
+          "precision": 0.3333333333333333,
+          "wilson_ci95": [
+            0.2647548938572549,
+            0.40977516511035317
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.2535885167464115,
+          "median_lead_time_seconds": 75.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -25.162571867924523,
+          "UP_precision": 0.3181818181818182,
+          "DOWN_precision": 0.34408602150537637
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 57,
+          "precision": 0.3584905660377358,
+          "wilson_ci95": [
+            0.28809755273467796,
+            0.4355600445019704
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.2727272727272727,
+          "median_lead_time_seconds": 80.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -13.84181715094339,
+          "UP_precision": 0.3484848484848485,
+          "DOWN_precision": 0.3655913978494624
+        }
+      },
+      "400": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 7,
+          "precision": 0.0440251572327044,
+          "wilson_ci95": [
+            0.02148692054549619,
+            0.08807644832814845
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.03349282296650718,
+          "median_lead_time_seconds": 25.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -150.9487353899371,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.053763440860215055
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 12,
+          "precision": 0.07547169811320754,
+          "wilson_ci95": [
+            0.04369745269599838,
+            0.12727533901394666
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.05741626794258373,
+          "median_lead_time_seconds": 30.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -133.65313790566037,
+          "UP_precision": 0.07575757575757576,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 17,
+          "precision": 0.1069182389937107,
+          "wilson_ci95": [
+            0.06783270656566828,
+            0.16454950798057713
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.08133971291866028,
+          "median_lead_time_seconds": 35.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -116.35754042138365,
+          "UP_precision": 0.10606060606060606,
+          "DOWN_precision": 0.10752688172043011
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 27,
+          "precision": 0.16981132075471697,
+          "wilson_ci95": [
+            0.11940854390099338,
+            0.23579251631785275
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.1291866028708134,
+          "median_lead_time_seconds": 70.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -81.76634545283018,
+          "UP_precision": 0.18181818181818182,
+          "DOWN_precision": 0.16129032258064516
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 35,
+          "precision": 0.22012578616352202,
+          "wilson_ci95": [
+            0.16274896388552368,
+            0.2907071728714031
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.1674641148325359,
+          "median_lead_time_seconds": 95.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -54.093389477987415,
+          "UP_precision": 0.24242424242424243,
+          "DOWN_precision": 0.20430107526881722
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 47,
+          "precision": 0.29559748427672955,
+          "wilson_ci95": [
+            0.2301684817722815,
+            0.37067026979176615
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.22488038277511962,
+          "median_lead_time_seconds": 130.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -12.58395551572326,
+          "UP_precision": 0.30303030303030304,
+          "DOWN_precision": 0.2903225806451613
+        }
+      },
+      "500": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 2,
+          "precision": 0.012578616352201259,
+          "wilson_ci95": [
+            0.003456315519739659,
+            0.04469763051760463
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.009569377990430622,
+          "median_lead_time_seconds": 22.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -166.98647123899372,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 8,
+          "precision": 0.050314465408805034,
+          "wilson_ci95": [
+            0.025712676114661923,
+            0.09613257732624282
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.03827751196172249,
+          "median_lead_time_seconds": 37.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -142.45816935220125,
+          "UP_precision": 0.06060606060606061,
+          "DOWN_precision": 0.043010752688172046
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 10,
+          "precision": 0.06289308176100629,
+          "wilson_ci95": [
+            0.034517657945353726,
+            0.11189136463007116
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.04784688995215311,
+          "median_lead_time_seconds": 42.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -134.28206872327044,
+          "UP_precision": 0.06060606060606061,
+          "DOWN_precision": 0.06451612903225806
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 18,
+          "precision": 0.11320754716981132,
+          "wilson_ci95": [
+            0.0728193026079583,
+            0.1718447965055472
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.0861244019138756,
+          "median_lead_time_seconds": 72.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -101.57766620754717,
+          "UP_precision": 0.12121212121212122,
+          "DOWN_precision": 0.10752688172043011
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 25,
+          "precision": 0.15723270440251572,
+          "wilson_ci95": [
+            0.10882678335810556,
+            0.22181050772622043
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.11961722488038277,
+          "median_lead_time_seconds": 100.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -72.9613140062893,
+          "UP_precision": 0.18181818181818182,
+          "DOWN_precision": 0.13978494623655913
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 36,
+          "precision": 0.22641509433962265,
+          "wilson_ci95": [
+            0.16826635457598224,
+            0.2974716667482046
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.1722488038277512,
+          "median_lead_time_seconds": 185.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -27.992760547169805,
+          "UP_precision": 0.2878787878787879,
+          "DOWN_precision": 0.1827956989247312
+        }
+      },
+      "600": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 1,
+          "precision": 0.006289308176100629,
+          "wilson_ci95": [
+            0.001111081403321116,
+            0.03476098006676309
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.004784688995215311,
+          "median_lead_time_seconds": 15.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -170.44559073584904,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.010752688172043012
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 5,
+          "precision": 0.031446540880503145,
+          "wilson_ci95": [
+            0.01350538616419597,
+            0.07149421357492854
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.023923444976076555,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -151.57766620754717,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 6,
+          "precision": 0.03773584905660377,
+          "wilson_ci95": [
+            0.017407430277391087,
+            0.0798740540289935
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.028708133971291867,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -146.86068507547168,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.03225806451612903
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 10,
+          "precision": 0.06289308176100629,
+          "wilson_ci95": [
+            0.034517657945353726,
+            0.11189136463007116
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.04784688995215311,
+          "median_lead_time_seconds": 62.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -127.99276054716981,
+          "UP_precision": 0.06060606060606061,
+          "DOWN_precision": 0.06451612903225806
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 13,
+          "precision": 0.08176100628930817,
+          "wilson_ci95": [
+            0.048402298802567155,
+            0.13485237747463794
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.06220095693779904,
+          "median_lead_time_seconds": 105.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -113.84181715094338,
+          "UP_precision": 0.09090909090909091,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 23,
+          "precision": 0.14465408805031446,
+          "wilson_ci95": [
+            0.09836441992293368,
+            0.20770910202687218
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.11004784688995216,
+          "median_lead_time_seconds": 220.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -66.67200583018867,
+          "UP_precision": 0.18181818181818182,
+          "DOWN_precision": 0.11827956989247312
+        }
+      },
+      "800": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 0,
+          "precision": 0.0,
+          "wilson_ci95": [
+            0.0,
+            0.023590176902824132
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.0,
+          "median_lead_time_seconds": null,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -175.16257186792453,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.0
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 2,
+          "precision": 0.012578616352201259,
+          "wilson_ci95": [
+            0.003456315519739659,
+            0.04469763051760463
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.009569377990430622,
+          "median_lead_time_seconds": 42.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -163.21288633333333,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.0
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 4,
+          "precision": 0.025157232704402517,
+          "wilson_ci95": [
+            0.00982566952381354,
+            0.0628920456480509
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.019138755980861243,
+          "median_lead_time_seconds": 62.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -151.26320079874213,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 6,
+          "precision": 0.03773584905660377,
+          "wilson_ci95": [
+            0.017407430277391087,
+            0.0798740540289935
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.028708133971291867,
+          "median_lead_time_seconds": 82.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -139.31351526415094,
+          "UP_precision": 0.06060606060606061,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 6,
+          "precision": 0.03773584905660377,
+          "wilson_ci95": [
+            0.017407430277391087,
+            0.0798740540289935
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.028708133971291867,
+          "median_lead_time_seconds": 82.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -139.31351526415094,
+          "UP_precision": 0.06060606060606061,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 13,
+          "precision": 0.08176100628930817,
+          "wilson_ci95": [
+            0.048402298802567155,
+            0.13485237747463794
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.06220095693779904,
+          "median_lead_time_seconds": 365.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -97.48961589308176,
+          "UP_precision": 0.13636363636363635,
+          "DOWN_precision": 0.043010752688172046
+        }
+      }
+    },
+    "200": {
+      "200": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 25,
+          "precision": 0.15723270440251572,
+          "wilson_ci95": [
+            0.10882678335810556,
+            0.22181050772622043
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.11961722488038277,
+          "median_lead_time_seconds": 20.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -162.26949010691823,
+          "UP_precision": 0.15151515151515152,
+          "DOWN_precision": 0.16129032258064516
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 51,
+          "precision": 0.32075471698113206,
+          "wilson_ci95": [
+            0.2531674219409781,
+            0.39679886789210983
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.24401913875598086,
+          "median_lead_time_seconds": 35.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -96.8606850754717,
+          "UP_precision": 0.25757575757575757,
+          "DOWN_precision": 0.3655913978494624
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 58,
+          "precision": 0.36477987421383645,
+          "wilson_ci95": [
+            0.2939671375667632,
+            0.44197234423714526
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.27751196172248804,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -79.25062218238993,
+          "UP_precision": 0.3181818181818182,
+          "DOWN_precision": 0.3978494623655914
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 71,
+          "precision": 0.44654088050314467,
+          "wilson_ci95": [
+            0.3714363125029202,
+            0.5241676686753693
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.3397129186602871,
+          "median_lead_time_seconds": 45.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -46.54621966666666,
+          "UP_precision": 0.4696969696969697,
+          "DOWN_precision": 0.43010752688172044
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 81,
+          "precision": 0.5094339622641509,
+          "wilson_ci95": [
+            0.4324292915718172,
+            0.5859935352790729
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.3875598086124402,
+          "median_lead_time_seconds": 50.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -21.388986962264145,
+          "UP_precision": 0.5303030303030303,
+          "DOWN_precision": 0.4946236559139785
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 87,
+          "precision": 0.5471698113207547,
+          "wilson_ci95": [
+            0.46959600192610984,
+            0.6225181323283406
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.41626794258373206,
+          "median_lead_time_seconds": 55.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -6.294647339622644,
+          "UP_precision": 0.5606060606060606,
+          "DOWN_precision": 0.5376344086021505
+        }
+      },
+      "300": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 11,
+          "precision": 0.06918238993710692,
+          "wilson_ci95": [
+            0.039066360950963205,
+            0.11962454619172176
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.05263157894736842,
+          "median_lead_time_seconds": 25.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -190.57137689937107,
+          "UP_precision": 0.06060606060606061,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 22,
+          "precision": 0.13836477987421383,
+          "wilson_ci95": [
+            0.09318177259069108,
+            0.2006098647918547
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.10526315789473684,
+          "median_lead_time_seconds": 32.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -155.9801819308176,
+          "UP_precision": 0.12121212121212122,
+          "DOWN_precision": 0.15053763440860216
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 31,
+          "precision": 0.1949685534591195,
+          "wilson_ci95": [
+            0.14089118738057677,
+            0.2634374111073097
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.14832535885167464,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -127.67829513836477,
+          "UP_precision": 0.18181818181818182,
+          "DOWN_precision": 0.20430107526881722
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 45,
+          "precision": 0.2830188679245283,
+          "wilson_ci95": [
+            0.2187609832750424,
+            0.35751399915448506
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.215311004784689,
+          "median_lead_time_seconds": 65.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -83.65313790566037,
+          "UP_precision": 0.2727272727272727,
+          "DOWN_precision": 0.2903225806451613
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 56,
+          "precision": 0.3522012578616352,
+          "wilson_ci95": [
+            0.2822413742817141,
+            0.4291343383876742
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.2679425837320574,
+          "median_lead_time_seconds": 77.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -49.06194293710692,
+          "UP_precision": 0.3484848484848485,
+          "DOWN_precision": 0.3548387096774194
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 63,
+          "precision": 0.39622641509433965,
+          "wilson_ci95": [
+            0.32351132630032897,
+            0.47383757833987994
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.3014354066985646,
+          "median_lead_time_seconds": 100.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -27.049364320754698,
+          "UP_precision": 0.42424242424242425,
+          "DOWN_precision": 0.3763440860215054
+        }
+      },
+      "400": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 7,
+          "precision": 0.0440251572327044,
+          "wilson_ci95": [
+            0.02148692054549619,
+            0.08807644832814845
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.03349282296650718,
+          "median_lead_time_seconds": 25.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -198.74747752830189,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.053763440860215055
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 12,
+          "precision": 0.07547169811320754,
+          "wilson_ci95": [
+            0.04369745269599838,
+            0.12727533901394666
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.05741626794258373,
+          "median_lead_time_seconds": 30.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -179.879553,
+          "UP_precision": 0.07575757575757576,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 18,
+          "precision": 0.11320754716981132,
+          "wilson_ci95": [
+            0.0728193026079583,
+            0.1718447965055472
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.0861244019138756,
+          "median_lead_time_seconds": 37.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -157.2380435660377,
+          "UP_precision": 0.12121212121212122,
+          "DOWN_precision": 0.10752688172043011
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 28,
+          "precision": 0.1761006289308176,
+          "wilson_ci95": [
+            0.12474094423724529,
+            0.24274200054886091
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.1339712918660287,
+          "median_lead_time_seconds": 70.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -119.50219450943396,
+          "UP_precision": 0.19696969696969696,
+          "DOWN_precision": 0.16129032258064516
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 38,
+          "precision": 0.2389937106918239,
+          "wilson_ci95": [
+            0.17936038483150846,
+            0.3109414056271985
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.18181818181818182,
+          "median_lead_time_seconds": 97.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -81.76634545283018,
+          "UP_precision": 0.2727272727272727,
+          "DOWN_precision": 0.21505376344086022
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 50,
+          "precision": 0.31446540880503143,
+          "wilson_ci95": [
+            0.24739534198587787,
+            0.39028906327994994
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.23923444976076555,
+          "median_lead_time_seconds": 135.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -36.48332658490565,
+          "UP_precision": 0.3333333333333333,
+          "DOWN_precision": 0.3010752688172043
+        }
+      },
+      "500": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 2,
+          "precision": 0.012578616352201259,
+          "wilson_ci95": [
+            0.003456315519739659,
+            0.04469763051760463
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.009569377990430622,
+          "median_lead_time_seconds": 22.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -216.35754042138365,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 8,
+          "precision": 0.050314465408805034,
+          "wilson_ci95": [
+            0.025712676114661923,
+            0.09613257732624282
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.03827751196172249,
+          "median_lead_time_seconds": 37.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -189.942446081761,
+          "UP_precision": 0.06060606060606061,
+          "DOWN_precision": 0.043010752688172046
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 11,
+          "precision": 0.06918238993710692,
+          "wilson_ci95": [
+            0.039066360950963205,
+            0.11962454619172176
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.05263157894736842,
+          "median_lead_time_seconds": 45.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -176.73489891194967,
+          "UP_precision": 0.07575757575757576,
+          "DOWN_precision": 0.06451612903225806
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 19,
+          "precision": 0.11949685534591195,
+          "wilson_ci95": [
+            0.0778501996506691,
+            0.17909578403009646
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.09090909090909091,
+          "median_lead_time_seconds": 75.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -141.51477312578615,
+          "UP_precision": 0.13636363636363635,
+          "DOWN_precision": 0.10752688172043011
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 28,
+          "precision": 0.1761006289308176,
+          "wilson_ci95": [
+            0.12474094423724529,
+            0.24274200054886091
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.1339712918660287,
+          "median_lead_time_seconds": 105.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -101.8921316163522,
+          "UP_precision": 0.21212121212121213,
+          "DOWN_precision": 0.15053763440860216
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 39,
+          "precision": 0.24528301886792453,
+          "wilson_ci95": [
+            0.18493596375808752,
+            0.3176477112678795
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.18660287081339713,
+          "median_lead_time_seconds": 190.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -53.46445866037735,
+          "UP_precision": 0.3181818181818182,
+          "DOWN_precision": 0.1935483870967742
+        }
+      },
+      "600": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 1,
+          "precision": 0.006289308176100629,
+          "wilson_ci95": [
+            0.001111081403321116,
+            0.03476098006676309
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.004784688995215311,
+          "median_lead_time_seconds": 15.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -220.13112532704403,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.010752688172043012
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 5,
+          "precision": 0.031446540880503145,
+          "wilson_ci95": [
+            0.01350538616419597,
+            0.07149421357492854
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.023923444976076555,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -200.005339163522,
+          "UP_precision": 0.045454545454545456,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 7,
+          "precision": 0.0440251572327044,
+          "wilson_ci95": [
+            0.02148692054549619,
+            0.08807644832814845
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.03349282296650718,
+          "median_lead_time_seconds": 40.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -189.942446081761,
+          "UP_precision": 0.06060606060606061,
+          "DOWN_precision": 0.03225806451612903
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 11,
+          "precision": 0.06918238993710692,
+          "wilson_ci95": [
+            0.039066360950963205,
+            0.11962454619172176
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.05263157894736842,
+          "median_lead_time_seconds": 70.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -169.816659918239,
+          "UP_precision": 0.07575757575757576,
+          "DOWN_precision": 0.06451612903225806
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 15,
+          "precision": 0.09433962264150944,
+          "wilson_ci95": [
+            0.05800591239143811,
+            0.1498125330202872
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.07177033492822966,
+          "median_lead_time_seconds": 105.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -149.690873754717,
+          "UP_precision": 0.12121212121212122,
+          "DOWN_precision": 0.07526881720430108
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 26,
+          "precision": 0.16352201257861634,
+          "wilson_ci95": [
+            0.11410342004642665,
+            0.22881575560515943
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.12440191387559808,
+          "median_lead_time_seconds": 250.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -94.34496180503145,
+          "UP_precision": 0.21212121212121213,
+          "DOWN_precision": 0.12903225806451613
+        }
+      },
+      "800": {
+        "30": {
+          "evaluated_signals": 159,
+          "wins": 0,
+          "precision": 0.0,
+          "wilson_ci95": [
+            0.0,
+            0.023590176902824132
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.0,
+          "median_lead_time_seconds": null,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -225.16257186792453,
+          "UP_precision": 0.0,
+          "DOWN_precision": 0.0
+        },
+        "60": {
+          "evaluated_signals": 159,
+          "wins": 2,
+          "precision": 0.012578616352201259,
+          "wilson_ci95": [
+            0.003456315519739659,
+            0.04469763051760463
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.009569377990430622,
+          "median_lead_time_seconds": 42.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -212.58395551572326,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.0
+        },
+        "90": {
+          "evaluated_signals": 159,
+          "wins": 4,
+          "precision": 0.025157232704402517,
+          "wilson_ci95": [
+            0.00982566952381354,
+            0.0628920456480509
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.019138755980861243,
+          "median_lead_time_seconds": 62.5,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -200.005339163522,
+          "UP_precision": 0.030303030303030304,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "180": {
+          "evaluated_signals": 159,
+          "wins": 7,
+          "precision": 0.0440251572327044,
+          "wilson_ci95": [
+            0.02148692054549619,
+            0.08807644832814845
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.03349282296650718,
+          "median_lead_time_seconds": 85.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -181.13741463522013,
+          "UP_precision": 0.07575757575757576,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "300": {
+          "evaluated_signals": 159,
+          "wins": 7,
+          "precision": 0.0440251572327044,
+          "wilson_ci95": [
+            0.02148692054549619,
+            0.08807644832814845
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.03349282296650718,
+          "median_lead_time_seconds": 85.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -181.13741463522013,
+          "UP_precision": 0.07575757575757576,
+          "DOWN_precision": 0.021505376344086023
+        },
+        "600": {
+          "evaluated_signals": 159,
+          "wins": 15,
+          "precision": 0.09433962264150944,
+          "wilson_ci95": [
+            0.05800591239143811,
+            0.1498125330202872
+          ],
+          "signals_per_day": 0.7607655502392344,
+          "successful_opportunities_per_day": 0.07177033492822966,
+          "median_lead_time_seconds": 365.0,
+          "median_mfe_usd": 284.77999999999884,
+          "median_mae_usd": 195.32499999998254,
+          "proxy_net_ev_usd": -130.8229492264151,
+          "UP_precision": 0.15151515151515152,
+          "DOWN_precision": 0.053763440860215055
+        }
+      }
+    }
+  },
+  "diagnostics_200_600_100": {
+    "family": {
+      "FUTURES_LED_BREAKOUT": {
+        "N": 10,
+        "wins": 3,
+        "precision": 0.3
+      },
+      "PRESSURE_EXPANSION": {
+        "N": 7,
+        "wins": 3,
+        "precision": 0.42857142857142855
+      },
+      "SPOT_FUTURES_CONFIRMATION": {
+        "N": 14,
+        "wins": 7,
+        "precision": 0.5
+      },
+      "SPOT_LED_BREAKOUT": {
+        "N": 17,
+        "wins": 5,
+        "precision": 0.29411764705882354
+      },
+      "VOLATILITY_EXPANSION": {
+        "N": 111,
+        "wins": 48,
+        "precision": 0.43243243243243246
+      }
+    },
+    "origin": {
+      "CONFIRMED": {
+        "N": 88,
+        "wins": 41,
+        "precision": 0.4659090909090909
+      },
+      "DIVERGENT": {
+        "N": 7,
+        "wins": 3,
+        "precision": 0.42857142857142855
+      },
+      "FUTURES_LED": {
+        "N": 36,
+        "wins": 13,
+        "precision": 0.3611111111111111
+      },
+      "SPOT_LED": {
+        "N": 28,
+        "wins": 9,
+        "precision": 0.32142857142857145
+      }
+    },
+    "regime": {
+      "COMPRESSION": {
+        "N": 2,
+        "wins": 1,
+        "precision": 0.5
+      },
+      "EXPANSION": {
+        "N": 111,
+        "wins": 48,
+        "precision": 0.43243243243243246
+      },
+      "RANGE": {
+        "N": 5,
+        "wins": 1,
+        "precision": 0.2
+      },
+      "TREND_DOWN": {
+        "N": 19,
+        "wins": 6,
+        "precision": 0.3157894736842105
+      },
+      "TREND_UP": {
+        "N": 22,
+        "wins": 10,
+        "precision": 0.45454545454545453
+      }
+    },
+    "macd_extreme": {
+      "False": {
+        "N": 6,
+        "wins": 4,
+        "precision": 0.6666666666666666
+      },
+      "True": {
+        "N": 153,
+        "wins": 62,
+        "precision": 0.40522875816993464
+      }
+    },
+    "early_expansion": {
+      "False": {
+        "N": 39,
+        "wins": 15,
+        "precision": 0.38461538461538464
+      },
+      "True": {
+        "N": 120,
+        "wins": 51,
+        "precision": 0.425
+      }
+    }
+  },
+  "best_diagnostic_cell": "$200/600s/$200 adverse = 54.72%, 0.42 successes/day, N=159",
+  "most_predictable_magnitude": "$200 in the post-hoc V1 baseline; no V2 OOS proof",
+  "best_adverse_barrier_diagnostic": "$50 for $400/600s, proxy EV $+21.06",
+  "direction_answer": "UP 36.36%, DOWN 45.16%",
+  "mechanism_answer": "SPOT_FUTURES_CONFIRMATION highest at 50.00%, N=14 (post-hoc)",
+  "false_mechanism_answer": "SPOT_LED_BREAKOUT lowest at 29.41%, 12 false cases of N=17 (post-hoc)",
+  "macd_answer": "40.52%, N=153 (post-hoc)",
+  "confirmation_answer": "46.59%, N=88 (post-hoc)",
+  "expansion_answer": "42.50%, N=120 (post-hoc)",
+  "elite_class_answer": "NONE PROVEN",
+  "product_answer": "NOT ACHIEVED",
+  "setup_family_oos_answer": "NO; V2 has not yet been trained and chronologically validated"
+}
