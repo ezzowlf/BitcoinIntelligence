@@ -1,0 +1,245 @@
+{
+  "research_id": "WAVERUN_V3_ARCHETYPE_DISCOVERY",
+  "execution": "DISABLED",
+  "holdout_opened": false,
+  "v1_fingerprint": "a61a4229635da3e3869b08371e3d7dd38290091951b4488a2bda7df13c2a0f60",
+  "v2_unchanged": true,
+  "move_records": 14616,
+  "research_days": 209,
+  "available_offsets": [
+    "T-300s",
+    "T-180s",
+    "T-120s",
+    "T-60s",
+    "T-30s",
+    "T-10s",
+    "T0"
+  ],
+  "missing_required_offsets": [
+    "T-600s",
+    "T-240s",
+    "T-90s",
+    "T-45s",
+    "T-20s",
+    "T-5s"
+  ],
+  "cluster_selection": {
+    "bounded_k": [
+      3,
+      4,
+      5,
+      6
+    ],
+    "selected_k": 3,
+    "silhouette": {
+      "3": 0.07696092273760916,
+      "4": 0.061965150547222445,
+      "5": 0.057646742140277124,
+      "6": 0.05321102512197768
+    },
+    "fit_period": "Q1_TRAIN",
+    "random_state": 31,
+    "parameter_cliff": false
+  },
+  "experiment_budget": {
+    "attempted": 4,
+    "maximum": 20,
+    "passed": true
+  },
+  "archetypes": [
+    {
+      "archetype": "A0_CROSS_MARKET_CONFIRMATION",
+      "support": 5501,
+      "support_per_day": 26.320574162679424,
+      "period_support": {
+        "Q1_TRAIN": 1241,
+        "Q1_CALIBRATION": 519,
+        "Q1_VALIDATION": 595,
+        "Q1_WALK_FORWARD": 398,
+        "APR_2025": 842,
+        "MAY_2025": 864,
+        "JUN_2025": 729,
+        "JUL_2026": 313
+      },
+      "direction_balance": {
+        "DOWN": 3885,
+        "UP": 1616
+      },
+      "origin": {
+        "FUTURES_LED": 968,
+        "CONFIRMED": 2734,
+        "SPOT_LED": 1793,
+        "DIVERGENT": 6
+      },
+      "regime": {
+        "RANGE": 591,
+        "TREND_UP": 2303,
+        "TREND_DOWN": 964,
+        "EXPANSION": 1093,
+        "COMPRESSION": 550
+      },
+      "median_max_move_usd": 218.44499999999243,
+      "median_duration_seconds": 530.0,
+      "median_time_to_200_seconds": 420.0,
+      "magnitude_distribution": {
+        "200": 5501,
+        "300": 1286,
+        "400": 666,
+        "500": 378,
+        "600": 225,
+        "800": 100
+      },
+      "replicated_later": true
+    },
+    {
+      "archetype": "A1_PRESSURE_ACCELERATION",
+      "support": 3410,
+      "support_per_day": 16.31578947368421,
+      "period_support": {
+        "Q1_TRAIN": 901,
+        "Q1_CALIBRATION": 322,
+        "Q1_VALIDATION": 385,
+        "Q1_WALK_FORWARD": 230,
+        "APR_2025": 518,
+        "MAY_2025": 493,
+        "JUN_2025": 400,
+        "JUL_2026": 161
+      },
+      "direction_balance": {
+        "DOWN": 1707,
+        "UP": 1703
+      },
+      "origin": {
+        "FUTURES_LED": 1013,
+        "SPOT_LED": 1517,
+        "DIVERGENT": 805,
+        "UNKNOWN": 71,
+        "CONFIRMED": 4
+      },
+      "regime": {
+        "TREND_UP": 1029,
+        "COMPRESSION": 576,
+        "EXPANSION": 320,
+        "TREND_DOWN": 1020,
+        "RANGE": 465
+      },
+      "median_max_move_usd": 234.04750000000786,
+      "median_duration_seconds": 540.0,
+      "median_time_to_200_seconds": 390.0,
+      "magnitude_distribution": {
+        "200": 3410,
+        "300": 1097,
+        "400": 601,
+        "500": 348,
+        "600": 213,
+        "800": 93
+      },
+      "replicated_later": true
+    },
+    {
+      "archetype": "A2_CROSS_MARKET_CONFIRMATION",
+      "support": 5705,
+      "support_per_day": 27.29665071770335,
+      "period_support": {
+        "Q1_TRAIN": 1360,
+        "Q1_CALIBRATION": 495,
+        "Q1_VALIDATION": 628,
+        "Q1_WALK_FORWARD": 420,
+        "APR_2025": 899,
+        "MAY_2025": 910,
+        "JUN_2025": 685,
+        "JUL_2026": 308
+      },
+      "direction_balance": {
+        "UP": 4022,
+        "DOWN": 1683
+      },
+      "origin": {
+        "CONFIRMED": 2869,
+        "FUTURES_LED": 908,
+        "SPOT_LED": 1926,
+        "DIVERGENT": 2
+      },
+      "regime": {
+        "TREND_DOWN": 2350,
+        "TREND_UP": 1035,
+        "RANGE": 625,
+        "EXPANSION": 1121,
+        "COMPRESSION": 574
+      },
+      "median_max_move_usd": 221.47999999999593,
+      "median_duration_seconds": 525.0,
+      "median_time_to_200_seconds": 420.0,
+      "magnitude_distribution": {
+        "200": 5705,
+        "300": 1419,
+        "400": 766,
+        "500": 423,
+        "600": 249,
+        "800": 118
+      },
+      "replicated_later": true
+    }
+  ],
+  "precursor_validation": {
+    "A0_CROSS_MARKET_CONFIRMATION": {
+      "N": 84,
+      "wins": 38,
+      "precision": 0.4523809523809524,
+      "wilson_ci95": [
+        0.35035720141579324,
+        0.5585696298617934
+      ],
+      "july_N": 16,
+      "july_precision": 0.1875
+    },
+    "A1_PRESSURE_ACCELERATION": {
+      "N": 16,
+      "wins": 4,
+      "precision": 0.25,
+      "wilson_ci95": [
+        0.10182067491213048,
+        0.49498316535508774
+      ],
+      "july_N": 1,
+      "july_precision": 0.0
+    },
+    "A2_CROSS_MARKET_CONFIRMATION": {
+      "N": 59,
+      "wins": 24,
+      "precision": 0.4067796610169492,
+      "wilson_ci95": [
+        0.29089033587192775,
+        0.5340659874466261
+      ],
+      "july_N": 8,
+      "july_precision": 0.5
+    }
+  },
+  "hard_negative_matching": {
+    "definition": "same period and session, nearest standardized causal trajectory; V1-selected universe",
+    "matches": 66,
+    "median_distance": 8.734638928244827
+  },
+  "calibration_status": "UNAVAILABLE_NO_V3_PROBABILITY_MODEL",
+  "prefreeze_gate": {
+    "passed": false,
+    "checks": {
+      "precision": false,
+      "positive_net_ev": false,
+      "frequency": false,
+      "support": false,
+      "temporal_stability": false,
+      "parameter_stability": false
+    }
+  },
+  "candidate_frozen": false,
+  "final_decision": "NO ROBUST PREDICTIVE ARCHETYPES FOUND",
+  "product_status": {
+    "3/day_70": "FAIL",
+    "5/day_75": "FAIL",
+    "3/day_80": "FAIL",
+    "90_elite": "NOT_FOUND"
+  },
+  "created_at": "2026-08-21T00:00:00+00:00"
+}

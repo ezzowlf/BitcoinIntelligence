@@ -1,0 +1,19 @@
+[
+  {
+    "status": "REFUTED",
+    "hypothesis": "V1 high precision"
+  },
+  {
+    "status": "REFUTED",
+    "hypothesis": "generic MACD adds OOS edge"
+  },
+  {
+    "status": "INCONCLUSIVE",
+    "hypothesis": "causal archetype detector"
+  },
+  {
+    "status": "UNKNOWN",
+    "hypothesis": "complete information clock",
+    "reason": "required offsets missing"
+  }
+]
