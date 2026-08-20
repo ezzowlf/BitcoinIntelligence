@@ -1,0 +1,2526 @@
+{
+  "execution": "DISABLED",
+  "status": "RESEARCH_ONLY",
+  "period": [
+    "2025-01-01",
+    "2025-03-31"
+  ],
+  "case_days_excluded_from_model_proof": [
+    "2025-01-17",
+    "2025-02-02",
+    "2025-02-17"
+  ],
+  "assumed_exchange_cost_bp": 3.0,
+  "vantage_execution_status": "NOT_AVAILABLE_MT5_IPC_TIMEOUT",
+  "feature_groups": {
+    "price_response": [
+      "price_acceleration_10s",
+      "price_acceleration_180s",
+      "price_acceleration_1s",
+      "price_acceleration_300s",
+      "price_acceleration_30s",
+      "price_acceleration_5s",
+      "price_acceleration_60s",
+      "price_pressure",
+      "price_response_efficiency",
+      "price_return_10s",
+      "price_return_180s",
+      "price_return_1s",
+      "price_return_300s",
+      "price_return_30s",
+      "price_return_5s",
+      "price_return_60s"
+    ],
+    "spot_flow": [
+      "spot_cvd_30s",
+      "spot_cvd_acceleration",
+      "spot_cvd_velocity",
+      "spot_imbalance",
+      "spot_pressure_10s",
+      "spot_pressure_30s",
+      "spot_pressure_acceleration",
+      "spot_pressure_persistence",
+      "spot_trade_intensity_30s",
+      "spot_trade_intensity_acceleration"
+    ],
+    "futures_flow": [
+      "futures_cvd_30s",
+      "futures_cvd_acceleration",
+      "futures_cvd_velocity",
+      "futures_imbalance",
+      "futures_pressure_10s",
+      "futures_pressure_30s",
+      "futures_pressure_acceleration",
+      "futures_pressure_persistence",
+      "futures_trade_intensity_30s",
+      "futures_trade_intensity_acceleration"
+    ],
+    "pressure": [
+      "flow_pressure",
+      "flow_pressure_acceleration",
+      "futures_lead_1s",
+      "spot_futures_agreement",
+      "spot_lead_1s"
+    ],
+    "macd": [
+      "macd_10s_cross_age",
+      "macd_10s_cross_direction",
+      "macd_10s_distance_signal",
+      "macd_10s_distance_zero",
+      "macd_10s_histogram",
+      "macd_10s_histogram_acceleration",
+      "macd_10s_histogram_slope",
+      "macd_10s_macd",
+      "macd_10s_macd_acceleration",
+      "macd_10s_macd_slope",
+      "macd_10s_signal",
+      "macd_180s_cross_age",
+      "macd_180s_cross_direction",
+      "macd_180s_distance_signal",
+      "macd_180s_distance_zero",
+      "macd_180s_histogram",
+      "macd_180s_histogram_acceleration",
+      "macd_180s_histogram_slope",
+      "macd_180s_macd",
+      "macd_180s_macd_acceleration",
+      "macd_180s_macd_slope",
+      "macd_180s_signal",
+      "macd_300s_cross_age",
+      "macd_300s_cross_direction",
+      "macd_300s_distance_signal",
+      "macd_300s_distance_zero",
+      "macd_300s_histogram",
+      "macd_300s_histogram_acceleration",
+      "macd_300s_histogram_slope",
+      "macd_300s_macd",
+      "macd_300s_macd_acceleration",
+      "macd_300s_macd_slope",
+      "macd_300s_signal",
+      "macd_30s_cross_age",
+      "macd_30s_cross_direction",
+      "macd_30s_distance_signal",
+      "macd_30s_distance_zero",
+      "macd_30s_histogram",
+      "macd_30s_histogram_acceleration",
+      "macd_30s_histogram_slope",
+      "macd_30s_macd",
+      "macd_30s_macd_acceleration",
+      "macd_30s_macd_slope",
+      "macd_30s_signal",
+      "macd_60s_cross_age",
+      "macd_60s_cross_direction",
+      "macd_60s_distance_signal",
+      "macd_60s_distance_zero",
+      "macd_60s_histogram",
+      "macd_60s_histogram_acceleration",
+      "macd_60s_histogram_slope",
+      "macd_60s_macd",
+      "macd_60s_macd_acceleration",
+      "macd_60s_macd_slope",
+      "macd_60s_signal",
+      "macd_900s_cross_age",
+      "macd_900s_cross_direction",
+      "macd_900s_distance_signal",
+      "macd_900s_distance_zero",
+      "macd_900s_histogram",
+      "macd_900s_histogram_acceleration",
+      "macd_900s_histogram_slope",
+      "macd_900s_macd",
+      "macd_900s_macd_acceleration",
+      "macd_900s_macd_slope",
+      "macd_900s_signal",
+      "macd_acceleration",
+      "macd_alignment",
+      "macd_pressure"
+    ],
+    "expansion": [
+      "expansion_score",
+      "range_60s",
+      "volatility_60s",
+      "volatility_score"
+    ],
+    "structure_reversion": [
+      "exhaustion",
+      "flow_price_absorption",
+      "mean_zscore",
+      "structure_break"
+    ],
+    "time": [
+      "hour_utc",
+      "weekday"
+    ]
+  },
+  "experiments": [
+    {
+      "experiment": "Q1_TWO_STAGE_10s",
+      "horizon": 10,
+      "validation_curve": [
+        {
+          "threshold": 0.5,
+          "signals": 4807,
+          "wins": 2456,
+          "precision": 0.5109215727064698,
+          "wilson_ci95": [
+            0.4967873454677869,
+            0.5250383581848417
+          ],
+          "coverage": 0.018545524691358024,
+          "cooldown_seconds": 10,
+          "signals_per_day": 320.46666666666664,
+          "gross_ev": 3.320206643063612e-05,
+          "net_ev": -0.0002667979335693638
+        },
+        {
+          "threshold": 0.525,
+          "signals": 3069,
+          "wins": 1567,
+          "precision": 0.5105897686542847,
+          "wilson_ci95": [
+            0.4929018845323359,
+            0.5282511755493727
+          ],
+          "coverage": 0.011840277777777778,
+          "cooldown_seconds": 10,
+          "signals_per_day": 204.6,
+          "gross_ev": 3.048655012549814e-05,
+          "net_ev": -0.0002695134498745018
+        },
+        {
+          "threshold": 0.55,
+          "signals": 1699,
+          "wins": 882,
+          "precision": 0.5191288993525603,
+          "wilson_ci95": [
+            0.4953548771791991,
+            0.5428166153360323
+          ],
+          "coverage": 0.006554783950617284,
+          "cooldown_seconds": 10,
+          "signals_per_day": 113.26666666666667,
+          "gross_ev": 5.8467584720570846e-05,
+          "net_ev": -0.00024153241527942904
+        },
+        {
+          "threshold": 0.5750000000000001,
+          "signals": 784,
+          "wins": 400,
+          "precision": 0.5102040816326531,
+          "wilson_ci95": [
+            0.47524763784614105,
+            0.5450610166691342
+          ],
+          "coverage": 0.0030246913580246914,
+          "cooldown_seconds": 10,
+          "signals_per_day": 52.266666666666666,
+          "gross_ev": 4.8593569693724426e-05,
+          "net_ev": -0.0002514064303062755
+        },
+        {
+          "threshold": 0.6000000000000001,
+          "signals": 342,
+          "wins": 172,
+          "precision": 0.5029239766081871,
+          "wilson_ci95": [
+            0.450196156707013,
+            0.5555868399493736
+          ],
+          "coverage": 0.0013194444444444445,
+          "cooldown_seconds": 10,
+          "signals_per_day": 22.8,
+          "gross_ev": 2.5962801655324225e-05,
+          "net_ev": -0.00027403719834467573
+        },
+        {
+          "threshold": 0.6250000000000001,
+          "signals": 155,
+          "wins": 77,
+          "precision": 0.4967741935483871,
+          "wilson_ci95": [
+            0.41909738334729285,
+            0.5746070310579613
+          ],
+          "coverage": 0.0005979938271604939,
+          "cooldown_seconds": 10,
+          "signals_per_day": 10.333333333333334,
+          "gross_ev": -8.543140310892721e-05,
+          "net_ev": -0.00038543140310892714
+        },
+        {
+          "threshold": 0.6500000000000001,
+          "signals": 75,
+          "wins": 41,
+          "precision": 0.5466666666666666,
+          "wilson_ci95": [
+            0.4344837385429269,
+            0.6543020361586779
+          ],
+          "coverage": 0.00028935185185185184,
+          "cooldown_seconds": 10,
+          "signals_per_day": 5.0,
+          "gross_ev": -2.4642811108677164e-05,
+          "net_ev": -0.00032464281110867717
+        },
+        {
+          "threshold": 0.6750000000000002,
+          "signals": 41,
+          "wins": 25,
+          "precision": 0.6097560975609756,
+          "wilson_ci95": [
+            0.45726856934123794,
+            0.7434385493987647
+          ],
+          "coverage": 0.00015817901234567902,
+          "cooldown_seconds": 10,
+          "signals_per_day": 2.7333333333333334,
+          "gross_ev": 0.00011712607456910285,
+          "net_ev": -0.00018287392543089707
+        },
+        {
+          "threshold": 0.7000000000000002,
+          "signals": 26,
+          "wins": 14,
+          "precision": 0.5384615384615384,
+          "wilson_ci95": [
+            0.35457938746858797,
+            0.7124414646960878
+          ],
+          "coverage": 0.00010030864197530864,
+          "cooldown_seconds": 10,
+          "signals_per_day": 1.7333333333333334,
+          "gross_ev": -0.00014545632320644557,
+          "net_ev": -0.0004454563232064455
+        },
+        {
+          "threshold": 0.7250000000000002,
+          "signals": 18,
+          "wins": 10,
+          "precision": 0.5555555555555556,
+          "wilson_ci95": [
+            0.33716415642042774,
+            0.7544048187299437
+          ],
+          "coverage": 6.944444444444444e-05,
+          "cooldown_seconds": 10,
+          "signals_per_day": 1.2,
+          "gross_ev": 3.262342490590381e-05,
+          "net_ev": -0.0002673765750940961
+        },
+        {
+          "threshold": 0.7500000000000002,
+          "signals": 9,
+          "wins": 4,
+          "precision": 0.4444444444444444,
+          "wilson_ci95": [
+            0.18877852109766452,
+            0.733348706504507
+          ],
+          "coverage": 3.472222222222222e-05,
+          "cooldown_seconds": 10,
+          "signals_per_day": 0.6,
+          "gross_ev": -0.0009912597971431082,
+          "net_ev": -0.0012912597971431081
+        },
+        {
+          "threshold": 0.7750000000000002,
+          "signals": 5,
+          "wins": 2,
+          "precision": 0.4,
+          "wilson_ci95": [
+            0.11762077423264783,
+            0.769275718723987
+          ],
+          "coverage": 1.9290123456790123e-05,
+          "cooldown_seconds": 10,
+          "signals_per_day": 0.3333333333333333,
+          "gross_ev": -0.0013304058313317046,
+          "net_ev": -0.0016304058313317046
+        },
+        {
+          "threshold": 0.8000000000000003,
+          "signals": 5,
+          "wins": 2,
+          "precision": 0.4,
+          "wilson_ci95": [
+            0.11762077423264783,
+            0.769275718723987
+          ],
+          "coverage": 1.9290123456790123e-05,
+          "cooldown_seconds": 10,
+          "signals_per_day": 0.3333333333333333,
+          "gross_ev": -0.0013304058313317046,
+          "net_ev": -0.0016304058313317046
+        },
+        {
+          "threshold": 0.8250000000000003,
+          "signals": 1,
+          "wins": 0,
+          "precision": 0.0,
+          "wilson_ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "coverage": 3.858024691358025e-06,
+          "cooldown_seconds": 10,
+          "signals_per_day": 0.06666666666666667,
+          "gross_ev": -0.006714935612300854,
+          "net_ev": -0.007014935612300854
+        },
+        {
+          "threshold": 0.8500000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 10,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.8750000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 10,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9000000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 10,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9250000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 10,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9500000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 10,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        }
+      ],
+      "best": null
+    },
+    {
+      "experiment": "Q1_TWO_STAGE_30s",
+      "horizon": 30,
+      "validation_curve": [
+        {
+          "threshold": 0.5,
+          "signals": 3492,
+          "wins": 1795,
+          "precision": 0.5140320733104238,
+          "wilson_ci95": [
+            0.49744860658919704,
+            0.5305847013151779
+          ],
+          "coverage": 0.013472222222222222,
+          "cooldown_seconds": 30,
+          "signals_per_day": 232.8,
+          "gross_ev": 1.826734073408327e-05,
+          "net_ev": -0.0002817326592659167
+        },
+        {
+          "threshold": 0.525,
+          "signals": 2216,
+          "wins": 1122,
+          "precision": 0.5063176895306859,
+          "wilson_ci95": [
+            0.4855087120969479,
+            0.5271048013090387
+          ],
+          "coverage": 0.008549382716049382,
+          "cooldown_seconds": 30,
+          "signals_per_day": 147.73333333333332,
+          "gross_ev": -2.6484793008239606e-06,
+          "net_ev": -0.0003026484793008239
+        },
+        {
+          "threshold": 0.55,
+          "signals": 1210,
+          "wins": 597,
+          "precision": 0.4933884297520661,
+          "wilson_ci95": [
+            0.46528391768047417,
+            0.5215347892571314
+          ],
+          "coverage": 0.00466820987654321,
+          "cooldown_seconds": 30,
+          "signals_per_day": 80.66666666666667,
+          "gross_ev": -2.7333382228319702e-05,
+          "net_ev": -0.0003273333822283196
+        },
+        {
+          "threshold": 0.5750000000000001,
+          "signals": 615,
+          "wins": 310,
+          "precision": 0.5040650406504065,
+          "wilson_ci95": [
+            0.4646472536971889,
+            0.5434323601178395
+          ],
+          "coverage": 0.002372685185185185,
+          "cooldown_seconds": 30,
+          "signals_per_day": 41.0,
+          "gross_ev": -0.0001186795878363805,
+          "net_ev": -0.0004186795878363805
+        },
+        {
+          "threshold": 0.6000000000000001,
+          "signals": 297,
+          "wins": 149,
+          "precision": 0.5016835016835017,
+          "wilson_ci95": [
+            0.4451622164754512,
+            0.5581617934662637
+          ],
+          "coverage": 0.0011458333333333333,
+          "cooldown_seconds": 30,
+          "signals_per_day": 19.8,
+          "gross_ev": -8.08791725905672e-05,
+          "net_ev": -0.00038087917259056715
+        },
+        {
+          "threshold": 0.6250000000000001,
+          "signals": 172,
+          "wins": 92,
+          "precision": 0.5348837209302325,
+          "wilson_ci95": [
+            0.46039557080814975,
+            0.6078477210780737
+          ],
+          "coverage": 0.0006635802469135803,
+          "cooldown_seconds": 30,
+          "signals_per_day": 11.466666666666667,
+          "gross_ev": -0.00011405359607221059,
+          "net_ev": -0.0004140535960722105
+        },
+        {
+          "threshold": 0.6500000000000001,
+          "signals": 88,
+          "wins": 49,
+          "precision": 0.5568181818181818,
+          "wilson_ci95": [
+            0.4528179063718238,
+            0.6560653815071655
+          ],
+          "coverage": 0.00033950617283950616,
+          "cooldown_seconds": 30,
+          "signals_per_day": 5.866666666666666,
+          "gross_ev": -1.9492672737004733e-05,
+          "net_ev": -0.0003194926727370047
+        },
+        {
+          "threshold": 0.6750000000000002,
+          "signals": 51,
+          "wins": 28,
+          "precision": 0.5490196078431373,
+          "wilson_ci95": [
+            0.4138470855036881,
+            0.6773248145062599
+          ],
+          "coverage": 0.00019675925925925926,
+          "cooldown_seconds": 30,
+          "signals_per_day": 3.4,
+          "gross_ev": 0.00032688211002212544,
+          "net_ev": 2.6882110022125495e-05
+        },
+        {
+          "threshold": 0.7000000000000002,
+          "signals": 27,
+          "wins": 13,
+          "precision": 0.48148148148148145,
+          "wilson_ci95": [
+            0.3074322697621846,
+            0.6601438424504771
+          ],
+          "coverage": 0.00010416666666666667,
+          "cooldown_seconds": 30,
+          "signals_per_day": 1.8,
+          "gross_ev": -0.0003570510309591521,
+          "net_ev": -0.0006570510309591522
+        },
+        {
+          "threshold": 0.7250000000000002,
+          "signals": 15,
+          "wins": 7,
+          "precision": 0.4666666666666667,
+          "wilson_ci95": [
+            0.24809535365737387,
+            0.698830199745016
+          ],
+          "coverage": 5.787037037037037e-05,
+          "cooldown_seconds": 30,
+          "signals_per_day": 1.0,
+          "gross_ev": -0.0013062052238243637,
+          "net_ev": -0.001606205223824364
+        },
+        {
+          "threshold": 0.7500000000000002,
+          "signals": 10,
+          "wins": 5,
+          "precision": 0.5,
+          "wilson_ci95": [
+            0.236593090512564,
+            0.7634069094874361
+          ],
+          "coverage": 3.8580246913580246e-05,
+          "cooldown_seconds": 30,
+          "signals_per_day": 0.6666666666666666,
+          "gross_ev": -0.0011121882261243888,
+          "net_ev": -0.0014121882261243887
+        },
+        {
+          "threshold": 0.7750000000000002,
+          "signals": 6,
+          "wins": 4,
+          "precision": 0.6666666666666666,
+          "wilson_ci95": [
+            0.299993315138392,
+            0.9032285888942195
+          ],
+          "coverage": 2.3148148148148147e-05,
+          "cooldown_seconds": 30,
+          "signals_per_day": 0.4,
+          "gross_ev": -0.0009710052767616014,
+          "net_ev": -0.0012710052767616012
+        },
+        {
+          "threshold": 0.8000000000000003,
+          "signals": 4,
+          "wins": 2,
+          "precision": 0.5,
+          "wilson_ci95": [
+            0.15003898915214947,
+            0.8499610108478506
+          ],
+          "coverage": 1.54320987654321e-05,
+          "cooldown_seconds": 30,
+          "signals_per_day": 0.26666666666666666,
+          "gross_ev": -0.001665851084039438,
+          "net_ev": -0.001965851084039438
+        },
+        {
+          "threshold": 0.8250000000000003,
+          "signals": 1,
+          "wins": 1,
+          "precision": 1.0,
+          "wilson_ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "coverage": 3.858024691358025e-06,
+          "cooldown_seconds": 30,
+          "signals_per_day": 0.06666666666666667,
+          "gross_ev": 0.002571101004584353,
+          "net_ev": 0.002271101004584353
+        },
+        {
+          "threshold": 0.8500000000000003,
+          "signals": 1,
+          "wins": 1,
+          "precision": 1.0,
+          "wilson_ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "coverage": 3.858024691358025e-06,
+          "cooldown_seconds": 30,
+          "signals_per_day": 0.06666666666666667,
+          "gross_ev": 0.002571101004584353,
+          "net_ev": 0.002271101004584353
+        },
+        {
+          "threshold": 0.8750000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 30,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9000000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 30,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9250000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 30,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9500000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 30,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        }
+      ],
+      "best": null
+    },
+    {
+      "experiment": "Q1_TWO_STAGE_60s",
+      "horizon": 60,
+      "validation_curve": [
+        {
+          "threshold": 0.5,
+          "signals": 2611,
+          "wins": 1324,
+          "precision": 0.5070854078896975,
+          "wilson_ci95": [
+            0.48791251195244534,
+            0.5262374855073194
+          ],
+          "coverage": 0.010073302469135802,
+          "cooldown_seconds": 60,
+          "signals_per_day": 174.06666666666666,
+          "gross_ev": -2.7055483441757252e-05,
+          "net_ev": -0.0003270554834417572
+        },
+        {
+          "threshold": 0.525,
+          "signals": 1608,
+          "wins": 838,
+          "precision": 0.5211442786069652,
+          "wilson_ci95": [
+            0.4967062791975557,
+            0.5454814928242363
+          ],
+          "coverage": 0.0062037037037037035,
+          "cooldown_seconds": 60,
+          "signals_per_day": 107.2,
+          "gross_ev": -1.7077321725682803e-05,
+          "net_ev": -0.00031707732172568274
+        },
+        {
+          "threshold": 0.55,
+          "signals": 899,
+          "wins": 421,
+          "precision": 0.4682981090100111,
+          "wilson_ci95": [
+            0.4358837165723294,
+            0.5009822752990959
+          ],
+          "coverage": 0.0034683641975308643,
+          "cooldown_seconds": 60,
+          "signals_per_day": 59.93333333333333,
+          "gross_ev": -0.00022263476802552632,
+          "net_ev": -0.0005226347680255264
+        },
+        {
+          "threshold": 0.5750000000000001,
+          "signals": 495,
+          "wins": 235,
+          "precision": 0.47474747474747475,
+          "wilson_ci95": [
+            0.4311205126855824,
+            0.5187633641295037
+          ],
+          "coverage": 0.0019097222222222222,
+          "cooldown_seconds": 60,
+          "signals_per_day": 33.0,
+          "gross_ev": -0.0003426353598260601,
+          "net_ev": -0.0006426353598260601
+        },
+        {
+          "threshold": 0.6000000000000001,
+          "signals": 255,
+          "wins": 120,
+          "precision": 0.47058823529411764,
+          "wilson_ci95": [
+            0.41021687889676,
+            0.5318325900393933
+          ],
+          "coverage": 0.0009837962962962962,
+          "cooldown_seconds": 60,
+          "signals_per_day": 17.0,
+          "gross_ev": -0.0004084863463603766,
+          "net_ev": -0.0007084863463603767
+        },
+        {
+          "threshold": 0.6250000000000001,
+          "signals": 138,
+          "wins": 70,
+          "precision": 0.5072463768115942,
+          "wilson_ci95": [
+            0.4247743233744895,
+            0.5893259264158647
+          ],
+          "coverage": 0.0005324074074074074,
+          "cooldown_seconds": 60,
+          "signals_per_day": 9.2,
+          "gross_ev": 0.00011816927560964188,
+          "net_ev": -0.0001818307243903582
+        },
+        {
+          "threshold": 0.6500000000000001,
+          "signals": 80,
+          "wins": 37,
+          "precision": 0.4625,
+          "wilson_ci95": [
+            0.35747993562785246,
+            0.570956424087312
+          ],
+          "coverage": 0.00030864197530864197,
+          "cooldown_seconds": 60,
+          "signals_per_day": 5.333333333333333,
+          "gross_ev": 3.7813954657725524e-06,
+          "net_ev": -0.00029621860453422753
+        },
+        {
+          "threshold": 0.6750000000000002,
+          "signals": 48,
+          "wins": 21,
+          "precision": 0.4375,
+          "wilson_ci95": [
+            0.30701269040654244,
+            0.5772498258017222
+          ],
+          "coverage": 0.00018518518518518518,
+          "cooldown_seconds": 60,
+          "signals_per_day": 3.2,
+          "gross_ev": 0.00012649684484338417,
+          "net_ev": -0.00017350315515661584
+        },
+        {
+          "threshold": 0.7000000000000002,
+          "signals": 23,
+          "wins": 12,
+          "precision": 0.5217391304347826,
+          "wilson_ci95": [
+            0.32962737336427406,
+            0.7076284258335335
+          ],
+          "coverage": 8.873456790123456e-05,
+          "cooldown_seconds": 60,
+          "signals_per_day": 1.5333333333333334,
+          "gross_ev": 0.0005338739615412584,
+          "net_ev": 0.00023387396154125846
+        },
+        {
+          "threshold": 0.7250000000000002,
+          "signals": 15,
+          "wins": 8,
+          "precision": 0.5333333333333333,
+          "wilson_ci95": [
+            0.30116980025498397,
+            0.7519046463426261
+          ],
+          "coverage": 5.787037037037037e-05,
+          "cooldown_seconds": 60,
+          "signals_per_day": 1.0,
+          "gross_ev": 0.0010587237509325738,
+          "net_ev": 0.0007587237509325739
+        },
+        {
+          "threshold": 0.7500000000000002,
+          "signals": 8,
+          "wins": 5,
+          "precision": 0.625,
+          "wilson_ci95": [
+            0.30574239460262737,
+            0.8631557141764026
+          ],
+          "coverage": 3.08641975308642e-05,
+          "cooldown_seconds": 60,
+          "signals_per_day": 0.5333333333333333,
+          "gross_ev": 0.0021339248704733,
+          "net_ev": 0.0018339248704733
+        },
+        {
+          "threshold": 0.7750000000000002,
+          "signals": 5,
+          "wins": 4,
+          "precision": 0.8,
+          "wilson_ci95": [
+            0.37553462976252533,
+            0.9637758913675698
+          ],
+          "coverage": 1.9290123456790123e-05,
+          "cooldown_seconds": 60,
+          "signals_per_day": 0.3333333333333333,
+          "gross_ev": 0.0022146816685201464,
+          "net_ev": 0.0019146816685201465
+        },
+        {
+          "threshold": 0.8000000000000003,
+          "signals": 3,
+          "wins": 3,
+          "precision": 1.0,
+          "wilson_ci95": [
+            0.4385029682449546,
+            1.0
+          ],
+          "coverage": 1.1574074074074073e-05,
+          "cooldown_seconds": 60,
+          "signals_per_day": 0.2,
+          "gross_ev": 0.0021692987293520094,
+          "net_ev": 0.0018692987293520095
+        },
+        {
+          "threshold": 0.8250000000000003,
+          "signals": 1,
+          "wins": 1,
+          "precision": 1.0,
+          "wilson_ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "coverage": 3.858024691358025e-06,
+          "cooldown_seconds": 60,
+          "signals_per_day": 0.06666666666666667,
+          "gross_ev": 0.0018926934224303693,
+          "net_ev": 0.0015926934224303694
+        },
+        {
+          "threshold": 0.8500000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 60,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.8750000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 60,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9000000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 60,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9250000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 60,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9500000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 60,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        }
+      ],
+      "best": null
+    },
+    {
+      "experiment": "Q1_TWO_STAGE_90s",
+      "horizon": 90,
+      "validation_curve": [
+        {
+          "threshold": 0.5,
+          "signals": 1945,
+          "wins": 1016,
+          "precision": 0.5223650385604113,
+          "wilson_ci95": [
+            0.5001443110129941,
+            0.5444975964167905
+          ],
+          "coverage": 0.007503858024691358,
+          "cooldown_seconds": 90,
+          "signals_per_day": 129.66666666666666,
+          "gross_ev": -1.753195416065839e-05,
+          "net_ev": -0.0003175319541606584
+        },
+        {
+          "threshold": 0.525,
+          "signals": 1041,
+          "wins": 518,
+          "precision": 0.49759846301633043,
+          "wilson_ci95": [
+            0.467290175074989,
+            0.527924409915117
+          ],
+          "coverage": 0.004016203703703704,
+          "cooldown_seconds": 90,
+          "signals_per_day": 69.4,
+          "gross_ev": -0.00012983215776425557,
+          "net_ev": -0.0004298321577642556
+        },
+        {
+          "threshold": 0.55,
+          "signals": 507,
+          "wins": 237,
+          "precision": 0.46745562130177515,
+          "wilson_ci95": [
+            0.4244330236440266,
+            0.5109676776299414
+          ],
+          "coverage": 0.0019560185185185184,
+          "cooldown_seconds": 90,
+          "signals_per_day": 33.8,
+          "gross_ev": -0.000267737660234165,
+          "net_ev": -0.0005677376602341651
+        },
+        {
+          "threshold": 0.5750000000000001,
+          "signals": 215,
+          "wins": 114,
+          "precision": 0.5302325581395348,
+          "wilson_ci95": [
+            0.4635759166566621,
+            0.5958278182208842
+          ],
+          "coverage": 0.0008294753086419753,
+          "cooldown_seconds": 90,
+          "signals_per_day": 14.333333333333334,
+          "gross_ev": -0.0001501399326137129,
+          "net_ev": -0.00045013993261371304
+        },
+        {
+          "threshold": 0.6000000000000001,
+          "signals": 107,
+          "wins": 52,
+          "precision": 0.48598130841121495,
+          "wilson_ci95": [
+            0.39342020925846743,
+            0.5795141058261705
+          ],
+          "coverage": 0.00041280864197530866,
+          "cooldown_seconds": 90,
+          "signals_per_day": 7.133333333333334,
+          "gross_ev": -0.00035550860751572695,
+          "net_ev": -0.0006555086075157268
+        },
+        {
+          "threshold": 0.6250000000000001,
+          "signals": 52,
+          "wins": 26,
+          "precision": 0.5,
+          "wilson_ci95": [
+            0.36885862959780547,
+            0.6311413704021945
+          ],
+          "coverage": 0.00020061728395061727,
+          "cooldown_seconds": 90,
+          "signals_per_day": 3.466666666666667,
+          "gross_ev": -2.0156344969482272e-05,
+          "net_ev": -0.00032015634496948233
+        },
+        {
+          "threshold": 0.6500000000000001,
+          "signals": 23,
+          "wins": 11,
+          "precision": 0.4782608695652174,
+          "wilson_ci95": [
+            0.29237157416646653,
+            0.6703726266357259
+          ],
+          "coverage": 8.873456790123456e-05,
+          "cooldown_seconds": 90,
+          "signals_per_day": 1.5333333333333334,
+          "gross_ev": -0.00022522987318514083,
+          "net_ev": -0.0005252298731851412
+        },
+        {
+          "threshold": 0.6750000000000002,
+          "signals": 13,
+          "wins": 7,
+          "precision": 0.5384615384615384,
+          "wilson_ci95": [
+            0.29143795714506004,
+            0.7679393219046169
+          ],
+          "coverage": 5.015432098765432e-05,
+          "cooldown_seconds": 90,
+          "signals_per_day": 0.8666666666666667,
+          "gross_ev": 0.000548737945296956,
+          "net_ev": 0.0002487379452969562
+        },
+        {
+          "threshold": 0.7000000000000002,
+          "signals": 8,
+          "wins": 4,
+          "precision": 0.5,
+          "wilson_ci95": [
+            0.21521606221387757,
+            0.7847839377861224
+          ],
+          "coverage": 3.08641975308642e-05,
+          "cooldown_seconds": 90,
+          "signals_per_day": 0.5333333333333333,
+          "gross_ev": 0.0006213209194697727,
+          "net_ev": 0.00032132091946977283
+        },
+        {
+          "threshold": 0.7250000000000002,
+          "signals": 5,
+          "wins": 3,
+          "precision": 0.6,
+          "wilson_ci95": [
+            0.2307242812760128,
+            0.882379225767352
+          ],
+          "coverage": 1.9290123456790123e-05,
+          "cooldown_seconds": 90,
+          "signals_per_day": 0.3333333333333333,
+          "gross_ev": 0.0014911382639668735,
+          "net_ev": 0.0011911382639668735
+        },
+        {
+          "threshold": 0.7500000000000002,
+          "signals": 1,
+          "wins": 1,
+          "precision": 1.0,
+          "wilson_ci95": [
+            0.20654931437723745,
+            1.0
+          ],
+          "coverage": 3.858024691358025e-06,
+          "cooldown_seconds": 90,
+          "signals_per_day": 0.06666666666666667,
+          "gross_ev": 0.007229440047126778,
+          "net_ev": 0.006929440047126778
+        },
+        {
+          "threshold": 0.7750000000000002,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 90,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.8000000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 90,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.8250000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 90,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.8500000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 90,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.8750000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 90,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9000000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 90,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9250000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 90,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9500000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 90,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        }
+      ],
+      "best": null
+    },
+    {
+      "experiment": "Q1_TWO_STAGE_180s",
+      "horizon": 180,
+      "validation_curve": [
+        {
+          "threshold": 0.5,
+          "signals": 1181,
+          "wins": 629,
+          "precision": 0.5325994919559696,
+          "wilson_ci95": [
+            0.5040841451556379,
+            0.560903452490245
+          ],
+          "coverage": 0.004556327160493827,
+          "cooldown_seconds": 180,
+          "signals_per_day": 78.73333333333333,
+          "gross_ev": 0.00020834875123282106,
+          "net_ev": -9.165124876717892e-05
+        },
+        {
+          "threshold": 0.525,
+          "signals": 519,
+          "wins": 255,
+          "precision": 0.4913294797687861,
+          "wilson_ci95": [
+            0.44854146450897114,
+            0.5342449043832354
+          ],
+          "coverage": 0.002002314814814815,
+          "cooldown_seconds": 180,
+          "signals_per_day": 34.6,
+          "gross_ev": -0.00019307493525723657,
+          "net_ev": -0.0004930749352572367
+        },
+        {
+          "threshold": 0.55,
+          "signals": 192,
+          "wins": 111,
+          "precision": 0.578125,
+          "wilson_ci95": [
+            0.5074086558818907,
+            0.6457764775451791
+          ],
+          "coverage": 0.0007407407407407407,
+          "cooldown_seconds": 180,
+          "signals_per_day": 12.8,
+          "gross_ev": 0.0007809059604050166,
+          "net_ev": 0.00048090596040501653
+        },
+        {
+          "threshold": 0.5750000000000001,
+          "signals": 68,
+          "wins": 39,
+          "precision": 0.5735294117647058,
+          "wilson_ci95": [
+            0.45516782316555565,
+            0.6840275685226693
+          ],
+          "coverage": 0.0002623456790123457,
+          "cooldown_seconds": 180,
+          "signals_per_day": 4.533333333333333,
+          "gross_ev": 0.00035945370408688334,
+          "net_ev": 5.945370408688322e-05
+        },
+        {
+          "threshold": 0.6000000000000001,
+          "signals": 27,
+          "wins": 13,
+          "precision": 0.48148148148148145,
+          "wilson_ci95": [
+            0.3074322697621846,
+            0.6601438424504771
+          ],
+          "coverage": 0.00010416666666666667,
+          "cooldown_seconds": 180,
+          "signals_per_day": 1.8,
+          "gross_ev": 0.0003159351360513304,
+          "net_ev": 1.5935136051330347e-05
+        },
+        {
+          "threshold": 0.6250000000000001,
+          "signals": 10,
+          "wins": 6,
+          "precision": 0.6,
+          "wilson_ci95": [
+            0.31267376973365824,
+            0.8318196702937638
+          ],
+          "coverage": 3.8580246913580246e-05,
+          "cooldown_seconds": 180,
+          "signals_per_day": 0.6666666666666666,
+          "gross_ev": -0.000463073301769934,
+          "net_ev": -0.0007630733017699339
+        },
+        {
+          "threshold": 0.6500000000000001,
+          "signals": 5,
+          "wins": 3,
+          "precision": 0.6,
+          "wilson_ci95": [
+            0.2307242812760128,
+            0.882379225767352
+          ],
+          "coverage": 1.9290123456790123e-05,
+          "cooldown_seconds": 180,
+          "signals_per_day": 0.3333333333333333,
+          "gross_ev": -0.0014004491888133907,
+          "net_ev": -0.001700449188813391
+        },
+        {
+          "threshold": 0.6750000000000002,
+          "signals": 2,
+          "wins": 1,
+          "precision": 0.5,
+          "wilson_ci95": [
+            0.09453120573423074,
+            0.9054687942657693
+          ],
+          "coverage": 7.71604938271605e-06,
+          "cooldown_seconds": 180,
+          "signals_per_day": 0.13333333333333333,
+          "gross_ev": 0.0010603972297639208,
+          "net_ev": 0.0007603972297639209
+        },
+        {
+          "threshold": 0.7000000000000002,
+          "signals": 1,
+          "wins": 0,
+          "precision": 0.0,
+          "wilson_ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "coverage": 3.858024691358025e-06,
+          "cooldown_seconds": 180,
+          "signals_per_day": 0.06666666666666667,
+          "gross_ev": -0.003179086670610065,
+          "net_ev": -0.003479086670610065
+        },
+        {
+          "threshold": 0.7250000000000002,
+          "signals": 1,
+          "wins": 0,
+          "precision": 0.0,
+          "wilson_ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "coverage": 3.858024691358025e-06,
+          "cooldown_seconds": 180,
+          "signals_per_day": 0.06666666666666667,
+          "gross_ev": -0.003179086670610065,
+          "net_ev": -0.003479086670610065
+        },
+        {
+          "threshold": 0.7500000000000002,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 180,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.7750000000000002,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 180,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.8000000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 180,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.8250000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 180,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.8500000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 180,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.8750000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 180,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9000000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 180,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9250000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 180,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9500000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 180,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        }
+      ],
+      "best": {
+        "threshold": 0.55,
+        "signals": 192,
+        "wins": 111,
+        "precision": 0.578125,
+        "wilson_ci95": [
+          0.5074086558818907,
+          0.6457764775451791
+        ],
+        "coverage": 0.0007407407407407407,
+        "cooldown_seconds": 180,
+        "signals_per_day": 12.8,
+        "gross_ev": 0.0007809059604050166,
+        "net_ev": 0.00048090596040501653
+      }
+    },
+    {
+      "experiment": "Q1_TWO_STAGE_300s",
+      "horizon": 300,
+      "validation_curve": [
+        {
+          "threshold": 0.5,
+          "signals": 1035,
+          "wins": 558,
+          "precision": 0.5391304347826087,
+          "wilson_ci95": [
+            0.5086737545814008,
+            0.5692977196144329
+          ],
+          "coverage": 0.003993055555555555,
+          "cooldown_seconds": 300,
+          "signals_per_day": 69.0,
+          "gross_ev": 0.00010301836536713292,
+          "net_ev": -0.00019698163463286714
+        },
+        {
+          "threshold": 0.525,
+          "signals": 558,
+          "wins": 309,
+          "precision": 0.553763440860215,
+          "wilson_ci95": [
+            0.5122900294030205,
+            0.5945016625556684
+          ],
+          "coverage": 0.0021527777777777778,
+          "cooldown_seconds": 300,
+          "signals_per_day": 37.2,
+          "gross_ev": 0.00020502004985693527,
+          "net_ev": -9.49799501430649e-05
+        },
+        {
+          "threshold": 0.55,
+          "signals": 268,
+          "wins": 141,
+          "precision": 0.5261194029850746,
+          "wilson_ci95": [
+            0.4663928492982553,
+            0.5851077571976596
+          ],
+          "coverage": 0.0010339506172839506,
+          "cooldown_seconds": 300,
+          "signals_per_day": 17.866666666666667,
+          "gross_ev": 0.0002837450189659207,
+          "net_ev": -1.6254981034079646e-05
+        },
+        {
+          "threshold": 0.5750000000000001,
+          "signals": 125,
+          "wins": 70,
+          "precision": 0.56,
+          "wilson_ci95": [
+            0.4724806077128607,
+            0.6439415450421402
+          ],
+          "coverage": 0.00048225308641975306,
+          "cooldown_seconds": 300,
+          "signals_per_day": 8.333333333333334,
+          "gross_ev": 0.0007046981715215148,
+          "net_ev": 0.0004046981715215145
+        },
+        {
+          "threshold": 0.6000000000000001,
+          "signals": 54,
+          "wins": 29,
+          "precision": 0.5370370370370371,
+          "wilson_ci95": [
+            0.40605356021011496,
+            0.6631009888201891
+          ],
+          "coverage": 0.00020833333333333335,
+          "cooldown_seconds": 300,
+          "signals_per_day": 3.6,
+          "gross_ev": 0.00031122677465431173,
+          "net_ev": 1.1226774654311487e-05
+        },
+        {
+          "threshold": 0.6250000000000001,
+          "signals": 27,
+          "wins": 16,
+          "precision": 0.5925925925925926,
+          "wilson_ci95": [
+            0.4072670096806468,
+            0.7548524292560443
+          ],
+          "coverage": 0.00010416666666666667,
+          "cooldown_seconds": 300,
+          "signals_per_day": 1.8,
+          "gross_ev": 0.0008270501734116739,
+          "net_ev": 0.000527050173411674
+        },
+        {
+          "threshold": 0.6500000000000001,
+          "signals": 17,
+          "wins": 10,
+          "precision": 0.5882352941176471,
+          "wilson_ci95": [
+            0.3600544264299978,
+            0.7838894320978518
+          ],
+          "coverage": 6.558641975308642e-05,
+          "cooldown_seconds": 300,
+          "signals_per_day": 1.1333333333333333,
+          "gross_ev": 0.0010862602156733018,
+          "net_ev": 0.0007862602156733017
+        },
+        {
+          "threshold": 0.6750000000000002,
+          "signals": 7,
+          "wins": 4,
+          "precision": 0.5714285714285714,
+          "wilson_ci95": [
+            0.2504583645276572,
+            0.8417801447485302
+          ],
+          "coverage": 2.7006172839506174e-05,
+          "cooldown_seconds": 300,
+          "signals_per_day": 0.4666666666666667,
+          "gross_ev": -0.0002982670639195709,
+          "net_ev": -0.0005982670639195708
+        },
+        {
+          "threshold": 0.7000000000000002,
+          "signals": 1,
+          "wins": 0,
+          "precision": 0.0,
+          "wilson_ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "coverage": 3.858024691358025e-06,
+          "cooldown_seconds": 300,
+          "signals_per_day": 0.06666666666666667,
+          "gross_ev": -0.008403456931392106,
+          "net_ev": -0.008703456931392106
+        },
+        {
+          "threshold": 0.7250000000000002,
+          "signals": 1,
+          "wins": 0,
+          "precision": 0.0,
+          "wilson_ci95": [
+            0.0,
+            0.7934506856227626
+          ],
+          "coverage": 3.858024691358025e-06,
+          "cooldown_seconds": 300,
+          "signals_per_day": 0.06666666666666667,
+          "gross_ev": -0.008403456931392106,
+          "net_ev": -0.008703456931392106
+        },
+        {
+          "threshold": 0.7500000000000002,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 300,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.7750000000000002,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 300,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.8000000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 300,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.8250000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 300,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.8500000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 300,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.8750000000000003,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 300,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9000000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 300,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9250000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 300,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        },
+        {
+          "threshold": 0.9500000000000004,
+          "signals": 0,
+          "wins": 0,
+          "precision": null,
+          "wilson_ci95": [
+            null,
+            null
+          ],
+          "coverage": 0.0,
+          "cooldown_seconds": 300,
+          "signals_per_day": 0.0,
+          "gross_ev": null,
+          "net_ev": null
+        }
+      ],
+      "best": {
+        "threshold": 0.5750000000000001,
+        "signals": 125,
+        "wins": 70,
+        "precision": 0.56,
+        "wilson_ci95": [
+          0.4724806077128607,
+          0.6439415450421402
+        ],
+        "coverage": 0.00048225308641975306,
+        "cooldown_seconds": 300,
+        "signals_per_day": 8.333333333333334,
+        "gross_ev": 0.0007046981715215148,
+        "net_ev": 0.0004046981715215145
+      }
+    }
+  ],
+  "best": {
+    "horizon": 180,
+    "threshold": 0.55,
+    "validation": {
+      "threshold": 0.55,
+      "signals": 192,
+      "wins": 111,
+      "precision": 0.578125,
+      "wilson_ci95": [
+        0.5074086558818907,
+        0.6457764775451791
+      ],
+      "coverage": 0.0007407407407407407,
+      "cooldown_seconds": 180,
+      "signals_per_day": 12.8,
+      "gross_ev": 0.0007809059604050166,
+      "net_ev": 0.00048090596040501653
+    },
+    "walk_forward": {
+      "threshold": 0.55,
+      "signals": 15,
+      "wins": 14,
+      "precision": 0.9333333333333333,
+      "wilson_ci95": [
+        0.7018347012621998,
+        0.9881331045067315
+      ],
+      "coverage": 5.425347222222222e-05,
+      "cooldown_seconds": 180,
+      "signals_per_day": 0.9375,
+      "gross_ev": 0.0030726519194940625,
+      "net_ev": 0.002772651919494062
+    },
+    "folds": [
+      {
+        "day": "2025-03-16",
+        "threshold": 0.55,
+        "signals": 4,
+        "wins": 4,
+        "precision": 1.0,
+        "wilson_ci95": [
+          0.5101091635454027,
+          1.0
+        ],
+        "coverage": 0.0002314814814814815,
+        "cooldown_seconds": 180,
+        "signals_per_day": 4.0,
+        "gross_ev": 0.002989000841372269,
+        "net_ev": 0.002689000841372269
+      },
+      {
+        "day": "2025-03-17",
+        "threshold": 0.55,
+        "signals": 3,
+        "wins": 3,
+        "precision": 1.0,
+        "wilson_ci95": [
+          0.4385029682449546,
+          1.0
+        ],
+        "coverage": 0.00017361111111111112,
+        "cooldown_seconds": 180,
+        "signals_per_day": 3.0,
+        "gross_ev": 0.003931096475523625,
+        "net_ev": 0.0036310964755236247
+      },
+      {
+        "day": "2025-03-18",
+        "threshold": 0.55,
+        "signals": 0,
+        "wins": 0,
+        "precision": null,
+        "wilson_ci95": [
+          null,
+          null
+        ],
+        "coverage": 0.0,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.0,
+        "gross_ev": null,
+        "net_ev": null
+      },
+      {
+        "day": "2025-03-19",
+        "threshold": 0.55,
+        "signals": 3,
+        "wins": 2,
+        "precision": 0.6666666666666666,
+        "wilson_ci95": [
+          0.2076596008020477,
+          0.9385080552796037
+        ],
+        "coverage": 0.00017361111111111112,
+        "cooldown_seconds": 180,
+        "signals_per_day": 3.0,
+        "gross_ev": 0.0021264478712090065,
+        "net_ev": 0.0018264478712090068
+      },
+      {
+        "day": "2025-03-20",
+        "threshold": 0.55,
+        "signals": 3,
+        "wins": 3,
+        "precision": 1.0,
+        "wilson_ci95": [
+          0.4385029682449546,
+          1.0
+        ],
+        "coverage": 0.00017361111111111112,
+        "cooldown_seconds": 180,
+        "signals_per_day": 3.0,
+        "gross_ev": 0.003228045268584112,
+        "net_ev": 0.002928045268584112
+      },
+      {
+        "day": "2025-03-21",
+        "threshold": 0.55,
+        "signals": 0,
+        "wins": 0,
+        "precision": null,
+        "wilson_ci95": [
+          null,
+          null
+        ],
+        "coverage": 0.0,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.0,
+        "gross_ev": null,
+        "net_ev": null
+      },
+      {
+        "day": "2025-03-22",
+        "threshold": 0.55,
+        "signals": 0,
+        "wins": 0,
+        "precision": null,
+        "wilson_ci95": [
+          null,
+          null
+        ],
+        "coverage": 0.0,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.0,
+        "gross_ev": null,
+        "net_ev": null
+      },
+      {
+        "day": "2025-03-23",
+        "threshold": 0.55,
+        "signals": 0,
+        "wins": 0,
+        "precision": null,
+        "wilson_ci95": [
+          null,
+          null
+        ],
+        "coverage": 0.0,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.0,
+        "gross_ev": null,
+        "net_ev": null
+      },
+      {
+        "day": "2025-03-24",
+        "threshold": 0.55,
+        "signals": 0,
+        "wins": 0,
+        "precision": null,
+        "wilson_ci95": [
+          null,
+          null
+        ],
+        "coverage": 0.0,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.0,
+        "gross_ev": null,
+        "net_ev": null
+      },
+      {
+        "day": "2025-03-25",
+        "threshold": 0.55,
+        "signals": 0,
+        "wins": 0,
+        "precision": null,
+        "wilson_ci95": [
+          null,
+          null
+        ],
+        "coverage": 0.0,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.0,
+        "gross_ev": null,
+        "net_ev": null
+      },
+      {
+        "day": "2025-03-26",
+        "threshold": 0.55,
+        "signals": 0,
+        "wins": 0,
+        "precision": null,
+        "wilson_ci95": [
+          null,
+          null
+        ],
+        "coverage": 0.0,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.0,
+        "gross_ev": null,
+        "net_ev": null
+      },
+      {
+        "day": "2025-03-27",
+        "threshold": 0.55,
+        "signals": 0,
+        "wins": 0,
+        "precision": null,
+        "wilson_ci95": [
+          null,
+          null
+        ],
+        "coverage": 0.0,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.0,
+        "gross_ev": null,
+        "net_ev": null
+      },
+      {
+        "day": "2025-03-28",
+        "threshold": 0.55,
+        "signals": 0,
+        "wins": 0,
+        "precision": null,
+        "wilson_ci95": [
+          null,
+          null
+        ],
+        "coverage": 0.0,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.0,
+        "gross_ev": null,
+        "net_ev": null
+      },
+      {
+        "day": "2025-03-29",
+        "threshold": 0.55,
+        "signals": 1,
+        "wins": 1,
+        "precision": 1.0,
+        "wilson_ci95": [
+          0.20654931437723745,
+          1.0
+        ],
+        "coverage": 5.787037037037037e-05,
+        "cooldown_seconds": 180,
+        "signals_per_day": 1.0,
+        "gross_ev": 0.0019649275395865473,
+        "net_ev": 0.0016649275395865474
+      },
+      {
+        "day": "2025-03-30",
+        "threshold": 0.55,
+        "signals": 0,
+        "wins": 0,
+        "precision": null,
+        "wilson_ci95": [
+          null,
+          null
+        ],
+        "coverage": 0.0,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.0,
+        "gross_ev": null,
+        "net_ev": null
+      },
+      {
+        "day": "2025-03-31",
+        "threshold": 0.55,
+        "signals": 1,
+        "wins": 1,
+        "precision": 1.0,
+        "wilson_ci95": [
+          0.20654931437723745,
+          1.0
+        ],
+        "coverage": 5.787037037037037e-05,
+        "cooldown_seconds": 180,
+        "signals_per_day": 1.0,
+        "gross_ev": 0.004312079041385086,
+        "net_ev": 0.004012079041385086
+      }
+    ]
+  },
+  "ablations": [
+    {
+      "label": "FULL",
+      "validation": {
+        "threshold": 0.55,
+        "signals": 192,
+        "wins": 111,
+        "precision": 0.578125,
+        "wilson_ci95": [
+          0.5074086558818907,
+          0.6457764775451791
+        ],
+        "coverage": 0.0007407407407407407,
+        "cooldown_seconds": 180,
+        "signals_per_day": 12.8,
+        "gross_ev": 0.0007809059604050166,
+        "net_ev": 0.00048090596040501653
+      },
+      "walk_forward": {
+        "threshold": 0.55,
+        "signals": 15,
+        "wins": 14,
+        "precision": 0.9333333333333333,
+        "wilson_ci95": [
+          0.7018347012621998,
+          0.9881331045067315
+        ],
+        "coverage": 5.425347222222222e-05,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.9375,
+        "gross_ev": 0.0030726519194940625,
+        "net_ev": 0.002772651919494062
+      }
+    },
+    {
+      "label": "WITHOUT_PRICE_RESPONSE",
+      "validation": {
+        "threshold": 0.55,
+        "signals": 157,
+        "wins": 89,
+        "precision": 0.5668789808917197,
+        "wilson_ci95": [
+          0.48868792221366786,
+          0.6418754297602208
+        ],
+        "coverage": 0.0006057098765432098,
+        "cooldown_seconds": 180,
+        "signals_per_day": 10.466666666666667,
+        "gross_ev": 0.0004462672840758193,
+        "net_ev": 0.00014626728407581918
+      },
+      "walk_forward": {
+        "threshold": 0.55,
+        "signals": 13,
+        "wins": 12,
+        "precision": 0.9230769230769231,
+        "wilson_ci95": [
+          0.6668604907890041,
+          0.9862895787574435
+        ],
+        "coverage": 4.7019675925925926e-05,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.8125,
+        "gross_ev": 0.002871870064433585,
+        "net_ev": 0.0025718700644335847
+      }
+    },
+    {
+      "label": "WITHOUT_SPOT_FLOW",
+      "validation": {
+        "threshold": 0.55,
+        "signals": 184,
+        "wins": 100,
+        "precision": 0.5434782608695652,
+        "wilson_ci95": [
+          0.4713517142183921,
+          0.6138264999013829
+        ],
+        "coverage": 0.0007098765432098765,
+        "cooldown_seconds": 180,
+        "signals_per_day": 12.266666666666667,
+        "gross_ev": 0.0005194229334161439,
+        "net_ev": 0.00021942293341614382
+      },
+      "walk_forward": {
+        "threshold": 0.55,
+        "signals": 15,
+        "wins": 14,
+        "precision": 0.9333333333333333,
+        "wilson_ci95": [
+          0.7018347012621998,
+          0.9881331045067315
+        ],
+        "coverage": 5.425347222222222e-05,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.9375,
+        "gross_ev": 0.0030726519194940625,
+        "net_ev": 0.002772651919494062
+      }
+    },
+    {
+      "label": "WITHOUT_FUTURES_FLOW",
+      "validation": {
+        "threshold": 0.55,
+        "signals": 193,
+        "wins": 111,
+        "precision": 0.5751295336787565,
+        "wilson_ci95": [
+          0.5045918611185738,
+          0.6427348259205452
+        ],
+        "coverage": 0.0007445987654320987,
+        "cooldown_seconds": 180,
+        "signals_per_day": 12.866666666666667,
+        "gross_ev": 0.0006748987258356426,
+        "net_ev": 0.00037489872583564254
+      },
+      "walk_forward": {
+        "threshold": 0.55,
+        "signals": 16,
+        "wins": 15,
+        "precision": 0.9375,
+        "wilson_ci95": [
+          0.7167126242970107,
+          0.9888806552353576
+        ],
+        "coverage": 5.787037037037037e-05,
+        "cooldown_seconds": 180,
+        "signals_per_day": 1.0,
+        "gross_ev": 0.003054468924683286,
+        "net_ev": 0.002754468924683286
+      }
+    },
+    {
+      "label": "WITHOUT_PRESSURE",
+      "validation": {
+        "threshold": 0.55,
+        "signals": 196,
+        "wins": 112,
+        "precision": 0.5714285714285714,
+        "wilson_ci95": [
+          0.5014301440339961,
+          0.6386809228348798
+        ],
+        "coverage": 0.0007561728395061729,
+        "cooldown_seconds": 180,
+        "signals_per_day": 13.066666666666666,
+        "gross_ev": 0.0006665266598180047,
+        "net_ev": 0.00036652665981800475
+      },
+      "walk_forward": {
+        "threshold": 0.55,
+        "signals": 15,
+        "wins": 14,
+        "precision": 0.9333333333333333,
+        "wilson_ci95": [
+          0.7018347012621998,
+          0.9881331045067315
+        ],
+        "coverage": 5.425347222222222e-05,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.9375,
+        "gross_ev": 0.0028700570387665864,
+        "net_ev": 0.0025700570387665856
+      }
+    },
+    {
+      "label": "WITHOUT_MACD",
+      "validation": {
+        "threshold": 0.55,
+        "signals": 160,
+        "wins": 81,
+        "precision": 0.50625,
+        "wilson_ci95": [
+          0.4295485502719754,
+          0.5826583722883806
+        ],
+        "coverage": 0.0006172839506172839,
+        "cooldown_seconds": 180,
+        "signals_per_day": 10.666666666666666,
+        "gross_ev": 0.0002298766387979212,
+        "net_ev": -7.012336120207886e-05
+      },
+      "walk_forward": {
+        "threshold": 0.55,
+        "signals": 12,
+        "wins": 12,
+        "precision": 1.0,
+        "wilson_ci95": [
+          0.7575059933447592,
+          1.0
+        ],
+        "coverage": 4.340277777777778e-05,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.75,
+        "gross_ev": 0.003272069324038137,
+        "net_ev": 0.002972069324038136
+      }
+    },
+    {
+      "label": "WITHOUT_EXPANSION",
+      "validation": {
+        "threshold": 0.55,
+        "signals": 173,
+        "wins": 98,
+        "precision": 0.5664739884393064,
+        "wilson_ci95": [
+          0.49197692980964675,
+          0.6380830694313713
+        ],
+        "coverage": 0.0006674382716049383,
+        "cooldown_seconds": 180,
+        "signals_per_day": 11.533333333333333,
+        "gross_ev": 0.0005858707545246019,
+        "net_ev": 0.0002858707545246019
+      },
+      "walk_forward": {
+        "threshold": 0.55,
+        "signals": 14,
+        "wins": 13,
+        "precision": 0.9285714285714286,
+        "wilson_ci95": [
+          0.6853129557584889,
+          0.9872777847521093
+        ],
+        "coverage": 5.063657407407407e-05,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.875,
+        "gross_ev": 0.0028687623169198484,
+        "net_ev": 0.0025687623169198476
+      }
+    },
+    {
+      "label": "WITHOUT_STRUCTURE_REVERSION",
+      "validation": {
+        "threshold": 0.55,
+        "signals": 207,
+        "wins": 117,
+        "precision": 0.5652173913043478,
+        "wilson_ci95": [
+          0.49710507600691406,
+          0.6309532297505016
+        ],
+        "coverage": 0.0007986111111111112,
+        "cooldown_seconds": 180,
+        "signals_per_day": 13.8,
+        "gross_ev": 0.0004912883580623582,
+        "net_ev": 0.00019128835806235815
+      },
+      "walk_forward": {
+        "threshold": 0.55,
+        "signals": 16,
+        "wins": 14,
+        "precision": 0.875,
+        "wilson_ci95": [
+          0.639771727342413,
+          0.9650225122567595
+        ],
+        "coverage": 5.787037037037037e-05,
+        "cooldown_seconds": 180,
+        "signals_per_day": 1.0,
+        "gross_ev": 0.0028319748875083386,
+        "net_ev": 0.0025319748875083387
+      }
+    },
+    {
+      "label": "WITHOUT_TIME",
+      "validation": {
+        "threshold": 0.55,
+        "signals": 198,
+        "wins": 114,
+        "precision": 0.5757575757575758,
+        "wilson_ci95": [
+          0.5061185027813345,
+          0.6425130032297796
+        ],
+        "coverage": 0.0007638888888888889,
+        "cooldown_seconds": 180,
+        "signals_per_day": 13.2,
+        "gross_ev": 0.000628938354494682,
+        "net_ev": 0.00032893835449468185
+      },
+      "walk_forward": {
+        "threshold": 0.55,
+        "signals": 15,
+        "wins": 14,
+        "precision": 0.9333333333333333,
+        "wilson_ci95": [
+          0.7018347012621998,
+          0.9881331045067315
+        ],
+        "coverage": 5.425347222222222e-05,
+        "cooldown_seconds": 180,
+        "signals_per_day": 0.9375,
+        "gross_ev": 0.0030726519194940625,
+        "net_ev": 0.002772651919494062
+      }
+    }
+  ]
+}

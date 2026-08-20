@@ -1,0 +1,2792 @@
+[
+  {
+    "day": "2025-01-01",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-01",
+      "events": 653485,
+      "first_timestamp": "2025-01-01T00:00:00.010866+00:00",
+      "last_timestamp": "2025-01-01T23:59:59.658370+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 8,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-01",
+      "events": 726611,
+      "first_timestamp": "2025-01-01T00:00:00.051000+00:00",
+      "last_timestamp": "2025-01-01T23:59:59.458000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 227,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-02",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-02",
+      "events": 1299165,
+      "first_timestamp": "2025-01-02T00:00:00.113701+00:00",
+      "last_timestamp": "2025-01-02T23:59:59.679660+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 12,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-02",
+      "events": 1505248,
+      "first_timestamp": "2025-01-02T00:00:05.115000+00:00",
+      "last_timestamp": "2025-01-02T23:59:59.682000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 612,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-03",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-03",
+      "events": 1010210,
+      "first_timestamp": "2025-01-03T00:00:00.324254+00:00",
+      "last_timestamp": "2025-01-03T23:59:59.917905+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 7,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-03",
+      "events": 1049539,
+      "first_timestamp": "2025-01-03T00:00:00.014000+00:00",
+      "last_timestamp": "2025-01-03T23:59:59.471000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 355,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-04",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-04",
+      "events": 616968,
+      "first_timestamp": "2025-01-04T00:00:00.231487+00:00",
+      "last_timestamp": "2025-01-04T23:59:59.843910+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 9,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-04",
+      "events": 585874,
+      "first_timestamp": "2025-01-04T00:00:05.209000+00:00",
+      "last_timestamp": "2025-01-04T23:59:59.845000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 151,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-05",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-05",
+      "events": 581580,
+      "first_timestamp": "2025-01-05T00:00:00.170908+00:00",
+      "last_timestamp": "2025-01-05T23:59:59.636844+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 7,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-05",
+      "events": 585528,
+      "first_timestamp": "2025-01-05T00:00:00.048000+00:00",
+      "last_timestamp": "2025-01-05T23:59:59.681000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 232,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-06",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-06",
+      "events": 1357198,
+      "first_timestamp": "2025-01-06T00:00:00.010006+00:00",
+      "last_timestamp": "2025-01-06T23:59:59.191599+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 38,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-06",
+      "events": 1600861,
+      "first_timestamp": "2025-01-06T00:00:05.375000+00:00",
+      "last_timestamp": "2025-01-06T23:59:59.902000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 773,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-07",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-07",
+      "events": 1625539,
+      "first_timestamp": "2025-01-07T00:00:00.056142+00:00",
+      "last_timestamp": "2025-01-07T23:59:59.851949+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 83,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-07",
+      "events": 1901489,
+      "first_timestamp": "2025-01-07T00:00:05.403000+00:00",
+      "last_timestamp": "2025-01-07T23:59:59.956000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 669,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-08",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-08",
+      "events": 1944118,
+      "first_timestamp": "2025-01-08T00:00:00.036182+00:00",
+      "last_timestamp": "2025-01-08T23:59:59.949043+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 48,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-08",
+      "events": 2185417,
+      "first_timestamp": "2025-01-08T00:00:05.334000+00:00",
+      "last_timestamp": "2025-01-08T23:59:59.931000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 698,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-09",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-09",
+      "events": 2085948,
+      "first_timestamp": "2025-01-09T00:00:00.011502+00:00",
+      "last_timestamp": "2025-01-09T23:59:59.992777+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 34,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-09",
+      "events": 2137318,
+      "first_timestamp": "2025-01-09T00:00:05.092000+00:00",
+      "last_timestamp": "2025-01-09T23:59:59.871000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 633,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-10",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-10",
+      "events": 2011242,
+      "first_timestamp": "2025-01-10T00:00:00.056495+00:00",
+      "last_timestamp": "2025-01-10T23:59:59.759990+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 10,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-10",
+      "events": 2217966,
+      "first_timestamp": "2025-01-10T00:00:05.110000+00:00",
+      "last_timestamp": "2025-01-10T23:59:59.627000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 647,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-11",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-11",
+      "events": 640285,
+      "first_timestamp": "2025-01-11T00:00:00.275426+00:00",
+      "last_timestamp": "2025-01-11T23:59:59.891446+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 5,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-11",
+      "events": 566458,
+      "first_timestamp": "2025-01-11T00:00:00.043000+00:00",
+      "last_timestamp": "2025-01-11T23:59:59.543000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 142,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-12",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-12",
+      "events": 688771,
+      "first_timestamp": "2025-01-12T00:00:00.012703+00:00",
+      "last_timestamp": "2025-01-12T23:59:59.934106+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 7,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-12",
+      "events": 635245,
+      "first_timestamp": "2025-01-12T00:00:00.034000+00:00",
+      "last_timestamp": "2025-01-12T23:59:59.956000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 284,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-13",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-13",
+      "events": 2412075,
+      "first_timestamp": "2025-01-13T00:00:00.211028+00:00",
+      "last_timestamp": "2025-01-13T23:59:59.857627+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 177,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-13",
+      "events": 2791470,
+      "first_timestamp": "2025-01-13T00:00:05.307000+00:00",
+      "last_timestamp": "2025-01-13T23:59:59.779000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 1153,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-14",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-14",
+      "events": 1614823,
+      "first_timestamp": "2025-01-14T00:00:00.036295+00:00",
+      "last_timestamp": "2025-01-14T23:59:59.855289+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 11,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-14",
+      "events": 1687488,
+      "first_timestamp": "2025-01-14T00:00:04.942000+00:00",
+      "last_timestamp": "2025-01-14T23:59:59.830000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 644,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-15",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-15",
+      "events": 1600135,
+      "first_timestamp": "2025-01-15T00:00:00.056896+00:00",
+      "last_timestamp": "2025-01-15T23:59:59.981116+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 35,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-15",
+      "events": 1681098,
+      "first_timestamp": "2025-01-15T00:00:05.109000+00:00",
+      "last_timestamp": "2025-01-15T23:59:59.991000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 843,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-16",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-16",
+      "events": 1587137,
+      "first_timestamp": "2025-01-16T00:00:00.185589+00:00",
+      "last_timestamp": "2025-01-16T23:59:59.339418+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 60,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-16",
+      "events": 1645953,
+      "first_timestamp": "2025-01-16T00:00:04.990000+00:00",
+      "last_timestamp": "2025-01-16T23:59:59.792000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 568,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-17",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-17",
+      "events": 1717424,
+      "first_timestamp": "2025-01-17T00:00:00.148639+00:00",
+      "last_timestamp": "2025-01-17T23:59:59.670875+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 111,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-17",
+      "events": 1839174,
+      "first_timestamp": "2025-01-17T00:00:05.294000+00:00",
+      "last_timestamp": "2025-01-17T23:59:59.960000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 791,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-18",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-18",
+      "events": 1424529,
+      "first_timestamp": "2025-01-18T00:00:00.188243+00:00",
+      "last_timestamp": "2025-01-18T23:59:59.127059+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 34,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-18",
+      "events": 1333040,
+      "first_timestamp": "2025-01-18T00:00:05.365000+00:00",
+      "last_timestamp": "2025-01-18T23:59:59.745000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 353,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-19",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-19",
+      "events": 2428187,
+      "first_timestamp": "2025-01-19T00:00:00.129846+00:00",
+      "last_timestamp": "2025-01-19T23:59:59.998500+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 96,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-19",
+      "events": 2291400,
+      "first_timestamp": "2025-01-19T00:00:05.344000+00:00",
+      "last_timestamp": "2025-01-19T23:59:59.990000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 695,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-20",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-20",
+      "events": 4717816,
+      "first_timestamp": "2025-01-20T00:00:00.115436+00:00",
+      "last_timestamp": "2025-01-20T23:59:59.942355+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 156,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-20",
+      "events": 5435481,
+      "first_timestamp": "2025-01-20T00:00:05.037000+00:00",
+      "last_timestamp": "2025-01-20T23:59:59.927000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 1329,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-21",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-21",
+      "events": 2838645,
+      "first_timestamp": "2025-01-21T00:00:00.178673+00:00",
+      "last_timestamp": "2025-01-21T23:59:59.994874+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 32,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-21",
+      "events": 3032026,
+      "first_timestamp": "2025-01-21T00:00:00.031000+00:00",
+      "last_timestamp": "2025-01-21T23:59:59.998000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 757,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-22",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-22",
+      "events": 1504983,
+      "first_timestamp": "2025-01-22T00:00:00.002667+00:00",
+      "last_timestamp": "2025-01-22T23:59:59.473095+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 21,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-22",
+      "events": 1621941,
+      "first_timestamp": "2025-01-22T00:00:00+00:00",
+      "last_timestamp": "2025-01-22T23:59:59.901000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 375,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-23",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-23",
+      "events": 3145847,
+      "first_timestamp": "2025-01-23T00:00:00.229027+00:00",
+      "last_timestamp": "2025-01-23T23:59:59.655701+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 50,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-23",
+      "events": 3991733,
+      "first_timestamp": "2025-01-23T00:00:05.275000+00:00",
+      "last_timestamp": "2025-01-23T23:59:59.834000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 1082,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-24",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-24",
+      "events": 1518229,
+      "first_timestamp": "2025-01-24T00:00:00.006761+00:00",
+      "last_timestamp": "2025-01-24T23:59:59.793434+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 36,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-24",
+      "events": 1644969,
+      "first_timestamp": "2025-01-24T00:00:00.014000+00:00",
+      "last_timestamp": "2025-01-24T23:59:59.875000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 557,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-25",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-25",
+      "events": 639846,
+      "first_timestamp": "2025-01-25T00:00:00.009860+00:00",
+      "last_timestamp": "2025-01-25T23:59:59.370892+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 7,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-25",
+      "events": 666863,
+      "first_timestamp": "2025-01-25T00:00:05.405000+00:00",
+      "last_timestamp": "2025-01-25T23:59:59.884000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 180,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-26",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-26",
+      "events": 655134,
+      "first_timestamp": "2025-01-26T00:00:00.352699+00:00",
+      "last_timestamp": "2025-01-26T23:59:59.939176+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 17,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-26",
+      "events": 645284,
+      "first_timestamp": "2025-01-26T00:00:05.544000+00:00",
+      "last_timestamp": "2025-01-26T23:59:59.671000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 336,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-27",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-27",
+      "events": 2961838,
+      "first_timestamp": "2025-01-27T00:00:00.122103+00:00",
+      "last_timestamp": "2025-01-27T23:59:59.469191+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 112,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-27",
+      "events": 3281525,
+      "first_timestamp": "2025-01-27T00:00:05.537000+00:00",
+      "last_timestamp": "2025-01-27T23:59:59.995000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 923,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-28",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-28",
+      "events": 1549663,
+      "first_timestamp": "2025-01-28T00:00:00.222078+00:00",
+      "last_timestamp": "2025-01-28T23:59:59.355354+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 30,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-28",
+      "events": 1666208,
+      "first_timestamp": "2025-01-28T00:00:05.143000+00:00",
+      "last_timestamp": "2025-01-28T23:59:59.836000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 612,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-29",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-29",
+      "events": 1595512,
+      "first_timestamp": "2025-01-29T00:00:00.307924+00:00",
+      "last_timestamp": "2025-01-29T23:59:59.979114+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 19,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-29",
+      "events": 1734666,
+      "first_timestamp": "2025-01-29T00:00:05.146000+00:00",
+      "last_timestamp": "2025-01-29T23:59:59.568000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 522,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-30",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-30",
+      "events": 1171508,
+      "first_timestamp": "2025-01-30T00:00:00.232125+00:00",
+      "last_timestamp": "2025-01-30T23:59:59.778505+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 32,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-30",
+      "events": 1263893,
+      "first_timestamp": "2025-01-30T00:00:05.168000+00:00",
+      "last_timestamp": "2025-01-30T23:59:59.876000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 438,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-01-31",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-01-31",
+      "events": 1340241,
+      "first_timestamp": "2025-01-31T00:00:00.128367+00:00",
+      "last_timestamp": "2025-01-31T23:59:59.923100+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 31,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-01-31",
+      "events": 1467388,
+      "first_timestamp": "2025-01-31T00:00:00.029000+00:00",
+      "last_timestamp": "2025-01-31T23:59:59.687000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 540,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-01",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-01",
+      "events": 859311,
+      "first_timestamp": "2025-02-01T00:00:00.182381+00:00",
+      "last_timestamp": "2025-02-01T23:59:59.998574+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 14,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-01",
+      "events": 832538,
+      "first_timestamp": "2025-02-01T00:00:05.344000+00:00",
+      "last_timestamp": "2025-02-01T23:59:59.011000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 263,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-02",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-02",
+      "events": 2470912,
+      "first_timestamp": "2025-02-02T00:00:00.108790+00:00",
+      "last_timestamp": "2025-02-02T23:59:59.976531+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 69,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-02",
+      "events": 2144557,
+      "first_timestamp": "2025-02-02T00:00:00.018000+00:00",
+      "last_timestamp": "2025-02-02T23:59:59.782000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 729,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-03",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-03",
+      "events": 4742740,
+      "first_timestamp": "2025-02-03T00:00:00.030553+00:00",
+      "last_timestamp": "2025-02-03T23:59:59.414056+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 93,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-03",
+      "events": 4557690,
+      "first_timestamp": "2025-02-03T00:00:00.005000+00:00",
+      "last_timestamp": "2025-02-03T23:59:59.650000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 1219,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-04",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-04",
+      "events": 2687132,
+      "first_timestamp": "2025-02-04T00:00:00.010060+00:00",
+      "last_timestamp": "2025-02-04T23:59:59.982757+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 64,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-04",
+      "events": 2562864,
+      "first_timestamp": "2025-02-04T00:00:00+00:00",
+      "last_timestamp": "2025-02-04T23:59:59.521000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 823,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-05",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-05",
+      "events": 1627532,
+      "first_timestamp": "2025-02-05T00:00:00.017040+00:00",
+      "last_timestamp": "2025-02-05T23:59:59.907402+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 17,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-05",
+      "events": 1570207,
+      "first_timestamp": "2025-02-05T00:00:00.019000+00:00",
+      "last_timestamp": "2025-02-05T23:59:59.904000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 490,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-06",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-06",
+      "events": 1517495,
+      "first_timestamp": "2025-02-06T00:00:00.005148+00:00",
+      "last_timestamp": "2025-02-06T23:59:59.858042+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 23,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-06",
+      "events": 1550041,
+      "first_timestamp": "2025-02-06T00:00:00.009000+00:00",
+      "last_timestamp": "2025-02-06T23:59:59.740000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 557,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-07",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-07",
+      "events": 1704756,
+      "first_timestamp": "2025-02-07T00:00:00.168930+00:00",
+      "last_timestamp": "2025-02-07T23:59:59.974304+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 18,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-07",
+      "events": 1858128,
+      "first_timestamp": "2025-02-07T00:00:00.002000+00:00",
+      "last_timestamp": "2025-02-07T23:59:59.971000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 786,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-08",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-08",
+      "events": 669892,
+      "first_timestamp": "2025-02-08T00:00:00.004177+00:00",
+      "last_timestamp": "2025-02-08T23:59:59.971938+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 9,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-08",
+      "events": 637082,
+      "first_timestamp": "2025-02-08T00:00:04.126000+00:00",
+      "last_timestamp": "2025-02-08T23:59:59.619000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 145,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-09",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-09",
+      "events": 846953,
+      "first_timestamp": "2025-02-09T00:00:00.145193+00:00",
+      "last_timestamp": "2025-02-09T23:59:59.929170+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 40,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-09",
+      "events": 830350,
+      "first_timestamp": "2025-02-09T00:00:04.241000+00:00",
+      "last_timestamp": "2025-02-09T23:59:59.975000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 437,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-10",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-10",
+      "events": 1212358,
+      "first_timestamp": "2025-02-10T00:00:00.168808+00:00",
+      "last_timestamp": "2025-02-10T23:59:59.582772+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 10,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-10",
+      "events": 1186385,
+      "first_timestamp": "2025-02-10T00:00:04.126000+00:00",
+      "last_timestamp": "2025-02-10T23:59:59.804000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 402,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-11",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-11",
+      "events": 1129728,
+      "first_timestamp": "2025-02-11T00:00:00.123296+00:00",
+      "last_timestamp": "2025-02-11T23:59:59.442402+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 18,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-11",
+      "events": 1092640,
+      "first_timestamp": "2025-02-11T00:00:04.234000+00:00",
+      "last_timestamp": "2025-02-11T23:59:59.518000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 552,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-12",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-12",
+      "events": 1581519,
+      "first_timestamp": "2025-02-12T00:00:00.214338+00:00",
+      "last_timestamp": "2025-02-12T23:59:58.987695+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 19,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-12",
+      "events": 1582562,
+      "first_timestamp": "2025-02-12T00:00:04.318000+00:00",
+      "last_timestamp": "2025-02-12T23:59:59.341000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 573,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-13",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-13",
+      "events": 1207365,
+      "first_timestamp": "2025-02-13T00:00:00.073698+00:00",
+      "last_timestamp": "2025-02-13T23:59:59.277415+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 5,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-13",
+      "events": 1172253,
+      "first_timestamp": "2025-02-13T00:00:04.177000+00:00",
+      "last_timestamp": "2025-02-13T23:59:59.634000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 352,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-14",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-14",
+      "events": 1099584,
+      "first_timestamp": "2025-02-14T00:00:00.145844+00:00",
+      "last_timestamp": "2025-02-14T23:59:59.734360+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 28,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-14",
+      "events": 1051745,
+      "first_timestamp": "2025-02-14T00:00:04.291000+00:00",
+      "last_timestamp": "2025-02-14T23:59:59.815000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 523,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-15",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-15",
+      "events": 573180,
+      "first_timestamp": "2025-02-15T00:00:00.305691+00:00",
+      "last_timestamp": "2025-02-15T23:59:59.991818+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 0,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-15",
+      "events": 451314,
+      "first_timestamp": "2025-02-15T00:00:04.193000+00:00",
+      "last_timestamp": "2025-02-15T23:59:59.600000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 92,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-16",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-16",
+      "events": 570682,
+      "first_timestamp": "2025-02-16T00:00:00.396494+00:00",
+      "last_timestamp": "2025-02-16T23:59:59.999000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 6,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-16",
+      "events": 463544,
+      "first_timestamp": "2025-02-16T00:00:04.334000+00:00",
+      "last_timestamp": "2025-02-16T23:59:59.707000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 186,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-17",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-17",
+      "events": 946015,
+      "first_timestamp": "2025-02-17T00:00:00.005782+00:00",
+      "last_timestamp": "2025-02-17T23:59:59.664649+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 7,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-17",
+      "events": 809397,
+      "first_timestamp": "2025-02-17T00:00:00.035000+00:00",
+      "last_timestamp": "2025-02-17T23:59:59.573000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 299,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-18",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-18",
+      "events": 1342537,
+      "first_timestamp": "2025-02-18T00:00:00.617789+00:00",
+      "last_timestamp": "2025-02-18T23:59:59.069766+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 33,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-18",
+      "events": 1285906,
+      "first_timestamp": "2025-02-18T00:00:04.529000+00:00",
+      "last_timestamp": "2025-02-18T23:59:59.993000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 498,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-19",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-19",
+      "events": 982210,
+      "first_timestamp": "2025-02-19T00:00:00.219775+00:00",
+      "last_timestamp": "2025-02-19T23:59:59.622064+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 8,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-19",
+      "events": 941630,
+      "first_timestamp": "2025-02-19T00:00:04.413000+00:00",
+      "last_timestamp": "2025-02-19T23:59:59.869000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 332,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-20",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-20",
+      "events": 999038,
+      "first_timestamp": "2025-02-20T00:00:00.273848+00:00",
+      "last_timestamp": "2025-02-20T23:59:59.886082+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 11,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-20",
+      "events": 923171,
+      "first_timestamp": "2025-02-20T00:00:04.493000+00:00",
+      "last_timestamp": "2025-02-20T23:59:59.420000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 479,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-21",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-21",
+      "events": 1796541,
+      "first_timestamp": "2025-02-21T00:00:00.279709+00:00",
+      "last_timestamp": "2025-02-21T23:59:59.656771+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 38,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-21",
+      "events": 1594260,
+      "first_timestamp": "2025-02-21T00:00:04.394000+00:00",
+      "last_timestamp": "2025-02-21T23:59:59.918000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 671,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-22",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-22",
+      "events": 646406,
+      "first_timestamp": "2025-02-22T00:00:00.053005+00:00",
+      "last_timestamp": "2025-02-22T23:59:59.939894+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 7,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-22",
+      "events": 499540,
+      "first_timestamp": "2025-02-22T00:00:00.044000+00:00",
+      "last_timestamp": "2025-02-22T23:59:59.071000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 107,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-23",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-23",
+      "events": 693681,
+      "first_timestamp": "2025-02-23T00:00:00.338037+00:00",
+      "last_timestamp": "2025-02-23T23:59:57.174883+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 10,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-23",
+      "events": 490248,
+      "first_timestamp": "2025-02-23T00:00:04.510000+00:00",
+      "last_timestamp": "2025-02-23T23:59:59.925000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 188,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-24",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-24",
+      "events": 1883692,
+      "first_timestamp": "2025-02-24T00:00:00.089198+00:00",
+      "last_timestamp": "2025-02-24T23:59:59.786982+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 76,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-24",
+      "events": 1578507,
+      "first_timestamp": "2025-02-24T00:00:00.032000+00:00",
+      "last_timestamp": "2025-02-24T23:59:59.854000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 544,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-25",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-25",
+      "events": 3963618,
+      "first_timestamp": "2025-02-25T00:00:00.007251+00:00",
+      "last_timestamp": "2025-02-25T23:59:59.694502+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 137,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-25",
+      "events": 3849436,
+      "first_timestamp": "2025-02-25T00:00:00.015000+00:00",
+      "last_timestamp": "2025-02-25T23:59:59.960000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 966,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-26",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-26",
+      "events": 3330524,
+      "first_timestamp": "2025-02-26T00:00:00.011467+00:00",
+      "last_timestamp": "2025-02-26T23:59:59.734565+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 111,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-26",
+      "events": 3114283,
+      "first_timestamp": "2025-02-26T00:00:00.037000+00:00",
+      "last_timestamp": "2025-02-26T23:59:59.730000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 1006,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-27",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-27",
+      "events": 2548159,
+      "first_timestamp": "2025-02-27T00:00:00.209008+00:00",
+      "last_timestamp": "2025-02-27T23:59:59.875811+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 29,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-27",
+      "events": 2218622,
+      "first_timestamp": "2025-02-27T00:00:04.399000+00:00",
+      "last_timestamp": "2025-02-27T23:59:59.792000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 639,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-02-28",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-02-28",
+      "events": 4708813,
+      "first_timestamp": "2025-02-28T00:00:00.202683+00:00",
+      "last_timestamp": "2025-02-28T23:59:59.819554+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 169,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-02-28",
+      "events": 4526219,
+      "first_timestamp": "2025-02-28T00:00:04.382000+00:00",
+      "last_timestamp": "2025-02-28T23:59:59.996000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 1132,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-01",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-01",
+      "events": 1486349,
+      "first_timestamp": "2025-03-01T00:00:00.184756+00:00",
+      "last_timestamp": "2025-03-01T23:59:59.489137+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 14,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-01",
+      "events": 1177222,
+      "first_timestamp": "2025-03-01T00:00:04.297000+00:00",
+      "last_timestamp": "2025-03-01T23:59:59.968000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 333,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-02",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-02",
+      "events": 3172341,
+      "first_timestamp": "2025-03-02T00:00:00.206786+00:00",
+      "last_timestamp": "2025-03-02T23:59:59.968047+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 126,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-02",
+      "events": 2955246,
+      "first_timestamp": "2025-03-02T00:00:04.571000+00:00",
+      "last_timestamp": "2025-03-02T23:59:59.958000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 934,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-03",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-03",
+      "events": 3930151,
+      "first_timestamp": "2025-03-03T00:00:00.267754+00:00",
+      "last_timestamp": "2025-03-03T23:59:59.988969+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 151,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-03",
+      "events": 4065517,
+      "first_timestamp": "2025-03-03T00:00:04.233000+00:00",
+      "last_timestamp": "2025-03-03T23:59:59.995000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 1101,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-04",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-04",
+      "events": 4091509,
+      "first_timestamp": "2025-03-04T00:00:00.006223+00:00",
+      "last_timestamp": "2025-03-04T23:59:59.414028+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 159,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-04",
+      "events": 4466763,
+      "first_timestamp": "2025-03-04T00:00:00.013000+00:00",
+      "last_timestamp": "2025-03-04T23:59:59.960000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 1119,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-05",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-05",
+      "events": 3157399,
+      "first_timestamp": "2025-03-05T00:00:00.141066+00:00",
+      "last_timestamp": "2025-03-05T23:59:59.706604+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 605,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-05",
+      "events": 2717367,
+      "first_timestamp": "2025-03-05T00:00:04.289000+00:00",
+      "last_timestamp": "2025-03-05T23:59:59.765000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 861,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-06",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-06",
+      "events": 2996852,
+      "first_timestamp": "2025-03-06T00:00:00.126635+00:00",
+      "last_timestamp": "2025-03-06T23:59:59.344818+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 924,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-06",
+      "events": 2788429,
+      "first_timestamp": "2025-03-06T00:00:04.333000+00:00",
+      "last_timestamp": "2025-03-06T23:59:59.854000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 917,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-07",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-07",
+      "events": 4187158,
+      "first_timestamp": "2025-03-07T00:00:00.138736+00:00",
+      "last_timestamp": "2025-03-07T23:59:59.770465+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 802,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-07",
+      "events": 4184833,
+      "first_timestamp": "2025-03-07T00:00:04.433000+00:00",
+      "last_timestamp": "2025-03-07T23:59:59.959000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 1152,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-08",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-08",
+      "events": 1102989,
+      "first_timestamp": "2025-03-08T00:00:00.050204+00:00",
+      "last_timestamp": "2025-03-08T23:59:58.604793+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 209,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-08",
+      "events": 930337,
+      "first_timestamp": "2025-03-08T00:00:03.050000+00:00",
+      "last_timestamp": "2025-03-08T23:59:59.727000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 171,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-09",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-09",
+      "events": 2317510,
+      "first_timestamp": "2025-03-09T00:00:00.181331+00:00",
+      "last_timestamp": "2025-03-09T23:59:59.958118+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 380,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-09",
+      "events": 1893793,
+      "first_timestamp": "2025-03-09T00:00:04.565000+00:00",
+      "last_timestamp": "2025-03-09T23:59:59.980000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 705,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-10",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-10",
+      "events": 3801588,
+      "first_timestamp": "2025-03-10T00:00:00.005066+00:00",
+      "last_timestamp": "2025-03-10T23:59:59.926448+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 470,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-10",
+      "events": 3716114,
+      "first_timestamp": "2025-03-10T00:00:00.005000+00:00",
+      "last_timestamp": "2025-03-10T23:59:59.929000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 957,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-11",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-11",
+      "events": 2912492,
+      "first_timestamp": "2025-03-11T00:00:00.055398+00:00",
+      "last_timestamp": "2025-03-11T23:59:59.764999+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 649,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-11",
+      "events": 3115257,
+      "first_timestamp": "2025-03-11T00:00:00.037000+00:00",
+      "last_timestamp": "2025-03-11T23:59:59.407000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 1074,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-12",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-12",
+      "events": 2120130,
+      "first_timestamp": "2025-03-12T00:00:00.004171+00:00",
+      "last_timestamp": "2025-03-12T23:59:59.286212+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 335,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-12",
+      "events": 2370399,
+      "first_timestamp": "2025-03-12T00:00:00.008000+00:00",
+      "last_timestamp": "2025-03-12T23:59:59.991000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 864,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-13",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-13",
+      "events": 1689411,
+      "first_timestamp": "2025-03-13T00:00:00.194502+00:00",
+      "last_timestamp": "2025-03-13T23:59:57.866589+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 672,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-13",
+      "events": 1839881,
+      "first_timestamp": "2025-03-13T00:00:00.054000+00:00",
+      "last_timestamp": "2025-03-13T23:59:59.481000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 624,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-14",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-14",
+      "events": 1285192,
+      "first_timestamp": "2025-03-14T00:00:00.105745+00:00",
+      "last_timestamp": "2025-03-14T23:59:59.871377+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 438,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-14",
+      "events": 1561653,
+      "first_timestamp": "2025-03-14T00:00:00.045000+00:00",
+      "last_timestamp": "2025-03-14T23:59:59.741000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 660,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-15",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-15",
+      "events": 592366,
+      "first_timestamp": "2025-03-15T00:00:00.024688+00:00",
+      "last_timestamp": "2025-03-15T23:59:59.705114+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 135,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-15",
+      "events": 570372,
+      "first_timestamp": "2025-03-15T00:00:00.015000+00:00",
+      "last_timestamp": "2025-03-15T23:59:59.461000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 108,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-16",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-16",
+      "events": 1058375,
+      "first_timestamp": "2025-03-16T00:00:00.493622+00:00",
+      "last_timestamp": "2025-03-16T23:59:59.701302+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 243,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-16",
+      "events": 1286341,
+      "first_timestamp": "2025-03-16T00:00:04.507000+00:00",
+      "last_timestamp": "2025-03-16T23:59:59.795000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 642,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-17",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-17",
+      "events": 1131516,
+      "first_timestamp": "2025-03-17T00:00:00.030804+00:00",
+      "last_timestamp": "2025-03-17T23:59:58.920566+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 296,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-17",
+      "events": 1374312,
+      "first_timestamp": "2025-03-17T00:00:00.044000+00:00",
+      "last_timestamp": "2025-03-17T23:59:59.932000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 441,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-18",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-18",
+      "events": 1166221,
+      "first_timestamp": "2025-03-18T00:00:00.009117+00:00",
+      "last_timestamp": "2025-03-18T23:59:59.945220+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 66,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-18",
+      "events": 1359630,
+      "first_timestamp": "2025-03-18T00:00:04.621000+00:00",
+      "last_timestamp": "2025-03-18T23:59:59.984000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 522,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-19",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-19",
+      "events": 1513491,
+      "first_timestamp": "2025-03-19T00:00:00.318993+00:00",
+      "last_timestamp": "2025-03-19T23:59:59.978572+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 50,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-19",
+      "events": 1763103,
+      "first_timestamp": "2025-03-19T00:00:04.515000+00:00",
+      "last_timestamp": "2025-03-19T23:59:59.947000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 804,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-20",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-20",
+      "events": 1321577,
+      "first_timestamp": "2025-03-20T00:00:00.026816+00:00",
+      "last_timestamp": "2025-03-20T23:59:59.789398+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 92,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-20",
+      "events": 1513594,
+      "first_timestamp": "2025-03-20T00:00:00.047000+00:00",
+      "last_timestamp": "2025-03-20T23:59:59.915000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 908,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-21",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-21",
+      "events": 941002,
+      "first_timestamp": "2025-03-21T00:00:00.075726+00:00",
+      "last_timestamp": "2025-03-21T23:59:59.575320+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 42,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-21",
+      "events": 988791,
+      "first_timestamp": "2025-03-21T00:00:04.632000+00:00",
+      "last_timestamp": "2025-03-21T23:59:59.841000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 272,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-22",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-22",
+      "events": 490420,
+      "first_timestamp": "2025-03-22T00:00:00.240287+00:00",
+      "last_timestamp": "2025-03-22T23:59:58.115754+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 10,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-22",
+      "events": 367326,
+      "first_timestamp": "2025-03-22T00:00:00.010000+00:00",
+      "last_timestamp": "2025-03-22T23:59:59.717000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 109,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-23",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-23",
+      "events": 589693,
+      "first_timestamp": "2025-03-23T00:00:00.361095+00:00",
+      "last_timestamp": "2025-03-23T23:59:58.819151+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 16,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-23",
+      "events": 558622,
+      "first_timestamp": "2025-03-23T00:00:04.741000+00:00",
+      "last_timestamp": "2025-03-23T23:59:59.996000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 391,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-24",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-24",
+      "events": 1280123,
+      "first_timestamp": "2025-03-24T00:00:00.296827+00:00",
+      "last_timestamp": "2025-03-24T23:59:59.580867+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 77,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-24",
+      "events": 1330259,
+      "first_timestamp": "2025-03-24T00:00:00.056000+00:00",
+      "last_timestamp": "2025-03-24T23:59:59.915000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 657,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-25",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-25",
+      "events": 1109872,
+      "first_timestamp": "2025-03-25T00:00:00.169566+00:00",
+      "last_timestamp": "2025-03-25T23:59:59.988435+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 70,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-25",
+      "events": 1155896,
+      "first_timestamp": "2025-03-25T00:00:00.058000+00:00",
+      "last_timestamp": "2025-03-25T23:59:59.746000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 427,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-26",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-26",
+      "events": 927774,
+      "first_timestamp": "2025-03-26T00:00:00.041794+00:00",
+      "last_timestamp": "2025-03-26T23:59:59.924704+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 48,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-26",
+      "events": 1078288,
+      "first_timestamp": "2025-03-26T00:00:04.836000+00:00",
+      "last_timestamp": "2025-03-26T23:59:59.384000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 432,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-27",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-27",
+      "events": 962699,
+      "first_timestamp": "2025-03-27T00:00:00.059245+00:00",
+      "last_timestamp": "2025-03-27T23:59:59.970490+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 41,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-27",
+      "events": 998601,
+      "first_timestamp": "2025-03-27T00:00:00.025000+00:00",
+      "last_timestamp": "2025-03-27T23:59:59.983000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 378,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-28",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-28",
+      "events": 1294127,
+      "first_timestamp": "2025-03-28T00:00:00.882973+00:00",
+      "last_timestamp": "2025-03-28T23:59:59.729234+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 71,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-28",
+      "events": 1408731,
+      "first_timestamp": "2025-03-28T00:00:04.736000+00:00",
+      "last_timestamp": "2025-03-28T23:59:59.758000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 548,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-29",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-29",
+      "events": 890573,
+      "first_timestamp": "2025-03-29T00:00:00.004178+00:00",
+      "last_timestamp": "2025-03-29T23:59:57.237679+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 57,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-29",
+      "events": 938295,
+      "first_timestamp": "2025-03-29T00:00:04.788000+00:00",
+      "last_timestamp": "2025-03-29T23:59:59.839000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 349,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-30",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-30",
+      "events": 783501,
+      "first_timestamp": "2025-03-30T00:00:00.262293+00:00",
+      "last_timestamp": "2025-03-30T23:59:59.946978+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 29,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-30",
+      "events": 826511,
+      "first_timestamp": "2025-03-30T00:00:00.054000+00:00",
+      "last_timestamp": "2025-03-30T23:59:59.900000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 273,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  },
+  {
+    "day": "2025-03-31",
+    "spot": {
+      "source": "binance_spot",
+      "day": "2025-03-31",
+      "events": 1576379,
+      "first_timestamp": "2025-03-31T00:00:00.029404+00:00",
+      "last_timestamp": "2025-03-31T23:59:59.970596+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 100,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "futures": {
+      "source": "binance_futures",
+      "day": "2025-03-31",
+      "events": 1606155,
+      "first_timestamp": "2025-03-31T00:00:00.022000+00:00",
+      "last_timestamp": "2025-03-31T23:59:59.756000+00:00",
+      "gaps_over_60s": 0,
+      "backwards_timestamps": 0,
+      "duplicate_rows": 451,
+      "timestamp_anomalies": 0,
+      "quality": "GOOD"
+    },
+    "vantage": {
+      "status": "UNAVAILABLE",
+      "reason": "MT5_IPC_TIMEOUT"
+    }
+  }
+]
