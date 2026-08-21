@@ -1,0 +1,336 @@
+{
+  "execution": "DISABLED",
+  "holdout_closed": [
+    "2026-08-16",
+    "2026-08-17"
+  ],
+  "population": {
+    "threshold": "Q1 top 20%",
+    "direction": "SHORT",
+    "cases": 47,
+    "groups": {
+      "ABSORBED": 6,
+      "LATE_WINNER": 9,
+      "MODERATE_WINNER": 6,
+      "STRONG_WINNER": 26
+    }
+  },
+  "matched_pairs": [
+    {
+      "winner": {
+        "Index": 27786,
+        "period": "Q1_2025",
+        "timestamp": "2025-01-02T14:35:30+00:00",
+        "group": "LATE_WINNER",
+        "mfe_60m": 220.1200000000099,
+        "mae_60m": -898.75,
+        "time_to_profit_s": 5.0,
+        "time_to_100_s": 15.0,
+        "time_to_500_s": NaN
+      },
+      "loser": {
+        "period": "Q1_2025",
+        "timestamp": "2025-03-07T22:24:30+00:00",
+        "group": "ABSORBED",
+        "mfe_60m": 92.63999999999942,
+        "mae_60m": -1111.0099999999948,
+        "time_to_profit_s": 5.0,
+        "time_to_100_s": NaN,
+        "time_to_500_s": NaN
+      },
+      "distance": 1.6508241072470697
+    },
+    {
+      "winner": {
+        "Index": 115344,
+        "period": "Q1_2025",
+        "timestamp": "2025-01-07T16:12:00+00:00",
+        "group": "LATE_WINNER",
+        "mfe_60m": 288.3099999999977,
+        "mae_60m": -715.3600000000006,
+        "time_to_profit_s": 5.0,
+        "time_to_100_s": 3320.0,
+        "time_to_500_s": NaN
+      },
+      "loser": {
+        "period": "Q1_2025",
+        "timestamp": "2025-03-07T22:24:30+00:00",
+        "group": "ABSORBED",
+        "mfe_60m": 92.63999999999942,
+        "mae_60m": -1111.0099999999948,
+        "time_to_profit_s": 5.0,
+        "time_to_100_s": NaN,
+        "time_to_500_s": NaN
+      },
+      "distance": 1.7368097820631674
+    },
+    {
+      "winner": {
+        "Index": 327450,
+        "period": "Q1_2025",
+        "timestamp": "2025-01-19T22:47:30+00:00",
+        "group": "STRONG_WINNER",
+        "mfe_60m": 3022.4900000000052,
+        "mae_60m": -737.5,
+        "time_to_profit_s": 10.0,
+        "time_to_100_s": 35.0,
+        "time_to_500_s": 60.0
+      },
+      "loser": {
+        "period": "Q1_2025",
+        "timestamp": "2025-03-07T22:24:30+00:00",
+        "group": "ABSORBED",
+        "mfe_60m": 92.63999999999942,
+        "mae_60m": -1111.0099999999948,
+        "time_to_profit_s": 5.0,
+        "time_to_100_s": NaN,
+        "time_to_500_s": NaN
+      },
+      "distance": 1.8285920608429689
+    },
+    {
+      "winner": {
+        "Index": 328890,
+        "period": "Q1_2025",
+        "timestamp": "2025-01-20T00:47:30+00:00",
+        "group": "LATE_WINNER",
+        "mfe_60m": 198.25999999999476,
+        "mae_60m": -1162.5699999999924,
+        "time_to_profit_s": 5.0,
+        "time_to_100_s": 10.0,
+        "time_to_500_s": NaN
+      },
+      "loser": {
+        "period": "Q1_2025",
+        "timestamp": "2025-01-16T15:14:30+00:00",
+        "group": "ABSORBED",
+        "mfe_60m": -12.55000000000291,
+        "mae_60m": -2068.7800000000134,
+        "time_to_profit_s": NaN,
+        "time_to_100_s": NaN,
+        "time_to_500_s": NaN
+      },
+      "distance": 3.029105573004469
+    },
+    {
+      "winner": {
+        "Index": 333858,
+        "period": "Q1_2025",
+        "timestamp": "2025-01-20T07:41:30+00:00",
+        "group": "STRONG_WINNER",
+        "mfe_60m": 988.1699999999983,
+        "mae_60m": -369.08000000000175,
+        "time_to_profit_s": 50.0,
+        "time_to_100_s": 95.0,
+        "time_to_500_s": 1000.0
+      },
+      "loser": {
+        "period": "Q1_2025",
+        "timestamp": "2025-01-16T15:14:30+00:00",
+        "group": "ABSORBED",
+        "mfe_60m": -12.55000000000291,
+        "mae_60m": -2068.7800000000134,
+        "time_to_profit_s": NaN,
+        "time_to_100_s": NaN,
+        "time_to_500_s": NaN
+      },
+      "distance": 2.402265461157922
+    },
+    {
+      "winner": {
+        "Index": 339762,
+        "period": "Q1_2025",
+        "timestamp": "2025-01-20T15:53:30+00:00",
+        "group": "STRONG_WINNER",
+        "mfe_60m": 1469.4199999999983,
+        "mae_60m": -1724.5,
+        "time_to_profit_s": 5.0,
+        "time_to_100_s": 5.0,
+        "time_to_500_s": 195.0
+      },
+      "loser": {
+        "period": "Q1_2025",
+        "timestamp": "2025-03-07T22:24:30+00:00",
+        "group": "ABSORBED",
+        "mfe_60m": 92.63999999999942,
+        "mae_60m": -1111.0099999999948,
+        "time_to_profit_s": 5.0,
+        "time_to_100_s": NaN,
+        "time_to_500_s": NaN
+      },
+      "distance": 1.356391347456049
+    },
+    {
+      "winner": {
+        "Index": 340386,
+        "period": "Q1_2025",
+        "timestamp": "2025-01-20T16:45:30+00:00",
+        "group": "STRONG_WINNER",
+        "mfe_60m": 5647.110000000001,
+        "mae_60m": -576.4400000000023,
+        "time_to_profit_s": 10.0,
+        "time_to_100_s": 970.0,
+        "time_to_500_s": 1135.0
+      },
+      "loser": {
+        "period": "APR_JUN_2025",
+        "timestamp": "2025-04-22T21:56:30+00:00",
+        "group": "ABSORBED",
+        "mfe_60m": 49.24000000000524,
+        "mae_60m": -687.6399999999994,
+        "time_to_profit_s": 860.0,
+        "time_to_100_s": NaN,
+        "time_to_500_s": NaN
+      },
+      "distance": 2.611817230117258
+    },
+    {
+      "winner": {
+        "Index": 340896,
+        "period": "Q1_2025",
+        "timestamp": "2025-01-20T17:28:00+00:00",
+        "group": "STRONG_WINNER",
+        "mfe_60m": 4149.460000000006,
+        "mae_60m": 25.90000000000873,
+        "time_to_profit_s": 5.0,
+        "time_to_100_s": 15.0,
+        "time_to_500_s": 95.0
+      },
+      "loser": {
+        "period": "Q1_2025",
+        "timestamp": "2025-01-16T15:14:30+00:00",
+        "group": "ABSORBED",
+        "mfe_60m": -12.55000000000291,
+        "mae_60m": -2068.7800000000134,
+        "time_to_profit_s": NaN,
+        "time_to_100_s": NaN,
+        "time_to_500_s": NaN
+      },
+      "distance": 2.749646196449283
+    },
+    {
+      "winner": {
+        "Index": 346212,
+        "period": "Q1_2025",
+        "timestamp": "2025-01-21T00:51:00+00:00",
+        "group": "STRONG_WINNER",
+        "mfe_60m": 1899.6199999999953,
+        "mae_60m": -162.16999999999825,
+        "time_to_profit_s": 5.0,
+        "time_to_100_s": 25.0,
+        "time_to_500_s": 85.0
+      },
+      "loser": {
+        "period": "Q1_2025",
+        "timestamp": "2025-03-07T22:24:30+00:00",
+        "group": "ABSORBED",
+        "mfe_60m": 92.63999999999942,
+        "mae_60m": -1111.0099999999948,
+        "time_to_profit_s": 5.0,
+        "time_to_100_s": NaN,
+        "time_to_500_s": NaN
+      },
+      "distance": 1.5187457624667955
+    },
+    {
+      "winner": {
+        "Index": 390738,
+        "period": "Q1_2025",
+        "timestamp": "2025-01-23T14:41:30+00:00",
+        "group": "STRONG_WINNER",
+        "mfe_60m": 1871.7599999999948,
+        "mae_60m": -1437.820000000007,
+        "time_to_profit_s": 10.0,
+        "time_to_100_s": 55.0,
+        "time_to_500_s": 1585.0
+      },
+      "loser": {
+        "period": "Q1_2025",
+        "timestamp": "2025-03-07T22:24:30+00:00",
+        "group": "ABSORBED",
+        "mfe_60m": 92.63999999999942,
+        "mae_60m": -1111.0099999999948,
+        "time_to_profit_s": 5.0,
+        "time_to_100_s": NaN,
+        "time_to_500_s": NaN
+      },
+      "distance": 2.1781062979413406
+    }
+  ],
+  "feature_difference": [
+    {
+      "feature": "macd_30s_cross_direction",
+      "winner_median": -1.0,
+      "loser_median": -1.0,
+      "difference": 0.0
+    },
+    {
+      "feature": "macd_30s_histogram",
+      "winner_median": -19.50870701783183,
+      "loser_median": -22.245074319608804,
+      "difference": 2.7363673017769727
+    },
+    {
+      "feature": "macd_30s_histogram_slope",
+      "winner_median": -26.24757047735767,
+      "loser_median": -24.559252108843342,
+      "difference": -1.6883183685143273
+    },
+    {
+      "feature": "macd_30s_histogram_acceleration",
+      "winner_median": -12.42833633886471,
+      "loser_median": -19.605043423532205,
+      "difference": 7.176707084667495
+    },
+    {
+      "feature": "price_return_30s",
+      "winner_median": -0.002787726840243532,
+      "loser_median": -0.003634044697671923,
+      "difference": 0.0008463178574283914
+    },
+    {
+      "feature": "price_acceleration_30s",
+      "winner_median": -0.0016386551807628935,
+      "loser_median": -0.0027833863460648423,
+      "difference": 0.0011447311653019487
+    },
+    {
+      "feature": "volatility_score",
+      "winner_median": 69.11457330703728,
+      "loser_median": 95.01705870199743,
+      "difference": -25.902485394960152
+    },
+    {
+      "feature": "flow_pressure",
+      "winner_median": -0.3575249653628972,
+      "loser_median": -0.4423962327683285,
+      "difference": 0.08487126740543133
+    },
+    {
+      "feature": "spot_futures_agreement",
+      "winner_median": 1.0,
+      "loser_median": 1.0,
+      "difference": 0.0
+    },
+    {
+      "feature": "expansion_score",
+      "winner_median": 94.23890084358317,
+      "loser_median": 95.81783673024498,
+      "difference": -1.5789358866618102
+    },
+    {
+      "feature": "price_response_efficiency",
+      "winner_median": 0.003744648551959758,
+      "loser_median": 0.0023560804572711628,
+      "difference": 0.0013885680946885953
+    },
+    {
+      "feature": "flow_price_absorption",
+      "winner_median": -36.28804949898763,
+      "loser_median": -73.24981817234404,
+      "difference": 36.9617686733564
+    }
+  ],
+  "vantage_historical": "UNAVAILABLE",
+  "l2_historical": "UNAVAILABLE"
+}
