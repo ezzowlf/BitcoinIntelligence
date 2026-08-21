@@ -1,0 +1,74 @@
+{
+  "historical_l2": {
+    "rows": 0,
+    "gaps": 0,
+    "duplicates": 0,
+    "backwards": 0,
+    "missing": 0,
+    "status": "UNAVAILABLE"
+  },
+  "liquidations": {
+    "rows": 0,
+    "gaps": 0,
+    "duplicates": 0,
+    "backwards": 0,
+    "missing": 0,
+    "status": "UNAVAILABLE"
+  },
+  "open_interest": {
+    "rows": 0,
+    "gaps": 0,
+    "duplicates": 0,
+    "backwards": 0,
+    "missing": 0,
+    "status": "UNAVAILABLE"
+  },
+  "cross_exchange": {
+    "rows": 0,
+    "gaps": 0,
+    "duplicates": 0,
+    "backwards": 0,
+    "missing": 0,
+    "status": "UNAVAILABLE"
+  },
+  "funding": {
+    "rows": 0,
+    "gaps": 0,
+    "duplicates": 0,
+    "backwards": 0,
+    "missing": 0,
+    "status": "UNAVAILABLE"
+  },
+  "basis": {
+    "rows": 0,
+    "gaps": 0,
+    "duplicates": 0,
+    "backwards": 0,
+    "missing": 0,
+    "status": "UNAVAILABLE"
+  },
+  "options": {
+    "rows": 0,
+    "gaps": 0,
+    "duplicates": 0,
+    "backwards": 0,
+    "missing": 0,
+    "status": "UNAVAILABLE"
+  },
+  "point_in_time_events": {
+    "rows": 0,
+    "gaps": 0,
+    "duplicates": 0,
+    "backwards": 0,
+    "missing": 0,
+    "status": "UNAVAILABLE"
+  },
+  "vantage_bid_ask": {
+    "rows": 0,
+    "gaps": 0,
+    "duplicates": 0,
+    "backwards": 0,
+    "missing": 0,
+    "status": "UNAVAILABLE"
+  }
+}

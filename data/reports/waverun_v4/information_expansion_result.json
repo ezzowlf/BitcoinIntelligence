@@ -1,0 +1,201 @@
+{
+  "research_id": "WAVERUN_V4_INFORMATION_EXPANSION",
+  "execution": "DISABLED",
+  "holdout_opened": false,
+  "v1_fingerprint": "a61a4229635da3e3869b08371e3d7dd38290091951b4488a2bda7df13c2a0f60",
+  "v2_unchanged": true,
+  "v3_unchanged": true,
+  "magnitudes_usd": [
+    100,
+    150,
+    200,
+    300,
+    400,
+    500,
+    600,
+    800
+  ],
+  "adverse_usd": [
+    25,
+    50,
+    75,
+    100,
+    150,
+    200
+  ],
+  "horizons_seconds": [
+    30,
+    60,
+    90,
+    120,
+    180,
+    300,
+    600
+  ],
+  "research_days": 209,
+  "opportunity_definition": "$100-anchored, non-overlapping 600-second windows; raw market opportunities only",
+  "comparison_warning": "Counts are not directly comparable to earlier $200-anchored opportunity counts.",
+  "move_frontier": {
+    "100": {
+      "raw_opportunities": 24853,
+      "raw_per_day": 118.91387559808612,
+      "predictable_per_day": 0,
+      "oos_precision": null
+    },
+    "150": {
+      "raw_opportunities": 11782,
+      "raw_per_day": 56.3732057416268,
+      "predictable_per_day": 0,
+      "oos_precision": null
+    },
+    "200": {
+      "raw_opportunities": 7685,
+      "raw_per_day": 36.770334928229666,
+      "predictable_per_day": 0,
+      "oos_precision": null
+    },
+    "300": {
+      "raw_opportunities": 3628,
+      "raw_per_day": 17.358851674641148,
+      "predictable_per_day": 0,
+      "oos_precision": null
+    },
+    "400": {
+      "raw_opportunities": 1900,
+      "raw_per_day": 9.090909090909092,
+      "predictable_per_day": 0,
+      "oos_precision": null
+    },
+    "500": {
+      "raw_opportunities": 1125,
+      "raw_per_day": 5.382775119617225,
+      "predictable_per_day": 0,
+      "oos_precision": null
+    },
+    "600": {
+      "raw_opportunities": 663,
+      "raw_per_day": 3.172248803827751,
+      "predictable_per_day": 0,
+      "oos_precision": null
+    },
+    "800": {
+      "raw_opportunities": 283,
+      "raw_per_day": 1.354066985645933,
+      "predictable_per_day": 0,
+      "oos_precision": null
+    }
+  },
+  "new_source_health": {
+    "historical_l2": {
+      "rows": 0,
+      "gaps": 0,
+      "duplicates": 0,
+      "backwards": 0,
+      "missing": 0,
+      "status": "UNAVAILABLE"
+    },
+    "liquidations": {
+      "rows": 0,
+      "gaps": 0,
+      "duplicates": 0,
+      "backwards": 0,
+      "missing": 0,
+      "status": "UNAVAILABLE"
+    },
+    "open_interest": {
+      "rows": 0,
+      "gaps": 0,
+      "duplicates": 0,
+      "backwards": 0,
+      "missing": 0,
+      "status": "UNAVAILABLE"
+    },
+    "cross_exchange": {
+      "rows": 0,
+      "gaps": 0,
+      "duplicates": 0,
+      "backwards": 0,
+      "missing": 0,
+      "status": "UNAVAILABLE"
+    },
+    "funding": {
+      "rows": 0,
+      "gaps": 0,
+      "duplicates": 0,
+      "backwards": 0,
+      "missing": 0,
+      "status": "UNAVAILABLE"
+    },
+    "basis": {
+      "rows": 0,
+      "gaps": 0,
+      "duplicates": 0,
+      "backwards": 0,
+      "missing": 0,
+      "status": "UNAVAILABLE"
+    },
+    "options": {
+      "rows": 0,
+      "gaps": 0,
+      "duplicates": 0,
+      "backwards": 0,
+      "missing": 0,
+      "status": "UNAVAILABLE"
+    },
+    "point_in_time_events": {
+      "rows": 0,
+      "gaps": 0,
+      "duplicates": 0,
+      "backwards": 0,
+      "missing": 0,
+      "status": "UNAVAILABLE"
+    },
+    "vantage_bid_ask": {
+      "rows": 0,
+      "gaps": 0,
+      "duplicates": 0,
+      "backwards": 0,
+      "missing": 0,
+      "status": "UNAVAILABLE"
+    }
+  },
+  "new_information_activated": false,
+  "information_gain_status": "UNMEASURABLE_NO_NEW_OVERLAP",
+  "v4_gate": {
+    "passed": false,
+    "checks": {
+      "frequency": false,
+      "precision": false,
+      "positive_ev": false,
+      "support": false,
+      "folds": false,
+      "no_catastrophe": false,
+      "calibrated": false,
+      "stable": false
+    }
+  },
+  "candidate_frozen": false,
+  "final_decision": "V4 BLOCKED BY DATA AVAILABILITY",
+  "product_status": {
+    "3/day_70": "FAIL",
+    "5/day_75": "FAIL",
+    "3/day_80": "FAIL",
+    "90_elite": "NOT_FOUND"
+  },
+  "provider_decision": {
+    "BUY_NOW": [],
+    "USE_FREE_FIRST": [
+      "official exchange archives/APIs",
+      "Tardis first-day-of-month samples"
+    ],
+    "LATER": [
+      "Tardis paid pilot",
+      "Amberdata",
+      "Kaiko"
+    ],
+    "NOT_WORTH_IT": [
+      "unverified datasets without event/receive timestamps"
+    ]
+  },
+  "created_at": "2026-08-21T00:00:00+00:00"
+}
