@@ -17,6 +17,11 @@ from bitcoin_cycle_analyzer.short_term.engine import ShortTermEngine
 from bitcoin_cycle_analyzer.short_term.events import EventType
 from bitcoin_cycle_analyzer.short_term.orderbook import OrderBookState
 from bitcoin_cycle_analyzer.short_term.storage import ForecastStore
+from bitcoin_cycle_analyzer.waverun_decision import (
+    DecisionInput,
+    DecisionSignal,
+    fast_decision,
+)
 
 
 class LiveSession:
@@ -26,6 +31,7 @@ class LiveSession:
         self.book = OrderBookState()
         self.last_book = None
         self.last_trade = None
+        self.decision_path = self.output.with_name("decision_records.jsonl")
         self.output.parent.mkdir(parents=True, exist_ok=True)
 
     async def on_event(self, event):
@@ -47,6 +53,35 @@ class LiveSession:
         exchange_timestamp = event.exchange_timestamp or received
         tick = MarketTick(payload["price"], exchange_timestamp, received, datetime.now(UTC), event.exchange, payload["quantity"], payload["quantity"] if not payload["buyer_is_maker"] else 0.0, payload["quantity"] if payload["buyer_is_maker"] else 0.0, bid, ask, self.book.imbalance())
         forecasts = self.engine.process(tick, "LIVE", received)
+        imbalance = self.book.imbalance(10)
+        signals = []
+        if imbalance is not None:
+            signals.append(DecisionSignal("L2", "imbalance_10", "BULLISH" if imbalance > .05 else "BEARISH" if imbalance < -.05 else "NEUTRAL", min(1, abs(imbalance) * 5), f"10-level imbalance={imbalance:.4f}"))
+        flow_direction = "BEARISH" if payload["buyer_is_maker"] else "BULLISH"
+        signals.append(DecisionSignal("FLOW", "aggressive_trade", flow_direction, .5, f"aggressive {'sell' if payload['buyer_is_maker'] else 'buy'} trade"))
+        decision = fast_decision(DecisionInput("BTCUSDT", received.isoformat(), tuple(signals), 1.0, tick.age_seconds(received), "UNKNOWN", "LIVE", None, False))
+        self.decision_path.parent.mkdir(parents=True, exist_ok=True)
+        decision_record = decision.to_record()
+        decision_record["causal_input"] = {
+            "symbol": "BTCUSDT",
+            "timestamp": received.isoformat(),
+            "bid": bid,
+            "ask": ask,
+            "spread": (ask - bid) if bid is not None and ask is not None else None,
+            "signals": [
+                {"group": s.group, "name": s.name, "direction": s.direction,
+                 "strength": s.strength, "explanation": s.explanation, "available": s.available}
+                for s in signals
+            ],
+            "data_quality": 1.0,
+            "freshness_seconds": tick.age_seconds(received),
+            "timing": "UNKNOWN",
+            "regime": "LIVE",
+            "expected_edge_after_cost": None,
+            "calibrated": False,
+        }
+        with self.decision_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(decision_record, sort_keys=True) + "\n")
         for forecast in forecasts:
             self.store.append(forecast)
         snapshot = ForecastSnapshot.from_forecasts(forecasts, "LIVE", self.feed.status(), payload["price"], tick.age_seconds(received))

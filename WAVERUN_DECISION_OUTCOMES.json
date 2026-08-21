@@ -1,0 +1,14 @@
+{
+  "execution": "DISABLED",
+  "session_seconds": 60,
+  "decision_evaluations": 1897,
+  "blocked": 1897,
+  "watch": 0,
+  "armed": 0,
+  "approved": 0,
+  "resolved": 0,
+  "target_first_wins": 0,
+  "target_first_losses": 0,
+  "status": "NO_OUTCOME_CANDIDATES",
+  "reason": "all live decisions were blocked and no target/adverse candidate was emitted"
+}
