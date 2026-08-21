@@ -7,6 +7,7 @@ from bitcoin_cycle_analyzer.short_term.pressure import (
     efficiency_and_absorption,
     macd_features,
     mean_state,
+    momentum_pressure_state,
     price_pressure,
 )
 
@@ -55,3 +56,13 @@ def test_directional_engine_preserves_execution_gate_and_origin():
     assert snap.directional_pressure == 55
     assert snap.origin == "SPOT_FUTURES_CONFIRMED"
     assert snap.execution == "DISABLED"
+
+
+def test_momentum_pressure_state_is_causal_and_keeps_missing_groups_unavailable():
+    bars = completed_bars(source_frame(500), 1)
+    state = momentum_pressure_state(bars, l2_imbalance=None)
+    assert state.timestamp == bars.index[-1]
+    assert set(state.returns) == {1, 2, 5, 10, 30, 60, 90, 180, 300}
+    assert state.l2_status == "UNAVAILABLE"
+    assert state.derivatives_status == "UNAVAILABLE"
+    assert state.execution == "DISABLED"

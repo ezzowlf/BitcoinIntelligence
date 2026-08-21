@@ -8,6 +8,74 @@ import pandas as pd
 
 BAR_SECONDS = (1, 5, 10, 30, 60, 180, 300, 900)
 MACD_SECONDS = (10, 30, 60, 180, 300, 900)
+MOMENTUM_SECONDS = (1, 2, 5, 10, 30, 60, 90, 180, 300)
+
+
+@dataclass(frozen=True)
+class MomentumPressureState:
+    """Latest causal momentum snapshot; absent evidence stays unavailable."""
+
+    timestamp: pd.Timestamp
+    price: float
+    returns: dict[int, float | None]
+    velocity: dict[int, float | None]
+    acceleration: dict[int, float | None]
+    jerk: dict[int, float | None]
+    realized_volatility: float | None
+    range_expansion: float | None
+    price_response_efficiency: float | None
+    flow_pressure: float | None
+    flow_acceleration: float | None
+    cvd_velocity: float | None
+    l2_imbalance: float | None
+    l2_status: str
+    derivatives_status: str
+    cross_exchange_status: str
+    execution: str = "DISABLED"
+
+
+def _latest(frame: pd.Series, periods: int) -> float | None:
+    if len(frame) <= periods or pd.isna(frame.iloc[-1]) or pd.isna(frame.iloc[-periods - 1]):
+        return None
+    return float(frame.iloc[-1] / frame.iloc[-periods - 1] - 1.0)
+
+
+def momentum_pressure_state(
+    bars: pd.DataFrame,
+    *,
+    l2_imbalance: float | None = None,
+    price_response_efficiency: float | None = None,
+    derivatives_available: bool = False,
+    cross_exchange_available: bool = False,
+) -> MomentumPressureState:
+    """Build a point-in-time state from completed, right-labelled bars only."""
+    required = {"close", "high", "low", "volume", "buy_volume", "sell_volume", "trades"}
+    missing = required.difference(bars.columns)
+    if missing or not isinstance(bars.index, pd.DatetimeIndex) or bars.index.tz is None:
+        raise ValueError(f"completed bars missing required causal fields: {sorted(missing)}")
+    if bars.empty:
+        raise ValueError("cannot create momentum state from empty bars")
+    close = bars["close"].astype(float)
+    returns = {period: _latest(close, period) for period in MOMENTUM_SECONDS}
+    velocity = {period: _latest(close.pct_change(), period) for period in MOMENTUM_SECONDS}
+    acceleration = {period: _latest(close.pct_change().diff(), period) for period in MOMENTUM_SECONDS}
+    jerk = {period: _latest(close.pct_change().diff().diff(), period) for period in MOMENTUM_SECONDS}
+    flow = flow_pressure(bars)
+    width = (bars["high"] - bars["low"]).astype(float)
+    vol = close.pct_change().rolling(60, min_periods=10).std().iloc[-1]
+    expansion = width.iloc[-1] / width.rolling(60, min_periods=10).median().iloc[-1] if width.rolling(60, min_periods=10).median().iloc[-1] else None
+    return MomentumPressureState(
+        timestamp=bars.index[-1], price=float(close.iloc[-1]), returns=returns, velocity=velocity,
+        acceleration=acceleration, jerk=jerk, realized_volatility=None if pd.isna(vol) else float(vol),
+        range_expansion=None if expansion is None or pd.isna(expansion) else float(expansion),
+        price_response_efficiency=price_response_efficiency,
+        flow_pressure=None if pd.isna(flow.pressure.iloc[-1]) else float(flow.pressure.iloc[-1]),
+        flow_acceleration=None if pd.isna(flow.trade_rate_acceleration.iloc[-1]) else float(flow.trade_rate_acceleration.iloc[-1]),
+        cvd_velocity=None if pd.isna(flow.cvd_velocity.iloc[-1]) else float(flow.cvd_velocity.iloc[-1]),
+        l2_imbalance=l2_imbalance, l2_status="AVAILABLE" if l2_imbalance is not None else "UNAVAILABLE",
+        derivatives_status="AVAILABLE" if derivatives_available else "UNAVAILABLE",
+        cross_exchange_status="AVAILABLE" if cross_exchange_available else "UNAVAILABLE",
+    )
 
 
 def completed_bars(frame: pd.DataFrame, seconds: int, *, asof: pd.Timestamp | None = None) -> pd.DataFrame:
