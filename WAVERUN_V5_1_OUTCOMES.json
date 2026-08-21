@@ -1,0 +1,19 @@
+{
+  "session_hours": 6.0,
+  "raw_market_events": 12053112,
+  "pre_gate_candidates": 21468,
+  "decision_records": 21468,
+  "blocked": 21468,
+  "watch": 0,
+  "armed": 0,
+  "approved": 0,
+  "resolved": 0,
+  "target_first_wins": 0,
+  "target_first_losses": 0,
+  "brier": null,
+  "ece": null,
+  "replay": "PASS: 21468 records, 0 business-state mismatches",
+  "dashboard": "PARTIAL: existing dashboard loads with no console errors; V5.1 decision panel not exposed",
+  "reason": "future Vantage Bid/Ask path was not persisted; no valid outcome labels",
+  "execution": "DISABLED"
+}

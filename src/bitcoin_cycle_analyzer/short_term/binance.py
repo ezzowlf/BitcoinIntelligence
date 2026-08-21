@@ -19,7 +19,9 @@ class BinancePublicFeed:
         self.max_reconnect_delay = max_reconnect_delay
         streams = [f"{symbol}@trade", f"{symbol}@bookTicker", f"{symbol}@depth@100ms"]
         self.spot_url = "wss://stream.binance.com:9443/stream?streams=" + "/".join(streams)
-        self.futures_url = "wss://fstream.binance.com/stream?streams=" + "/".join([f"{symbol}@markPrice@1s", f"{symbol}@forceOrder"])
+        self.futures_url = "wss://fstream.binance.com/stream?streams=" + "/".join(
+            [f"{symbol}@trade", f"{symbol}@markPrice@1s", f"{symbol}@forceOrder"]
+        )
         self.health = {"spot": FeedHealth("BINANCE_SPOT"), "futures": FeedHealth("BINANCE_FUTURES")}
         self._stop = False
 

@@ -4,18 +4,29 @@ import argparse
 import asyncio
 import json
 import sys
+import time
+from collections import deque
+from dataclasses import asdict
 from datetime import UTC, datetime
 from pathlib import Path
+
+import pandas as pd
+import requests
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+from bitcoin_cycle_analyzer.live.mt5_provider import MT5MarketDataProvider
 from bitcoin_cycle_analyzer.short_term.api import ForecastSnapshot
 from bitcoin_cycle_analyzer.short_term.binance import BinancePublicFeed
 from bitcoin_cycle_analyzer.short_term.contracts import MarketTick
 from bitcoin_cycle_analyzer.short_term.engine import ShortTermEngine
 from bitcoin_cycle_analyzer.short_term.events import EventType
 from bitcoin_cycle_analyzer.short_term.orderbook import OrderBookState
+from bitcoin_cycle_analyzer.short_term.pressure import (
+    completed_bars,
+    momentum_pressure_state,
+)
 from bitcoin_cycle_analyzer.short_term.storage import ForecastStore
 from bitcoin_cycle_analyzer.waverun_decision import (
     DecisionInput,
@@ -32,13 +43,63 @@ class LiveSession:
         self.last_book = None
         self.last_trade = None
         self.decision_path = self.output.with_name("decision_records.jsonl")
+        self.event_path = self.output.with_name("market_events.jsonl")
+        self.candidate_path = self.output.with_name("pre_gate_candidates.jsonl")
+        self.latency_path = self.output.with_name("latency_records.jsonl")
+        self.trade_buffer = deque(maxlen=200_000)
+        self.flow_buffer = {"spot": deque(maxlen=100_000), "futures": deque(maxlen=100_000)}
+        self.last_evaluation_second = None
+        self.mt5 = MT5MarketDataProvider()
+        self.mt5_health = self.mt5.connect()
         self.output.parent.mkdir(parents=True, exist_ok=True)
 
+    @staticmethod
+    def _append(path: Path, value: dict) -> None:
+        with path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(value, sort_keys=True, default=str) + "\n")
+
+    def _record_event(self, event) -> None:
+        self._append(self.event_path, {
+            "event_type": event.event_type.value, "exchange": event.exchange, "symbol": event.symbol,
+            "exchange_timestamp": event.exchange_timestamp, "received_timestamp": event.received_timestamp,
+            "timestamp_source": event.timestamp_source, "payload": event.payload, "execution": "DISABLED",
+        })
+
+    def _flow_signal(self, market: str, now: datetime) -> DecisionSignal | None:
+        rows = self.flow_buffer[market]
+        while rows and (now - rows[0][0]).total_seconds() > 10:
+            rows.popleft()
+        if not rows:
+            return None
+        buy = sum(row[1] for row in rows)
+        sell = sum(row[2] for row in rows)
+        total = buy + sell
+        delta = (buy - sell) / total if total else 0.0
+        return DecisionSignal("FLOW", f"{market}_flow_10s", "BULLISH" if delta > .05 else "BEARISH" if delta < -.05 else "NEUTRAL", min(1.0, abs(delta)), f"{market} normalized flow delta={delta:.4f}")
+
+    async def _refresh_book(self) -> None:
+        snapshot = await asyncio.to_thread(
+            requests.get,
+            "https://api.binance.com/api/v3/depth",
+            params={"symbol": self.feed.symbol.upper(), "limit": 1000},
+            timeout=10,
+        )
+        snapshot.raise_for_status()
+        payload = snapshot.json()
+        self.book.seed_snapshot(
+            int(payload["lastUpdateId"]),
+            [(float(price), float(quantity)) for price, quantity in payload["bids"]],
+            [(float(price), float(quantity)) for price, quantity in payload["asks"]],
+        )
+
     async def on_event(self, event):
+        receive_ns = time.perf_counter_ns()
+        self._record_event(event)
         if event.event_type == EventType.DEPTH:
             result = self.book.apply(event)
-            if result == "GAP":
+            if result in {"GAP", "NEEDS_SNAPSHOT"}:
                 self.feed.health["spot"].gap()
+                await self._refresh_book()
             return
         if event.event_type == EventType.BOOK_TICKER:
             self.last_book = event
@@ -46,10 +107,21 @@ class LiveSession:
         if event.event_type != EventType.TRADE:
             return
         payload = event.payload
+        market = payload.get("market", "spot")
+        buy = payload["quantity"] if not payload["buyer_is_maker"] else 0.0
+        sell = payload["quantity"] if payload["buyer_is_maker"] else 0.0
+        self.flow_buffer[market].append((event.received_timestamp, buy, sell))
+        if market == "futures":
+            return
         self.last_trade = event
         bid = self.last_book.payload["bid"] if self.last_book else None
         ask = self.last_book.payload["ask"] if self.last_book else None
         received = event.received_timestamp
+        evaluation_second = int(received.timestamp())
+        self.trade_buffer.append((received, payload["price"], payload["quantity"], buy, sell))
+        if self.last_evaluation_second == evaluation_second:
+            return
+        self.last_evaluation_second = evaluation_second
         exchange_timestamp = event.exchange_timestamp or received
         tick = MarketTick(payload["price"], exchange_timestamp, received, datetime.now(UTC), event.exchange, payload["quantity"], payload["quantity"] if not payload["buyer_is_maker"] else 0.0, payload["quantity"] if payload["buyer_is_maker"] else 0.0, bid, ask, self.book.imbalance())
         forecasts = self.engine.process(tick, "LIVE", received)
@@ -57,11 +129,25 @@ class LiveSession:
         signals = []
         if imbalance is not None:
             signals.append(DecisionSignal("L2", "imbalance_10", "BULLISH" if imbalance > .05 else "BEARISH" if imbalance < -.05 else "NEUTRAL", min(1, abs(imbalance) * 5), f"10-level imbalance={imbalance:.4f}"))
-        flow_direction = "BEARISH" if payload["buyer_is_maker"] else "BULLISH"
-        signals.append(DecisionSignal("FLOW", "aggressive_trade", flow_direction, .5, f"aggressive {'sell' if payload['buyer_is_maker'] else 'buy'} trade"))
+        for source_market in ("spot", "futures"):
+            flow_signal = self._flow_signal(source_market, received)
+            if flow_signal:
+                signals.append(flow_signal)
+        momentum = None
+        if len(self.trade_buffer) >= 10:
+            frame = pd.DataFrame(self.trade_buffer, columns=["timestamp", "price", "volume", "buy_volume", "sell_volume"]).set_index("timestamp")
+            bars = completed_bars(frame, 1, asof=pd.Timestamp(received))
+            if len(bars) >= 2:
+                momentum = momentum_pressure_state(bars, l2_imbalance=imbalance)
+        features_ready_ns = time.perf_counter_ns()
         decision = fast_decision(DecisionInput("BTCUSDT", received.isoformat(), tuple(signals), 1.0, tick.age_seconds(received), "UNKNOWN", "LIVE", None, False))
+        decision_ns = time.perf_counter_ns()
         self.decision_path.parent.mkdir(parents=True, exist_ok=True)
         decision_record = decision.to_record()
+        mt5_quote = self.mt5.tick()
+        targets = [100, 150, 200, 300, 400, 500]
+        adverse = [25, 50, 75, 100, 150]
+        horizons = [60, 90, 120, 180, 300, 600]
         decision_record["causal_input"] = {
             "symbol": "BTCUSDT",
             "timestamp": received.isoformat(),
@@ -79,9 +165,30 @@ class LiveSession:
             "regime": "LIVE",
             "expected_edge_after_cost": None,
             "calibrated": False,
+            "mt5_quote": mt5_quote,
+            "momentum_pressure_state": asdict(momentum) if momentum else None,
         }
-        with self.decision_path.open("a", encoding="utf-8") as handle:
-            handle.write(json.dumps(decision_record, sort_keys=True) + "\n")
+        candidate_record = {
+            "timestamp": received, "direction_bias": decision.direction,
+            "long_pressure_score": max(0.0, decision.directional_edge * 100),
+            "short_pressure_score": max(0.0, -decision.directional_edge * 100),
+            "targets_usd": targets, "adverse_usd": adverse, "horizons_seconds": horizons,
+            "momentum_pressure_state": asdict(momentum) if momentum else None,
+            "signals": decision_record["causal_input"]["signals"], "contradictions": decision.contradictions,
+            "availability": {"mt5": mt5_quote.get("status"), "l2": "AVAILABLE" if imbalance is not None else "UNAVAILABLE",
+                             "spot_flow": "AVAILABLE", "futures_flow": "AVAILABLE" if self.flow_buffer["futures"] else "UNAVAILABLE"},
+            "cost_state": {"status": "RESEARCH_PROXY", "spread": mt5_quote.get("spread")},
+            "final_decision": decision.decision, "execution": "DISABLED",
+        }
+        self._append(self.candidate_path, candidate_record)
+        self._append(self.decision_path, decision_record)
+        persisted_ns = time.perf_counter_ns()
+        self._append(self.latency_path, {
+            "timestamp": received, "receive_to_features_ms": (features_ready_ns - receive_ns) / 1e6,
+            "features_to_decision_ms": (decision_ns - features_ready_ns) / 1e6,
+            "decision_to_persist_ms": (persisted_ns - decision_ns) / 1e6,
+            "receive_to_persist_ms": (persisted_ns - receive_ns) / 1e6, "execution": "DISABLED",
+        })
         for forecast in forecasts:
             self.store.append(forecast)
         snapshot = ForecastSnapshot.from_forecasts(forecasts, "LIVE", self.feed.status(), payload["price"], tick.age_seconds(received))
@@ -89,7 +196,11 @@ class LiveSession:
 
     async def run(self, duration: float | None):
         print("WAVERUN ENGINE STARTING\nDATA FEEDS CONNECTING\nFEATURE ENGINE READY\nPREDICTION ENGINE READY")
-        await self.feed.run(self.on_event, duration)
+        try:
+            await self._refresh_book()
+            await self.feed.run(self.on_event, duration)
+        finally:
+            self.mt5.close()
 
 
 def main():

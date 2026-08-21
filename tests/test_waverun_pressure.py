@@ -66,3 +66,6 @@ def test_momentum_pressure_state_is_causal_and_keeps_missing_groups_unavailable(
     assert state.l2_status == "UNAVAILABLE"
     assert state.derivatives_status == "UNAVAILABLE"
     assert state.execution == "DISABLED"
+    assert all(value is None or np.isfinite(value) for value in state.velocity.values())
+    assert all(value is None or np.isfinite(value) for value in state.acceleration.values())
+    assert all(value is None or np.isfinite(value) for value in state.jerk.values())

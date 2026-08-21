@@ -40,6 +40,12 @@ def _latest(frame: pd.Series, periods: int) -> float | None:
     return float(frame.iloc[-1] / frame.iloc[-periods - 1] - 1.0)
 
 
+def _difference_latest(frame: pd.Series, periods: int) -> float | None:
+    if len(frame) <= periods or pd.isna(frame.iloc[-1]) or pd.isna(frame.iloc[-periods - 1]):
+        return None
+    return float(frame.iloc[-1] - frame.iloc[-periods - 1])
+
+
 def momentum_pressure_state(
     bars: pd.DataFrame,
     *,
@@ -57,9 +63,9 @@ def momentum_pressure_state(
         raise ValueError("cannot create momentum state from empty bars")
     close = bars["close"].astype(float)
     returns = {period: _latest(close, period) for period in MOMENTUM_SECONDS}
-    velocity = {period: _latest(close.pct_change(), period) for period in MOMENTUM_SECONDS}
-    acceleration = {period: _latest(close.pct_change().diff(), period) for period in MOMENTUM_SECONDS}
-    jerk = {period: _latest(close.pct_change().diff().diff(), period) for period in MOMENTUM_SECONDS}
+    velocity = {period: _difference_latest(close.pct_change(), period) for period in MOMENTUM_SECONDS}
+    acceleration = {period: _difference_latest(close.pct_change().diff(), period) for period in MOMENTUM_SECONDS}
+    jerk = {period: _difference_latest(close.pct_change().diff().diff(), period) for period in MOMENTUM_SECONDS}
     flow = flow_pressure(bars)
     width = (bars["high"] - bars["low"]).astype(float)
     vol = close.pct_change().rolling(60, min_periods=10).std().iloc[-1]
