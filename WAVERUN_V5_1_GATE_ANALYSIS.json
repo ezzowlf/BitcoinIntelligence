@@ -1,0 +1,17 @@
+{
+  "session": "live_6h_20260821",
+  "candidates": 21468,
+  "blocked": 21468,
+  "watch": 0,
+  "armed": 0,
+  "approved": 0,
+  "gate_reason_counts": {
+    "insufficient_calibrated_edge_after_costs": 19076,
+    "cross_group_directional_conflict": 2244,
+    "flow_conflict": 148
+  },
+  "blocked_later_wins": null,
+  "blocked_later_losses": null,
+  "reason_outcomes_unavailable": "future Vantage Bid/Ask path was not persisted",
+  "execution": "DISABLED"
+}
