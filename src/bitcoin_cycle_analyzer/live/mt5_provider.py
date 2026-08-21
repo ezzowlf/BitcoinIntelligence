@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime, timezone
 import hashlib
 import os
-from typing import Any
 import time
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from typing import Any
 
 import pandas as pd
 
@@ -80,15 +80,15 @@ class MT5MarketDataProvider:
             self.backend.symbol_select(name,True)
             tick=self.backend.symbol_info_tick(name)
             valid_tick=bool(tick and float(tick.bid)>0 and float(tick.ask)>=float(tick.bid) and int(tick.time)>0)
-            h4=self.backend.copy_rates_from_pos(name,getattr(self.backend,"TIMEFRAME_H4"),1,3)
-            d1=self.backend.copy_rates_from_pos(name,getattr(self.backend,"TIMEFRAME_D1"),1,3)
+            h4=self.backend.copy_rates_from_pos(name,self.backend.TIMEFRAME_H4,1,3)
+            d1=self.backend.copy_rates_from_pos(name,self.backend.TIMEFRAME_D1,1,3)
             score=(100 if requested==name else 0)+(30 if valid_tick else 0)+(10 if h4 is not None and len(h4)>0 else 0)+(10 if d1 is not None and len(d1)>0 else 0)+(5 if getattr(item,"visible",False) else 0)-(len(name)/100)
             candidates.append((score,name))
         if not candidates:return None
         chosen=max(candidates)[1];self.backend.symbol_select(chosen,True);return chosen
 
-    def _utc(self,epoch: int | float) -> pd.Timestamp:
-        return pd.Timestamp(datetime.fromtimestamp(epoch-self.server_utc_offset_seconds, tz=timezone.utc))
+    def _utc(self,epoch: float) -> pd.Timestamp:
+        return pd.Timestamp(datetime.fromtimestamp(epoch-self.server_utc_offset_seconds, tz=UTC))
 
     def tick(self) -> dict:
         if not self._initialized or not self.symbol:
