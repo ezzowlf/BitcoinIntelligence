@@ -101,10 +101,14 @@ class MT5MarketDataProvider:
             return {"status": "UNAVAILABLE", "reason": "NO_TICK"}
         bid, ask = float(tick.bid), float(tick.ask)
         if bid<=0 or ask<bid or int(tick.time)<=0:return {"status":"UNAVAILABLE","reason":"INVALID_OR_UNINITIALIZED_TICK"}
-        timestamp=self._utc(tick.time);age_seconds=max(0,(pd.Timestamp.now(tz="UTC")-timestamp).total_seconds())
+        time_msc = int(getattr(tick, "time_msc", int(tick.time) * 1000) or int(tick.time) * 1000)
+        timestamp = self._utc(time_msc / 1000)
+        age_seconds=max(0,(pd.Timestamp.now(tz="UTC")-timestamp).total_seconds())
         freshness="LIVE" if age_seconds<=30 else "DELAYED" if age_seconds<=300 else "STALE"
         return {"status": "AVAILABLE", "provider": "METATRADER_5", "symbol": self.symbol,
-                "bid": bid, "ask": ask, "mid": (bid + ask) / 2, "spread": ask - bid,
+                "bid": bid, "ask": ask, "last": float(getattr(tick, "last", 0.0) or 0.0),
+                "flags": int(getattr(tick, "flags", 0) or 0), "time_msc": time_msc,
+                "mid": (bid + ask) / 2, "spread": ask - bid,
                 "timestamp": timestamp,"age_seconds":round(age_seconds,2),"freshness":freshness}
 
     def confirmed_candles(self, timeframe: str, count: int = 500) -> pd.DataFrame:

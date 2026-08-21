@@ -46,6 +46,8 @@ class LiveSession:
         self.event_path = self.output.with_name("market_events.jsonl")
         self.candidate_path = self.output.with_name("pre_gate_candidates.jsonl")
         self.latency_path = self.output.with_name("latency_records.jsonl")
+        self.vantage_tick_path = self.output.with_name("vantage_ticks.jsonl")
+        self._last_vantage_time_msc = None
         self.trade_buffer = deque(maxlen=200_000)
         self.flow_buffer = {"spot": deque(maxlen=100_000), "futures": deque(maxlen=100_000)}
         self.last_evaluation_second = None
@@ -64,6 +66,29 @@ class LiveSession:
             "exchange_timestamp": event.exchange_timestamp, "received_timestamp": event.received_timestamp,
             "timestamp_source": event.timestamp_source, "payload": event.payload, "execution": "DISABLED",
         })
+
+    def _record_vantage_tick(self) -> None:
+        tick = self.mt5.tick()
+        if tick.get("status") != "AVAILABLE" or tick.get("time_msc") is None:
+            return
+        time_msc = int(tick["time_msc"])
+        if self._last_vantage_time_msc is not None and time_msc <= self._last_vantage_time_msc:
+            return
+        self._last_vantage_time_msc = time_msc
+        self._append(self.vantage_tick_path, {
+            "time_msc": time_msc, "timestamp": pd.Timestamp(tick["timestamp"]).tz_convert("UTC").isoformat(),
+            "bid": tick["bid"], "ask": tick["ask"], "last": tick.get("last", 0.0),
+            "flags": tick.get("flags", 0), "spread": tick["spread"], "symbol": tick.get("symbol"),
+            "source": "MT5_VANTAGE", "execution": "DISABLED",
+        })
+
+    async def _vantage_recorder(self, stop: asyncio.Event) -> None:
+        while not stop.is_set():
+            await asyncio.to_thread(self._record_vantage_tick)
+            try:
+                await asyncio.wait_for(stop.wait(), timeout=0.1)
+            except TimeoutError:
+                pass
 
     def _flow_signal(self, market: str, now: datetime) -> DecisionSignal | None:
         rows = self.flow_buffer[market]
@@ -196,10 +221,14 @@ class LiveSession:
 
     async def run(self, duration: float | None):
         print("WAVERUN ENGINE STARTING\nDATA FEEDS CONNECTING\nFEATURE ENGINE READY\nPREDICTION ENGINE READY")
+        stop = asyncio.Event()
+        recorder = asyncio.create_task(self._vantage_recorder(stop))
         try:
             await self._refresh_book()
             await self.feed.run(self.on_event, duration)
         finally:
+            stop.set()
+            await recorder
             self.mt5.close()
 
 
