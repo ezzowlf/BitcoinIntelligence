@@ -1,0 +1,120 @@
+{
+  "attempt_status": "INSUFFICIENT_DATA",
+  "reason": "No derived period after the 2026-07-31 discovery cutoff is available, and the protocol forbids opening the reserved 2026-08-16/17 holdout.",
+  "hypothesis": {
+    "sha256": "49bc145432b187f66c1c1d577dc8fad5b39c93f786e8bb286b20b17e2c6c5dea",
+    "base_definition_sha256": "cbeb17ec5e2bc819fc54e01da0ed8a70bc319cb248d4aa6b225147b56a946f60",
+    "direction": "SHORT",
+    "veto": {
+      "feature": "spot_pressure_10s",
+      "operator": "<=",
+      "threshold": 0.1502250887673838
+    },
+    "booster": null,
+    "primary_outcome": "SHORT MFE >= $100 within 300 seconds"
+  },
+  "inventory": {
+    "all_derived_dates": 212,
+    "first_derived_date": "2025-01-01",
+    "last_derived_date": "2026-07-31",
+    "discovery_input_dates": 212,
+    "independent_dates": [],
+    "independent_day_count": 0,
+    "reserved_holdout_present_but_unopened": [],
+    "reserved_holdout_accessed": false
+  },
+  "minimum_sample_requirement": 100,
+  "total_v2_signals": 0,
+  "signals_per_day": null,
+  "targets_300s": {
+    "25": {
+      "n": 0,
+      "rate": null,
+      "status": "NOT_ESTIMABLE_NO_INDEPENDENT_DATA"
+    },
+    "50": {
+      "n": 0,
+      "rate": null,
+      "status": "NOT_ESTIMABLE_NO_INDEPENDENT_DATA"
+    },
+    "75": {
+      "n": 0,
+      "rate": null,
+      "status": "NOT_ESTIMABLE_NO_INDEPENDENT_DATA"
+    },
+    "100": {
+      "n": 0,
+      "rate": null,
+      "status": "NOT_ESTIMABLE_NO_INDEPENDENT_DATA"
+    },
+    "150": {
+      "n": 0,
+      "rate": null,
+      "status": "NOT_ESTIMABLE_NO_INDEPENDENT_DATA"
+    },
+    "200": {
+      "n": 0,
+      "rate": null,
+      "status": "NOT_ESTIMABLE_NO_INDEPENDENT_DATA"
+    },
+    "300": {
+      "n": 0,
+      "rate": null,
+      "status": "NOT_ESTIMABLE_NO_INDEPENDENT_DATA"
+    },
+    "500": {
+      "n": 0,
+      "rate": null,
+      "status": "NOT_ESTIMABLE_NO_INDEPENDENT_DATA"
+    }
+  },
+  "comparable_short_base_rate": {
+    "n": 0,
+    "rate": null,
+    "status": "NOT_ESTIMABLE_NO_INDEPENDENT_DATA"
+  },
+  "absolute_lift_percentage_points": null,
+  "relative_lift_times": null,
+  "mae_before_100": {
+    "p50": null,
+    "p75": null,
+    "p90": null,
+    "max": null
+  },
+  "time_to_first_positive_s": {
+    "p50": null,
+    "p75": null,
+    "p90": null
+  },
+  "time_to_100_s": {
+    "p50": null,
+    "p75": null,
+    "p90": null
+  },
+  "path_classes": {
+    "IMMEDIATE_CONTINUATION": null,
+    "PULLBACK_THEN_CONTINUATION": null,
+    "WRONG_DIRECTION": null
+  },
+  "veto_audit": {
+    "blocked_signals": null,
+    "blocked_would_have_failed": null,
+    "blocked_would_have_won": null
+  },
+  "discovery_rate": 0.6904761904761905,
+  "oos_rate": null,
+  "oos_base_rate": null,
+  "oos_lift": null,
+  "wilson_95_ci": null,
+  "gates": {
+    "three_signals_per_day": "NOT_EVALUABLE_INSUFFICIENT_DATA",
+    "at_least_65pct_oos": "NOT_EVALUABLE_INSUFFICIENT_DATA",
+    "at_least_70pct_oos": "NOT_EVALUABLE_INSUFFICIENT_DATA"
+  },
+  "veto_replicated": "INSUFFICIENT",
+  "v5_3_fast_v2": "INSUFFICIENT",
+  "next_stage": "Acquire and derive a genuinely post-2026-07-31 period without changing the hypothesis; accumulate at least 100 independent V2 signals before judgment.",
+  "oos_verified": false,
+  "holdout": "CLOSED",
+  "execution": "DISABLED"
+}
