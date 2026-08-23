@@ -40,6 +40,14 @@ def render_panel(path: str | Path, research_path: str | Path | None = None,
 
     snapshot = load_snapshot(path)
     st.markdown("## WAVERUN SHORT TERM")
+    forward_status = load_snapshot(Path(path).parent.parent / "waverun_v5_3_fast_v2_forward" / "status.json")
+    if forward_status:
+        with st.expander("FORWARD V2 VALIDATION", expanded=True):
+            st.caption("PROVISIONAL · NO TRADE ALERT · EXECUTION DISABLED")
+            st.write({key: forward_status.get(key) for key in (
+                "accepted_signals", "resolved_signals", "progress_to_100",
+                "provisional_rate", "last_candidate_timestamp", "recorder_health",
+            )})
     if snapshot is None:
         st.warning("WAVERUN: OFFLINE — kein LIVE-Snapshot vorhanden. Start: scripts\\waverun_live.py")
         return

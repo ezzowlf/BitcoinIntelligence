@@ -25,9 +25,11 @@ from bitcoin_cycle_analyzer.short_term.events import EventType
 from bitcoin_cycle_analyzer.short_term.orderbook import OrderBookState
 from bitcoin_cycle_analyzer.short_term.pressure import (
     completed_bars,
+    macd_features,
     momentum_pressure_state,
 )
 from bitcoin_cycle_analyzer.short_term.storage import ForecastStore
+from bitcoin_cycle_analyzer.short_term.v5_3_forward import ForwardV2Collector
 from bitcoin_cycle_analyzer.waverun_decision import (
     DecisionInput,
     DecisionSignal,
@@ -54,6 +56,8 @@ class LiveSession:
         self.mt5 = MT5MarketDataProvider()
         self.mt5_health = self.mt5.connect()
         self.output.parent.mkdir(parents=True, exist_ok=True)
+        self.v2_forward = ForwardV2Collector(ROOT / "runtime/waverun_v5_3_fast_v2_forward")
+        self._last_v2_bar = None
 
     @staticmethod
     def _append(path: Path, value: dict) -> None:
@@ -75,12 +79,21 @@ class LiveSession:
         if self._last_vantage_time_msc is not None and time_msc <= self._last_vantage_time_msc:
             return
         self._last_vantage_time_msc = time_msc
-        self._append(self.vantage_tick_path, {
+        record = {
             "time_msc": time_msc, "timestamp": pd.Timestamp(tick["timestamp"]).tz_convert("UTC").isoformat(),
             "bid": tick["bid"], "ask": tick["ask"], "last": tick.get("last", 0.0),
             "flags": tick.get("flags", 0), "spread": tick["spread"], "symbol": tick.get("symbol"),
             "source": "MT5_VANTAGE", "execution": "DISABLED",
-        })
+        }
+        self._append(self.vantage_tick_path, record)
+        self.v2_forward.record_vantage_tick(record)
+
+    def _flow_delta(self, market: str, now: datetime) -> float:
+        rows = self.flow_buffer[market]
+        active = [row for row in rows if (now - row[0]).total_seconds() <= 10]
+        buy = sum(row[1] for row in active)
+        sell = sum(row[2] for row in active)
+        return (buy - sell) / (buy + sell) if buy + sell else 0.0
 
     async def _vantage_recorder(self, stop: asyncio.Event) -> None:
         while not stop.is_set():
@@ -170,6 +183,24 @@ class LiveSession:
         self.decision_path.parent.mkdir(parents=True, exist_ok=True)
         decision_record = decision.to_record()
         mt5_quote = self.mt5.tick()
+        self.v2_forward.heartbeat(mt5_quote, self.feed.status())
+        bars30 = completed_bars(frame, 30, asof=pd.Timestamp(received)) if len(self.trade_buffer) >= 10 else pd.DataFrame()
+        if len(bars30) >= 35 and bars30.index[-1] != self._last_v2_bar:
+            self._last_v2_bar = bars30.index[-1]
+            macd = macd_features(bars30["close"])
+            latest = macd.iloc[-1]
+            frozen_inputs = {
+                "macd_30s_cross_direction": float(latest["cross_direction"]),
+                "macd_30s_histogram": float(latest["histogram"]),
+                "macd_30s_histogram_slope": float(latest["histogram_slope"]),
+                "macd_30s_histogram_acceleration": float(latest["histogram_acceleration"]),
+            }
+            self.v2_forward.observe(received, frozen_inputs, self._flow_delta("spot", received), mt5_quote, {
+                "spot_state": self.feed.health["spot"].to_dict(),
+                "futures_state": self.feed.health["futures"].to_dict(),
+                "l2_state": "AVAILABLE" if imbalance is not None else "UNAVAILABLE",
+                "source_health": self.feed.status(),
+            })
         targets = [100, 150, 200, 300, 400, 500]
         adverse = [25, 50, 75, 100, 150]
         horizons = [60, 90, 120, 180, 300, 600]
