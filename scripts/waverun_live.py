@@ -38,7 +38,7 @@ from bitcoin_cycle_analyzer.waverun_decision import (
 
 
 class LiveSession:
-    def __init__(self, output: Path, database: Path, symbol: str):
+    def __init__(self, output: Path, database: Path, symbol: str, mt5_values: dict[str, str] | None = None):
         self.output, self.engine, self.store = output, ShortTermEngine(), ForecastStore(database)
         self.feed = BinancePublicFeed(symbol, include_futures=True)
         self.book = OrderBookState()
@@ -53,7 +53,7 @@ class LiveSession:
         self.trade_buffer = deque(maxlen=200_000)
         self.flow_buffer = {"spot": deque(maxlen=100_000), "futures": deque(maxlen=100_000)}
         self.last_evaluation_second = None
-        self.mt5 = MT5MarketDataProvider()
+        self.mt5 = MT5MarketDataProvider(values=mt5_values)
         self.mt5_health = self.mt5.connect()
         self.output.parent.mkdir(parents=True, exist_ok=True)
         self.v2_forward = ForwardV2Collector(ROOT / "runtime/waverun_v5_3_fast_v2_forward")
@@ -269,9 +269,12 @@ def main():
     parser.add_argument("--symbol", default="btcusdt")
     parser.add_argument("--output", type=Path, default=ROOT / "runtime" / "waverun" / "latest.json")
     parser.add_argument("--database", type=Path, default=ROOT / "database" / "waverun_predictions.db")
+    parser.add_argument("--mt5-enabled", action="store_true", help="enable read-only MT5 market data")
+    parser.add_argument("--mt5-terminal-path", default=r"C:\Program Files\MetaTrader 5\terminal64.exe")
     args = parser.parse_args()
     try:
-        asyncio.run(LiveSession(args.output, args.database, args.symbol).run(args.duration))
+        mt5_values = {"MT5_ENABLED": "true", "MT5_TERMINAL_PATH": args.mt5_terminal_path} if args.mt5_enabled else None
+        asyncio.run(LiveSession(args.output, args.database, args.symbol, mt5_values).run(args.duration))
     except KeyboardInterrupt:
         print("WAVERUN ENGINE STOPPED")
 

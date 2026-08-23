@@ -33,6 +33,8 @@ class MT5MarketDataProvider:
         self._initialized = False
         self.symbol: str | None = None
         self.server_utc_offset_seconds = 0
+        self._last_connect_attempt = 0.0
+        self._reconnect_interval_seconds = 5.0
         if self.backend is None:
             try:
                 import MetaTrader5 as mt5  # type: ignore
@@ -45,6 +47,7 @@ class MT5MarketDataProvider:
         return self.values.get("MT5_TERMINAL_PATH", r"C:\Program Files\MetaTrader 5\terminal64.exe")
 
     def connect(self) -> MT5Health:
+        self._last_connect_attempt = time.monotonic()
         terminal_detected = os.path.isfile(self.terminal_path)
         if self.values.get("MT5_ENABLED", "false").lower() not in {"1", "true", "yes", "on"}:
             return MT5Health("DISABLED", "MT5_ENABLED_FALSE", terminal_detected)
@@ -92,15 +95,24 @@ class MT5MarketDataProvider:
 
     def tick(self) -> dict:
         if not self._initialized or not self.symbol:
-            return {"status": "UNAVAILABLE", "reason": "NOT_CONNECTED"}
+            if time.monotonic() - self._last_connect_attempt < self._reconnect_interval_seconds:
+                return {"status": "UNAVAILABLE", "reason": "RECONNECT_WAIT"}
+            health = self.connect()
+            if health.status != "ONLINE":
+                return {"status": "UNAVAILABLE", "reason": health.reason or health.status}
         tick = self.backend.symbol_info_tick(self.symbol)
         for _ in range(8):
             if tick is not None and float(tick.bid)>0 and float(tick.ask)>=float(tick.bid) and int(tick.time)>0:break
             time.sleep(.25);tick=self.backend.symbol_info_tick(self.symbol)
         if tick is None:
+            self._initialized = False
+            self.symbol = None
             return {"status": "UNAVAILABLE", "reason": "NO_TICK"}
         bid, ask = float(tick.bid), float(tick.ask)
-        if bid<=0 or ask<bid or int(tick.time)<=0:return {"status":"UNAVAILABLE","reason":"INVALID_OR_UNINITIALIZED_TICK"}
+        if bid<=0 or ask<bid or int(tick.time)<=0:
+            self._initialized = False
+            self.symbol = None
+            return {"status":"UNAVAILABLE","reason":"INVALID_OR_UNINITIALIZED_TICK"}
         time_msc = int(getattr(tick, "time_msc", int(tick.time) * 1000) or int(tick.time) * 1000)
         timestamp = self._utc(time_msc / 1000)
         age_seconds=max(0,(pd.Timestamp.now(tz="UTC")-timestamp).total_seconds())
