@@ -36,6 +36,11 @@ def research_dashboard_rows(report: dict, diagnostics: dict) -> dict[str, list[d
 def render_panel(path: str | Path, research_path: str | Path | None = None,
                  diagnostics_path: str | Path | None = None) -> None:
     """Render a DTO-only panel inside the existing Bitcoin Intelligence UI."""
+    from bitcoin_cycle_analyzer.short_term.cockpit import render_cockpit
+
+    render_cockpit(Path(path).resolve().parents[2])
+    return
+
     import streamlit as st
 
     snapshot = load_snapshot(path)

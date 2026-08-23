@@ -1,0 +1,24 @@
+services:
+  web:
+    build: ../..
+    command: ["python", "-m", "streamlit", "run", "dashboard/app.py", "--server.address", "0.0.0.0", "--server.port", "8501", "--server.headless", "true"]
+    environment:
+      WAVERUN_DASHBOARD_PASSWORD_SHA256: ${WAVERUN_DASHBOARD_PASSWORD_SHA256:?required}
+    volumes:
+      - waverun_runtime:/app/runtime
+      - waverun_database:/app/database
+    restart: unless-stopped
+    expose: ["8501"]
+  caddy:
+    image: caddy:2.8-alpine
+    environment:
+      WAVERUN_HOSTNAME: ${WAVERUN_HOSTNAME:?required}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    ports: ["80:80", "443:443"]
+    restart: unless-stopped
+volumes:
+  waverun_runtime:
+  waverun_database:
+  caddy_data:
