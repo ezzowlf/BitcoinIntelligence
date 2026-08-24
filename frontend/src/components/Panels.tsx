@@ -1,4 +1,5 @@
-import type { LiveState } from "../lib/types";
+import { useState } from "react";
+import type { LiveState, PreSignalState } from "../lib/types";
 
 const DIRECTION_CLASS: Record<string, string> = {
   LONG: "long",
@@ -99,6 +100,103 @@ export function ProximityPanel({ state }: { state: LiveState }) {
           </div>
         ))}
       </div>
+    </section>
+  );
+}
+
+/**
+ * The calm default view. Strong colour is reserved for SIGNAL_NAHE/TESTSIGNAL —
+ * everything below that stays neutral so the page does not feel like it is
+ * permanently "almost signalling".
+ */
+export function PreSignalPanel({ state }: { state: LiveState }) {
+  const pre = state.presignal;
+  const loud = pre.state === "SIGNAL_NAHE" || pre.state === "TESTSIGNAL";
+  const tone: Record<PreSignalState, string> = {
+    RUHIG: "calm",
+    BEOBACHTEN: "calm",
+    SETUP_ENTSTEHT: "watch",
+    SIGNAL_NAHE: DIRECTION_CLASS[pre.direction] ?? "watch",
+    TESTSIGNAL: DIRECTION_CLASS[pre.direction] ?? "watch",
+    INVALIDIERT: "calm",
+  };
+  const minutes = Math.floor(pre.seconds_in_state / 60);
+  const since =
+    minutes >= 1 ? `seit ${minutes} min` : `seit ${Math.round(pre.seconds_in_state)} s`;
+
+  return (
+    <section className={`panel presignal ${loud ? "loud" : ""}`}>
+      <h2 className="panel-title">ZUSTAND</h2>
+      <div className="presignal-head">
+        <span className={`state-label ${tone[pre.state] ?? "calm"}`}>{pre.label}</span>
+        <span className="muted">{since}</span>
+      </div>
+      <p className="presignal-headline">{pre.headline}</p>
+      {pre.show_checklist ? (
+        <div className="components">
+          {pre.conditions.map((row) => (
+            <div className={`check ${row.status.toLowerCase()}`} key={row.key}>
+              <span className="mark">{row.status === "MET" ? "✓" : "✗"}</span>
+              <div className="body">
+                <div className="label">{row.label}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : null}
+      <p className="note">
+        Research- und Schatten-Modus. Keine Prognose, keine Handelsempfehlung, Ausführung
+        deaktiviert.
+      </p>
+    </section>
+  );
+}
+
+export function TimelinePanel({ state }: { state: LiveState }) {
+  const events = state.presignal.timeline;
+  return (
+    <section className="panel">
+      <h2 className="panel-title">VERLAUF</h2>
+      {events.length === 0 ? (
+        <p className="empty small">Seit dem Start des Servers gab es keinen Zustandswechsel.</p>
+      ) : (
+        events.map((event) => (
+          <div className="timeline-row" key={`${event.to}-${event.timestamp}`}>
+            <span className="time">
+              {new Date(event.timestamp).toLocaleTimeString("de-DE", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
+            </span>
+            <div className="body">
+              <div className="label">{event.label}</div>
+              <div className="detail">{event.reason}</div>
+            </div>
+          </div>
+        ))
+      )}
+    </section>
+  );
+}
+
+/** Everything numeric and restless lives behind this collapsed section. */
+export function ExpertPanel({ state }: { state: LiveState }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <section className="panel">
+      <button type="button" className="expert-toggle" onClick={() => setOpen((value) => !value)}>
+        <span className="panel-title">EXPERTENMODUS</span>
+        <span className="chev">{open ? "▲" : "▼"}</span>
+      </button>
+      {open ? (
+        <div className="expert-body">
+          <AssessmentPanel state={state} />
+          <ProximityPanel state={state} />
+          <ChecklistPanel state={state} />
+          <MarketDetailPanel state={state} />
+        </div>
+      ) : null}
     </section>
   );
 }

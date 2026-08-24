@@ -13,6 +13,61 @@ export interface SourceRow {
   online: boolean;
 }
 
+export type PreSignalState =
+  | "RUHIG"
+  | "BEOBACHTEN"
+  | "SETUP_ENTSTEHT"
+  | "SIGNAL_NAHE"
+  | "TESTSIGNAL"
+  | "INVALIDIERT";
+
+export type AlertSeverity = "NONE" | "QUIET" | "NORMAL" | "STRONG" | "CRITICAL";
+
+export interface PreSignalCondition {
+  key: string;
+  label: string;
+  status: "MET" | "MISSING";
+}
+
+export interface TimelineEvent {
+  timestamp: string;
+  from: PreSignalState;
+  to: PreSignalState;
+  label: string;
+  reason: string;
+  severity: AlertSeverity;
+}
+
+export interface PreSignal {
+  state: PreSignalState;
+  label: string;
+  direction: string;
+  entered_at: string;
+  seconds_in_state: number;
+  headline: string;
+  severity: AlertSeverity;
+  missing_trigger: string | null;
+  missing_trigger_label: string | null;
+  conditions: PreSignalCondition[];
+  satisfied: string[];
+  missing: string[];
+  pending_state: PreSignalState;
+  pending_ticks: number;
+  show_checklist: boolean;
+  timeline: TimelineEvent[];
+  execution: string;
+}
+
+export interface AlertEvent {
+  id: string;
+  state: PreSignalState;
+  severity: AlertSeverity;
+  sound: boolean;
+  title: string;
+  body: string;
+  timestamp: string;
+}
+
 export interface LiveState {
   server_time: string;
   connection: "LIVE" | "STALE" | "OFFLINE";
@@ -47,6 +102,8 @@ export interface LiveState {
     is_probability: boolean;
   };
   checklist: ChecklistRow[];
+  presignal: PreSignal;
+  alerts: AlertEvent[];
   sources: SourceRow[];
   v5_3: {
     discovery_win_rate: number;
