@@ -21,6 +21,10 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
+from bitcoin_cycle_analyzer.short_term.presignal_state import (
+    Evidence,
+    PreSignalStateMachine,
+)
 from bitcoin_cycle_analyzer.short_term.product import (
     EXECUTION,
     HYPOTHESIS_SHA256,
@@ -328,11 +332,27 @@ def why_no_signal(
     return rows
 
 
+def _candidate_age_seconds(stamp: Any, now: datetime) -> float | None:
+    """Age of the frozen collector's last candidate, or None when there is none."""
+    if not stamp:
+        return None
+    try:
+        parsed = datetime.fromisoformat(str(stamp))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=UTC)
+    return max(0.0, now.timestamp() - parsed.timestamp())
+
+
 class StateReader:
     def __init__(self, root: Path):
         self.root = root
         self.runtime = root / "runtime"
         self.ticks = TickCache(self.runtime / "waverun/vantage_ticks.jsonl")
+        # Pre-signal presentation layer. In-memory, process lifetime only. It reads
+        # the fields below and never feeds anything back into the engine.
+        self.presignal = PreSignalStateMachine()
 
     def snapshot(self) -> dict[str, Any]:
         ticks = self.ticks.refresh()
@@ -406,6 +426,47 @@ class StateReader:
         price = (float(bid) + float(ask)) / 2.0 if bid is not None and ask is not None else None
 
         resolved = int(validation.get("resolved_signals", 0) or 0)
+
+        checklist = why_no_signal(
+            setup_state=setup_state,
+            direction=direction,
+            final_decision=final_decision,
+            flow_agreement=flow_agreement,
+            l2_aligned=l2_aligned,
+            contradictions=list(decision.get("contradictions", []) or []),
+            sources=sources,
+            spread=float(spread) if isinstance(spread, (int, float)) else None,
+            live_state=live_state,
+        )
+
+        # TESTSIGNAL mirrors the frozen V5.3 collector's own last candidate. We only
+        # read its timestamp; candidate selection and veto logic stay untouched.
+        candidate_age = _candidate_age_seconds(validation.get("last_candidate_timestamp"), now)
+        returns = momentum.get("returns") if isinstance(momentum, dict) else None
+        return_60s = None
+        if isinstance(returns, dict):
+            raw_return = returns.get("60", returns.get(60))
+            if isinstance(raw_return, (int, float)):
+                return_60s = float(raw_return)
+
+        presignal = self.presignal.update(
+            Evidence(
+                setup_state=setup_state,
+                direction=direction,
+                pressure=pressure,
+                flow_agreement=flow_agreement,
+                l2_aligned=l2_aligned,
+                return_60s=return_60s,
+                range_expansion=momentum.get("range_expansion") if isinstance(momentum, dict) else None,
+                sources_online=all(source["online"] for source in sources),
+                price_live=live_state == "LIVE",
+                contradictions=tuple(str(item) for item in (decision.get("contradictions") or [])),
+                v5_3_candidate_age_s=candidate_age,
+                v5_3_candidate_accepted=candidate_age is not None
+                and int(validation.get("accepted_signals", 0) or 0) > 0,
+            )
+        )
+
         return {
             "server_time": now.isoformat(),
             "connection": live_state,
@@ -451,17 +512,9 @@ class StateReader:
                 sources_online=sum(1 for s in sources if s["online"]),
                 sources_total=len(sources),
             ),
-            "checklist": why_no_signal(
-                setup_state=setup_state,
-                direction=direction,
-                final_decision=final_decision,
-                flow_agreement=flow_agreement,
-                l2_aligned=l2_aligned,
-                contradictions=list(decision.get("contradictions", []) or []),
-                sources=sources,
-                spread=float(spread) if isinstance(spread, (int, float)) else None,
-                live_state=live_state,
-            ),
+            "checklist": checklist,
+            "presignal": presignal,
+            "alerts": self.presignal.alerts(),
             "sources": sources,
             "v5_3": {
                 "discovery_win_rate": V5_3_DISCOVERY_WIN_RATE,
@@ -536,6 +589,17 @@ def create_app(root: Path | None = None) -> FastAPI:
     @app.get("/api/state")
     def state() -> dict[str, Any]:
         return reader.snapshot()
+
+    @app.get("/api/presignal")
+    def presignal() -> dict[str, Any]:
+        """Pre-signal state plus the deduplicated alert events the UI may announce."""
+        snapshot = reader.snapshot()
+        return {
+            "server_time": snapshot["server_time"],
+            "presignal": snapshot["presignal"],
+            "alerts": snapshot["alerts"],
+            "execution": EXECUTION,
+        }
 
     @app.get("/api/stream")
     async def stream() -> StreamingResponse:
