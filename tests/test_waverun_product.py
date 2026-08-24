@@ -4,6 +4,7 @@ from bitcoin_cycle_analyzer.short_term.product import (
     EXECUTION,
     HYPOTHESIS_SHA256,
     PaperLedger,
+    alert_transition,
     price_frame,
 )
 
@@ -37,3 +38,11 @@ def test_hard_execution_invariant_and_hash():
     assert HYPOTHESIS_SHA256 == "49bc145432b187f66c1c1d577dc8fad5b39c93f786e8bb286b20b17e2c6c5dea"
     source = Path("src/bitcoin_cycle_analyzer/short_term/product.py").read_text(encoding="utf-8")
     assert "order_send" not in source and "order_create" not in source
+
+
+def test_audio_alerts_are_transition_only_and_off_by_default():
+    assert not alert_transition(None, "WATCH", False)
+    assert alert_transition(None, "WATCH", True)
+    assert not alert_transition("WATCH", "WATCH", True)
+    assert alert_transition("WATCH", "ARMED", True)
+    assert not alert_transition("BLOCKED", "BLOCKED", True)

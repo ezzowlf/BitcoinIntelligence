@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import csv
+import io
 import json
 import sqlite3
 from dataclasses import asdict, dataclass
@@ -12,6 +14,11 @@ import pandas as pd
 
 HYPOTHESIS_SHA256 = "49bc145432b187f66c1c1d577dc8fad5b39c93f786e8bb286b20b17e2c6c5dea"
 EXECUTION = "DISABLED"
+
+
+def alert_transition(previous: str | None, current: str, enabled: bool) -> bool:
+    """True only for an enabled transition into an alertable shadow state."""
+    return enabled and previous != current and current in {"WATCH", "ARMED", "SHADOW SIGNAL"}
 
 
 def read_json(path: Path) -> dict[str, Any] | None:
@@ -74,6 +81,33 @@ def price_frame(ticks: list[dict[str, Any]], timeframe: str) -> pd.DataFrame:
     return frame.mid.resample(rule).ohlc().dropna()
 
 
+def performance_summary(papers: list[dict[str, Any]], outcomes: list[dict[str, Any]]) -> dict[str, Any]:
+    """Build a compact, direction-separated paper-vs-shadow comparison."""
+    def group(rows: list[dict[str, Any]], direction: str, shadow: bool = False) -> dict[str, Any]:
+        rows = [row for row in rows if row.get("direction", "SHORT") == direction]
+        if not rows:
+            return {"trades": 0, "win_rate": None, "net_positive_rate": None,
+                    "targets": {str(target): 0 for target in (25, 50, 75, 100)},
+                    "average_mfe": None, "average_mae": None, "median_time_to_green": None,
+                    "median_time_to_100": None, "average_hold_time": None}
+        wins = [row for row in rows if (row.get("target_hits", {}).get("100") if shadow else row.get("reach_100"))]
+        positive = [row for row in rows if row.get("mfe", 0) > 0]
+        targets = {str(target): sum(bool(row.get("target_hits", {}).get(str(target)) if shadow else row.get(f"reach_{target}")) for row in rows) for target in (25, 50, 75, 100)}
+        green_times = [row.get("time_to_first_positive_s") for row in rows if row.get("time_to_first_positive_s") is not None] if shadow else [row.get("time_to_green") for row in rows if row.get("time_to_green") is not None]
+        t100 = [row.get("target_times_s", {}).get("100") for row in rows if row.get("target_times_s", {}).get("100") is not None] if shadow else [row.get("time_to_100") for row in rows if row.get("time_to_100") is not None]
+        holds = [(pd.Timestamp(row.get("resolved_at")) - pd.Timestamp(row["timestamp"])).total_seconds() for row in rows if row.get("resolved_at")] if shadow else [(pd.Timestamp(row["exit_timestamp"]) - pd.Timestamp(row["timestamp"])).total_seconds() for row in rows if row.get("exit_timestamp")]
+        return {"trades": len(rows), "win_rate": len(wins) / len(rows), "net_positive_rate": len(positive) / len(rows),
+                "targets": targets, "average_mfe": sum(row.get("mfe", 0) for row in rows) / len(rows),
+                "average_mae": sum(row.get("mae", 0) for row in rows) / len(rows),
+                "median_time_to_green": float(pd.Series(green_times).median()) if green_times else None,
+                "median_time_to_100": float(pd.Series(t100).median()) if t100 else None,
+                "average_hold_time": sum(holds) / len(holds) if holds else None}
+
+    return {"paper": {direction: group(papers, direction) for direction in ("LONG", "SHORT")},
+            "shadow": {direction: group(outcomes, direction, True) for direction in ("LONG", "SHORT")},
+            "overlap": {"USER + WAVERUN agreed": 0, "USER only": len(papers), "WAVERUN only": len(outcomes)}}
+
+
 @dataclass(frozen=True)
 class PaperEntry:
     direction: str
@@ -104,6 +138,14 @@ class PaperLedger:
               resolved_at TEXT NOT NULL, pnl REAL NOT NULL,
               PRIMARY KEY(position_id,horizon_seconds));
             """)
+            columns = {row[1] for row in db.execute("PRAGMA table_info(paper_positions)")}
+            for target in (25, 50, 75, 100):
+                if f"reach_{target}" not in columns:
+                    db.execute(f"ALTER TABLE paper_positions ADD COLUMN reach_{target} INTEGER NOT NULL DEFAULT 0")
+            if "time_to_green" not in columns:
+                db.execute("ALTER TABLE paper_positions ADD COLUMN time_to_green REAL")
+            if "time_to_100" not in columns:
+                db.execute("ALTER TABLE paper_positions ADD COLUMN time_to_100 REAL")
 
     def open(self, direction: str, note: str, state: dict[str, Any]) -> int:
         tick = state["latest_tick"]
@@ -111,9 +153,11 @@ class PaperLedger:
             raise ValueError("A live Vantage tick and LONG/SHORT are required")
         entry = float(tick["ask"] if direction == "LONG" else tick["bid"])
         decision = state["latest_decision"]
+        snapshot = {"tick": tick, "decision": decision, "validation": state.get("validation", {}),
+                    "hypothesis_sha256": HYPOTHESIS_SHA256}
         item = PaperEntry(direction, note.strip(), tick["timestamp"], float(tick["bid"]),
                           float(tick["ask"]), entry, decision.get("final_decision", "NO TRADE"),
-                          json.dumps(decision, sort_keys=True, default=str))
+                          json.dumps(snapshot, sort_keys=True, default=str))
         with sqlite3.connect(self.path) as db:
             cursor = db.execute("""INSERT INTO paper_positions
               (timestamp,direction,bid,ask,entry,note,waverun_state,features_json,hypothesis_sha256,execution)
@@ -130,9 +174,14 @@ class PaperLedger:
             db.row_factory = sqlite3.Row
             for row in db.execute("SELECT * FROM paper_positions WHERE status='OPEN'").fetchall():
                 pnl = (float(tick["bid"]) - row["entry"]) if row["direction"] == "LONG" else (row["entry"] - float(tick["ask"]))
-                db.execute("UPDATE paper_positions SET mfe=max(mfe,?),mae=max(mae,?) WHERE id=?",
-                           (max(0.0, pnl), max(0.0, -pnl), row["id"]))
                 age = (now - pd.Timestamp(row["timestamp"])).total_seconds()
+                updates = {"mfe": max(row["mfe"], max(0.0, pnl)), "mae": max(row["mae"], max(0.0, -pnl))}
+                for target in (25, 50, 75, 100):
+                    if pnl >= target:
+                        updates[f"reach_{target}"] = 1
+                        updates["time_to_green" if target == 25 else "time_to_100" if target == 100 else "time_to_green"] = age
+                assignment = ",".join(f"{key}=?" for key in updates)
+                db.execute(f"UPDATE paper_positions SET {assignment} WHERE id=?", (*updates.values(), row["id"]))
                 for horizon in horizons:
                     if age >= horizon:
                         db.execute("INSERT OR IGNORE INTO paper_marks VALUES(?,?,?,?)",
@@ -152,6 +201,16 @@ class PaperLedger:
         with sqlite3.connect(self.path) as db:
             db.row_factory = sqlite3.Row
             return [dict(row) for row in db.execute("SELECT * FROM paper_positions ORDER BY id DESC").fetchall()]
+
+    def csv_bytes(self) -> bytes:
+        rows = self.rows()
+        if not rows:
+            return b""
+        output = io.StringIO()
+        writer = csv.DictWriter(output, fieldnames=rows[0].keys())
+        writer.writeheader()
+        writer.writerows(rows)
+        return output.getvalue().encode("utf-8-sig")
 
     @staticmethod
     def live_pnl(row: dict[str, Any], tick: dict[str, Any]) -> float | None:

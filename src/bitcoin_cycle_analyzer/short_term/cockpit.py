@@ -15,6 +15,8 @@ from bitcoin_cycle_analyzer.short_term.product import (
     EXECUTION,
     HYPOTHESIS_SHA256,
     PaperLedger,
+    alert_transition,
+    performance_summary,
     price_frame,
     runtime_state,
 )
@@ -103,7 +105,7 @@ def _render_chart(st, state: dict) -> None:
 def _render_paper(st, ledger: PaperLedger, state: dict) -> None:
     tick = state["latest_tick"]
     ledger.update(tick)
-    note = st.text_input("Optional note", placeholder="MACD looked strong, FVG, news …")
+    note = st.text_input("ADD NOTE", placeholder="MACD looked strong, FVG, news …")
     left, right = st.columns(2)
     if left.button("MARK PAPER LONG", width="stretch", disabled=not bool(tick)):
         st.session_state["paper_id"] = ledger.open("LONG", note, state); st.rerun()
@@ -126,6 +128,7 @@ def _render_paper(st, ledger: PaperLedger, state: dict) -> None:
     if rows:
         display = pd.DataFrame(rows).drop(columns=["features_json"], errors="ignore")
         st.dataframe(display, width="stretch", hide_index=True)
+        st.download_button("EXPORT MANUAL HISTORY CSV", ledger.csv_bytes(), "waverun_manual_history.csv", "text/csv", width="stretch")
     else:
         st.caption("No manual paper positions yet.")
 
@@ -164,8 +167,11 @@ def render_cockpit(root: Path) -> None:
     source_items = [("MT5", vantage), ("BINANCE SPOT", health.get("spot", {}).get("state", "OFFLINE")), ("BINANCE FUTURES", health.get("futures", {}).get("state", "OFFLINE")), ("L2", health.get("spot", {}).get("state", "OFFLINE")), ("FORWARD VALIDATOR", validation.get("recorder_health", "OFFLINE"))]
     st.markdown(" ".join(f"<span class='pill'><i class='health' style='background:var(--{_status_color(v)})'></i>{k}: {v}</span>" for k,v in source_items), unsafe_allow_html=True)
     direction, final, reasons, risks = _decision(state)
+    latest_candidate = state["candidates"][-1] if state["candidates"] else None
+    latest_outcome_ids = {row["candidate_id"] for row in state["outcomes"]}
+    alert_state = "SHADOW SIGNAL" if latest_candidate and latest_candidate.get("accepted") and latest_candidate["candidate_id"] not in latest_outcome_ids else final
     st.markdown(f"<div class='decision-card'><div class='label'>MAIN DECISION</div><div class='decision-main'>{direction} — {final}</div><div class='small'>Research interpretation only. No approved execution state exists.</div></div>", unsafe_allow_html=True)
-    tabs = st.tabs(["LIVE COCKPIT", "FORWARD VALIDATION", "RESEARCH HISTORY", "MANUAL PAPER", "SOURCE HEALTH"])
+    tabs = st.tabs(["LIVE COCKPIT", "FORWARD VALIDATION", "RESEARCH HISTORY", "MANUAL PAPER", "MANUAL PERFORMANCE", "SOURCE HEALTH"])
     with tabs[0]:
         _render_chart(st, state)
         decision = state["latest_decision"]
@@ -208,14 +214,32 @@ def render_cockpit(root: Path) -> None:
     with tabs[3]:
         _render_paper(st, PaperLedger(root / "database/waverun_product.db"), state)
     with tabs[4]:
+        ledger = PaperLedger(root / "database/waverun_product.db")
+        summary = performance_summary(ledger.rows(), state["outcomes"])
+        st.caption("USER PAPER TRADES vs WAVERUN SHADOW SIGNALS · research only")
+        for direction in ("LONG", "SHORT"):
+            st.subheader(direction)
+            columns = st.columns(2)
+            for column, label in zip(columns, ("USER PAPER TRADES", "WAVERUN SHADOW SIGNALS")):
+                item = summary["paper" if label.startswith("USER") else "shadow"][direction]
+                with column:
+                    st.markdown(f"**{label}**")
+                    st.write({"trades": item["trades"], "win rate": item["win_rate"], "net-positive rate": item["net_positive_rate"], "$25/$50/$75/$100 reach": item["targets"], "average MFE": item["average_mfe"], "average MAE": item["average_mae"], "median time to green": item["median_time_to_green"], "median time to $100": item["median_time_to_100"], "average hold time": item["average_hold_time"]})
+        st.subheader("OVERLAP")
+        st.dataframe([{"category": key, "trades": value} for key, value in summary["overlap"].items()], width="stretch", hide_index=True)
+        st.download_button("EXPORT PAPER + SHADOW SUMMARY CSV", pd.DataFrame([{"side": side, "paper_trades": summary["paper"][side]["trades"], "paper_win_rate": summary["paper"][side]["win_rate"], "shadow_trades": summary["shadow"][side]["trades"], "shadow_win_rate": summary["shadow"][side]["win_rate"]} for side in ("LONG", "SHORT")]).to_csv(index=False).encode(), "waverun_performance.csv", "text/csv", width="stretch")
+    with tabs[5]:
         st.subheader("SOURCE HEALTH")
         st.json({"Vantage": vantage, "Binance Spot": health.get("spot", {}), "Binance Futures": health.get("futures", {}), "Forward Validator": {k: validation.get(k) for k in ("recorder_health", "updated_at", "progress_to_100")}}, expanded=True)
         counts = {"Vantage ticks": len(state["ticks"]), "Signals": len(state["candidates"]), "Outcomes": len(state["outcomes"])}
         st.write(counts)
         st.caption(f"Hypothesis hash {HYPOTHESIS_SHA256} · execution {EXECUTION}")
-    audio = st.toggle("Audio alerts", value=False)
-    transition = f"{direction}:{final}"
+    audio = st.toggle("Audio alerts", value=False, key="audio_alerts")
+    test_audio = st.button("TEST AUDIO", key="test_audio")
+    transition = f"{direction}:{alert_state}"
     previous = st.session_state.get("waverun_transition")
-    if audio and previous and previous != transition and final in {"WATCH", "ARMED", "SHADOW SIGNAL"}:
-        st.components.v1.html("<script>new AudioContext().createOscillator()</script>", height=0)
+    if test_audio or alert_transition(previous, alert_state, audio):
+        st.components.v1.html("""<script>
+        const C=window.AudioContext||window.webkitAudioContext; if(C){const c=new C(),o=c.createOscillator(),g=c.createGain();o.frequency.value=740;g.gain.value=.06;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.16)}
+        </script>""", height=0)
     st.session_state["waverun_transition"] = transition

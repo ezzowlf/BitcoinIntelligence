@@ -1,9 +1,16 @@
+param([switch]$Lan)
 $ErrorActionPreference = "Stop"
 $Root = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 $Python = Join-Path $Root ".venv\Scripts\python.exe"
 $Runtime = Join-Path $Root "runtime\services"
 New-Item -ItemType Directory -Force -Path $Runtime | Out-Null
-$env:WAVERUN_LOCAL_TRUSTED = "true"
+if ($Lan) {
+    if (-not $env:WAVERUN_DASHBOARD_PASSWORD_SHA256) { throw "LAN mode requires WAVERUN_DASHBOARD_PASSWORD_SHA256" }
+    $DashboardAddress = "0.0.0.0"
+} else {
+    $env:WAVERUN_LOCAL_TRUSTED = "true"
+    $DashboardAddress = "127.0.0.1"
+}
 
 if (-not (Test-Path $Python)) { throw "WAVERUN Python environment not found: $Python" }
 
@@ -19,4 +26,4 @@ function Start-WaverunProcess {
 }
 
 Start-WaverunProcess "collector" 'scripts\waverun_live.py --output runtime\waverun\latest.json --mt5-enabled --mt5-terminal-path "C:\Program Files\MetaTrader 5\terminal64.exe"'
-Start-WaverunProcess "dashboard" '-m streamlit run dashboard\app.py --server.address 127.0.0.1 --server.port 8501 --server.headless true --browser.gatherUsageStats false'
+Start-WaverunProcess "dashboard" "-m streamlit run dashboard\app.py --server.address $DashboardAddress --server.port 8501 --server.headless true --browser.gatherUsageStats false"
