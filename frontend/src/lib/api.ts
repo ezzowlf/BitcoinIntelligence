@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import type { CandleResponse, LiveState, Timeframe } from "./types";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { AlertEvent, CandleResponse, LiveState, Timeframe } from "./types";
 
 // Single point of contact with the backend. The browser never speaks to MT5,
 // Binance or any exchange directly.
@@ -27,6 +27,83 @@ export function useLiveState(): { state: LiveState | null; status: StreamStatus 
   }, []);
 
   return { state, status };
+}
+
+/** Short sine beep. No audio asset, no autoplay on load — only on a real transition. */
+function beep(strong: boolean) {
+  try {
+    const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!Ctor) return;
+    const ctx = new Ctor();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.value = strong ? 880 : 620;
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(strong ? 0.16 : 0.08, ctx.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.36);
+    osc.onended = () => void ctx.close();
+  } catch {
+    /* audio is a nicety; never let it break the view */
+  }
+}
+
+/**
+ * Announce server-computed alert events exactly once each.
+ *
+ * The server already emits one alert per confirmed transition, so deduplication
+ * here is only about the first stream frame after a reload: everything already
+ * in the buffer at mount is marked as seen and never announced retroactively.
+ * We never call `Notification.requestPermission()` on our own — that needs a
+ * user gesture, exposed via `requestNotifications`.
+ */
+export function useAlertAnnouncer(alerts: AlertEvent[] | undefined, enabled: boolean) {
+  const seen = useRef<Set<string> | null>(null);
+
+  useEffect(() => {
+    if (!alerts) return;
+    if (seen.current === null) {
+      // first frame: adopt history silently
+      seen.current = new Set(alerts.map((alert) => alert.id));
+      return;
+    }
+    if (!enabled) {
+      for (const alert of alerts) seen.current.add(alert.id);
+      return;
+    }
+    // oldest first so a burst is announced in chronological order
+    for (const alert of [...alerts].reverse()) {
+      if (seen.current.has(alert.id)) continue;
+      seen.current.add(alert.id);
+      if (alert.sound) beep(alert.severity === "CRITICAL");
+      if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+        try {
+          new Notification(alert.title, { body: alert.body, tag: alert.id });
+        } catch {
+          /* some browsers require a service worker; silently skip */
+        }
+      }
+    }
+  }, [alerts, enabled]);
+}
+
+export type NotificationPermissionState = "unsupported" | "default" | "granted" | "denied";
+
+export function useNotificationPermission() {
+  const [permission, setPermission] = useState<NotificationPermissionState>(() =>
+    typeof Notification === "undefined" ? "unsupported" : (Notification.permission as NotificationPermissionState),
+  );
+
+  // Only ever called from an explicit click, never on mount.
+  const request = useCallback(async () => {
+    if (typeof Notification === "undefined") return;
+    setPermission((await Notification.requestPermission()) as NotificationPermissionState);
+  }, []);
+
+  return { permission, request };
 }
 
 export async function fetchCandles(timeframe: Timeframe, limit = 1000): Promise<CandleResponse> {

@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { useLiveState } from "./lib/api";
+import { useAlertAnnouncer, useLiveState, useNotificationPermission } from "./lib/api";
 import { PriceChart } from "./components/PriceChart";
 import {
-  AssessmentPanel,
-  ChecklistPanel,
-  MarketDetailPanel,
-  ProximityPanel,
+  ExpertPanel,
+  PreSignalPanel,
   SourcesPanel,
+  TimelinePanel,
   V53Panel,
 } from "./components/Panels";
 import type { LiveState } from "./lib/types";
@@ -76,20 +75,33 @@ function LiveView({ state }: { state: LiveState }) {
   return (
     <>
       {/* Mobile priority order is enforced by the source order below. */}
-      <AssessmentPanel state={state} />
-      <ProximityPanel state={state} />
+      <PreSignalPanel state={state} />
       <div className="grid">
         <div>
           <PriceChart />
         </div>
         <div>
-          <ChecklistPanel state={state} />
+          <TimelinePanel state={state} />
           <SourcesPanel state={state} />
-          <MarketDetailPanel state={state} />
           <V53Panel state={state} />
+          <ExpertPanel state={state} />
         </div>
       </div>
     </>
+  );
+}
+
+/** Opt-in banner. The permission prompt only ever runs from this click. */
+function AlertOptIn() {
+  const { permission, request } = useNotificationPermission();
+  if (permission !== "default") return null;
+  return (
+    <div className="alert-optin">
+      <span>Benachrichtigungen bei echten Zustandswechseln aktivieren?</span>
+      <button type="button" onClick={() => void request()}>
+        Aktivieren
+      </button>
+    </div>
   );
 }
 
@@ -97,11 +109,14 @@ export default function App() {
   const [active, setActive] = useState<NavKey>("LIVE");
   const { state, status } = useLiveState();
   const streamOk = status === "OPEN";
+  // Fires only on server-confirmed state transitions, never on every poll.
+  useAlertAnnouncer(state?.alerts, true);
 
   return (
     <div className="app">
       <Header state={state} streamOk={streamOk} />
       <div className="mode-banner">RESEARCH / SHADOW-MODUS · KEIN ECHTER HANDEL · AUSFÜHRUNG DEAKTIVIERT</div>
+      <AlertOptIn />
       <nav className="nav">
         {NAV.map((item) => (
           <button
