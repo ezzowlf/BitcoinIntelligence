@@ -29,6 +29,7 @@ from bitcoin_cycle_analyzer.short_term.pressure import (
     momentum_pressure_state,
 )
 from bitcoin_cycle_analyzer.short_term.storage import ForecastStore
+from bitcoin_cycle_analyzer.short_term.unverified_live import UnverifiedSignalTracker
 from bitcoin_cycle_analyzer.short_term.v5_3_forward import ForwardV2Collector
 from bitcoin_cycle_analyzer.waverun_decision import (
     DecisionInput,
@@ -57,7 +58,9 @@ class LiveSession:
         self.mt5_health = self.mt5.connect()
         self.output.parent.mkdir(parents=True, exist_ok=True)
         self.v2_forward = ForwardV2Collector(ROOT / "runtime/waverun_v5_3_fast_v2_forward")
+        self.unverified = UnverifiedSignalTracker(self.output.parent)
         self._last_v2_bar = None
+        self._previous_decision = None
 
     @staticmethod
     def _append(path: Path, value: dict) -> None:
@@ -87,6 +90,7 @@ class LiveSession:
         }
         self._append(self.vantage_tick_path, record)
         self.v2_forward.record_vantage_tick(record)
+        self.unverified.record_vantage_tick(record)
 
     def _flow_delta(self, market: str, now: datetime) -> float:
         rows = self.flow_buffer[market]
@@ -234,10 +238,22 @@ class LiveSession:
             "availability": {"mt5": mt5_quote.get("status"), "l2": "AVAILABLE" if imbalance is not None else "UNAVAILABLE",
                              "spot_flow": "AVAILABLE", "futures_flow": "AVAILABLE" if self.flow_buffer["futures"] else "UNAVAILABLE"},
             "cost_state": {"status": "RESEARCH_PROXY", "spread": mt5_quote.get("spread")},
-            "final_decision": decision.decision, "execution": "DISABLED",
+            "final_decision": decision.decision, "decision_state": decision.state,
+            "invalidation_reason": decision.invalidation_reason, "execution": "DISABLED",
         }
         self._append(self.candidate_path, candidate_record)
         self._append(self.decision_path, decision_record)
+        if decision.decision == "ARMED" and self._previous_decision != "ARMED":
+            self.unverified.observe(
+                timestamp=received,
+                direction=decision.direction,
+                quote=mt5_quote,
+                mechanism=decision_record["causal_input"]["signals"],
+                quality=decision.signal_quality,
+                reasons=list(decision.supporting_factors),
+                risks=[decision.invalidation_reason, *decision.contradictions],
+            )
+        self._previous_decision = decision.decision
         persisted_ns = time.perf_counter_ns()
         self._append(self.latency_path, {
             "timestamp": received, "receive_to_features_ms": (features_ready_ns - receive_ns) / 1e6,

@@ -1,8 +1,9 @@
 """Read-only HTTP/SSE API in front of the running WAVERUN engine.
 
-This module never computes signals and never places orders. It reads the files the
+This module never places orders. It reads the files the
 live engine (``scripts/waverun_live.py``) and the frozen V5.3 Fast V2 forward
-collector already persist under ``runtime/`` and republishes them for the web UI.
+collector already persist under ``runtime/`` and derives the documented pre-signal
+presentation state. Confirmed presentation transitions are persisted append-only.
 
 Execution stays DISABLED: no broker, order or trade code path exists here.
 """
@@ -350,9 +351,15 @@ class StateReader:
         self.root = root
         self.runtime = root / "runtime"
         self.ticks = TickCache(self.runtime / "waverun/vantage_ticks.jsonl")
-        # Pre-signal presentation layer. In-memory, process lifetime only. It reads
-        # the fields below and never feeds anything back into the engine.
-        self.presignal = PreSignalStateMachine()
+        # Presentation only: it never feeds anything back into the engine. Persist
+        # transitions so a process restart cannot erase the operational audit trail.
+        self.presignal_events = self.runtime / "waverun/presignal_events.jsonl"
+        self.presignal = PreSignalStateMachine(event_sink=self._persist_presignal_event)
+
+    def _persist_presignal_event(self, event: dict[str, Any]) -> None:
+        self.presignal_events.parent.mkdir(parents=True, exist_ok=True)
+        with self.presignal_events.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(event, sort_keys=True, default=str) + "\n")
 
     def snapshot(self) -> dict[str, Any]:
         ticks = self.ticks.refresh()
@@ -397,7 +404,9 @@ class StateReader:
             },
         ]
 
-        setup_state = str(forecast_snapshot.get("state", "NEUTRAL"))
+        # The decision reducer is the authoritative setup-state source. The
+        # forecast snapshot's NEUTRAL/UP/DOWN state is a different vocabulary.
+        setup_state = str(decision.get("decision_state") or forecast_snapshot.get("state", "NEUTRAL"))
         direction = str(decision.get("direction_bias", "NEUTRAL") or "NEUTRAL")
         final_decision = str(decision.get("final_decision", ""))
         long_score = float(decision.get("long_pressure_score", 0.0) or 0.0)

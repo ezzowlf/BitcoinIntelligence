@@ -107,23 +107,41 @@ def fast_decision(inp: DecisionInput) -> MarketDecision:
     confidence = min(1.0, abs(edge) * min(1.0, len({s.group for s in available}) / 4))
     quality = min(1.0, len({s.group for s in available}) / 4) * (1 - min(1.0, len(contradictions) * .25))
     timing_quality = {"EARLY": 1.0, "MATURE": .7, "LATE": .2, "UNKNOWN": 0.0}.get(inp.timing, 0.0)
-    hard_missing = len(missing) >= 2
-    hard_block = inp.data_quality < .8 or inp.freshness_seconds > 5 or bool(contradictions) or inp.timing in {"LATE", "UNKNOWN"}
+    # UNKNOWN is missing timing information, not adverse evidence. It may never
+    # promote a decision to APPROVED, but it must not erase otherwise coherent
+    # evidence. LATE remains an explicit counterindication.
+    hard_block = inp.data_quality < .8 or inp.freshness_seconds > 5 or bool(contradictions) or inp.timing == "LATE"
     positive_cost_edge = inp.expected_edge_after_cost is not None and inp.expected_edge_after_cost > 0
-    if not available or hard_missing or inp.data_quality <= 0:
+    if not available or inp.data_quality <= 0:
         decision, state = "BLOCKED", "NO_TRADE"
     elif hard_block:
         decision, state = "BLOCKED", "CONFLICTED" if contradictions else "NO_TRADE"
     elif abs(edge) < .25 or len({s.group for s in available}) < 2:
         decision, state = "WATCH", "NEUTRAL"
-    elif not positive_cost_edge or not inp.calibrated:
+    elif missing or inp.timing == "UNKNOWN" or not positive_cost_edge or not inp.calibrated:
         decision, state = "ARMED", "BULLISH" if direction == "LONG" else "BEARISH"
     else:
         decision, state = "APPROVED", "BULLISH" if direction == "LONG" else "BEARISH"
     supporting = tuple(s.explanation for s in available if (direction == "LONG" and _sign(s) > 0) or (direction == "SHORT" and _sign(s) < 0))
     opposing = tuple(s.explanation for s in available if s.explanation not in supporting)
     strongest = max(available, key=lambda s: s.strength).explanation if available else ""
-    invalidation = contradictions[0] if contradictions else ("insufficient calibrated edge after costs" if decision != "APPROVED" else "")
+    if contradictions:
+        invalidation = contradictions[0]
+    elif decision == "BLOCKED" and inp.timing == "LATE":
+        invalidation = "late timing is an explicit counterindication"
+    elif decision == "ARMED":
+        missing_verification = []
+        if inp.timing == "UNKNOWN":
+            missing_verification.append("timing unverified")
+        if missing:
+            missing_verification.append(f"sources unavailable: {', '.join(missing)}")
+        if not positive_cost_edge:
+            missing_verification.append("cost edge unverified")
+        if not inp.calibrated:
+            missing_verification.append("calibration unavailable")
+        invalidation = "LIVE SIGNAL UNVERIFIED: " + ", ".join(missing_verification)
+    else:
+        invalidation = ""
     return MarketDecision(inp.symbol, inp.timestamp, state, decision, direction, confidence, edge, quality, timing_quality,
                           inp.data_quality, inp.regime, supporting, opposing, strongest,
                           opposing[0] if opposing else "", invalidation, tuple(contradictions), inp.freshness_seconds)

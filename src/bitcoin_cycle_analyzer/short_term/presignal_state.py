@@ -18,7 +18,7 @@ Hard boundaries (see the module guardrails in ``web_api.py``):
 
 Evidence groups
 ---------------
-Five independent build-up groups are derived from fields the API already reads:
+Four independent build-up groups are derived from fields the API already reads:
 
 ``richtung``   direction_bias is LONG/SHORT *and* the matching pressure score is
                at least ``PRESSURE_MIN`` (35 of 100). A bias without pressure is
@@ -29,24 +29,28 @@ Five independent build-up groups are derived from fields the API already reads:
 ``futures``    flow_agreement == CONFIRMED (spot and futures order flow point the
                same way).
 ``orderbuch``  the L2 imbalance is aligned with the direction bias.
-``zustand``    the engine's own setup state machine is at WATCH/ARMED/SIGNAL.
-
 Two further conditions are gates on the way into SIGNAL_NAHE only, deliberately
 *not* build-up groups:
 
-``scharf``          the engine's setup state is ARMED or SIGNAL. WATCH alone is a
-                    build-up, never "one condition away from a trigger".
 ``datenqualitaet``  all sources online *and* the Vantage tick is LIVE. This is
                     true in a dead-calm market, so counting it as a build-up
                     group would permanently lift the UI off RUHIG; as a gate it
                     stops stale data from being presented as "nearly triggering".
+``gegenindikation`` no explicit cross-group contradiction is present. Neutral
+                    L2/flow is not a contradiction; it lowers proximity only.
+
+The collector does not persist a WATCH/ARMED/SIGNAL setup state. Earlier code
+mistook ``latest.json.state`` (the forecast's NEUTRAL/UP/DOWN state) for such an
+engine state and therefore made both ``zustand`` and ``scharf`` permanently
+false. Requiring those two aliases made SIGNAL_NAHE unreachable. They are not
+signal evidence and are deliberately absent here.
 
 Raw classification per evaluation
 ---------------------------------
 * fresh accepted V5.3 candidate (age <= ``TESTSIGNAL_MAX_AGE_S``) -> TESTSIGNAL
-* at most one of the seven required conditions missing      -> SIGNAL_NAHE
-* three or more build-up groups satisfied                   -> SETUP_ENTSTEHT
-* one or two build-up groups satisfied                      -> BEOBACHTEN
+* at most one of the six required conditions missing        -> SIGNAL_NAHE
+* two or more build-up groups satisfied                     -> SETUP_ENTSTEHT
+* one build-up group satisfied                              -> BEOBACHTEN
 * none                                                      -> RUHIG
 
 Hysteresis
@@ -63,9 +67,10 @@ from __future__ import annotations
 
 import threading
 from collections import deque
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from typing import Any, Callable
+from typing import Any
 
 # --------------------------------------------------------------------- tuning
 
@@ -87,17 +92,16 @@ STATES = ("RUHIG", "BEOBACHTEN", "SETUP_ENTSTEHT", "SIGNAL_NAHE", "TESTSIGNAL", 
 BUILD_UP_STATES = ("BEOBACHTEN", "SETUP_ENTSTEHT", "SIGNAL_NAHE")
 _RANK = {"RUHIG": 0, "INVALIDIERT": 0, "BEOBACHTEN": 1, "SETUP_ENTSTEHT": 2, "SIGNAL_NAHE": 3, "TESTSIGNAL": 4}
 
-BUILD_UP_GROUPS = ("richtung", "momentum", "futures", "orderbuch", "zustand")
-REQUIRED_CONDITIONS = (*BUILD_UP_GROUPS, "scharf", "datenqualitaet")
+BUILD_UP_GROUPS = ("richtung", "momentum", "futures", "orderbuch")
+REQUIRED_CONDITIONS = (*BUILD_UP_GROUPS, "datenqualitaet", "gegenindikation")
 
 CONDITION_LABELS = {
     "richtung": "Eindeutige Richtung mit Druck",
     "momentum": "Bewegung hat Größe",
     "futures": "Futures bestätigen den Spot",
     "orderbuch": "Orderbuch stützt die Richtung",
-    "zustand": "Engine-Zustand mindestens BEOBACHTUNG",
-    "scharf": "Engine-Zustand SCHARF (ARMED/SIGNAL)",
     "datenqualitaet": "Datenqualität ausreichend",
+    "gegenindikation": "Keine echte Gegenindikation",
 }
 
 # What the user is told is still missing, in the order we blame it.
@@ -106,9 +110,8 @@ MISSING_TEXT = {
     "momentum": "die Größe der Bewegung",
     "futures": "die Futures-Bestätigung",
     "orderbuch": "die Orderbuch-Bestätigung",
-    "zustand": "die Freigabe der Engine",
-    "scharf": "die Scharfschaltung der Engine",
     "datenqualitaet": "eine saubere Datenlage",
+    "gegenindikation": "das Ausbleiben einer echten Gegenindikation",
 }
 
 ALERT_SEVERITY = {
@@ -170,9 +173,8 @@ class Evidence:
             "momentum": momentum,
             "futures": self.flow_agreement == "CONFIRMED",
             "orderbuch": bool(self.l2_aligned),
-            "zustand": self.setup_state in {"WATCH", "ARMED", "SIGNAL"},
-            "scharf": self.setup_state in {"ARMED", "SIGNAL"},
             "datenqualitaet": bool(self.sources_online and self.price_live),
+            "gegenindikation": not self.contradictions,
         }
 
     def is_test_signal(self) -> bool:
@@ -196,7 +198,7 @@ def classify(evidence: Evidence) -> tuple[str, dict[str, bool]]:
     if len(missing) <= 1:
         return "SIGNAL_NAHE", conditions
     satisfied_build = sum(1 for key in BUILD_UP_GROUPS if conditions[key])
-    if satisfied_build >= 3:
+    if satisfied_build >= 2:
         return "SETUP_ENTSTEHT", conditions
     if satisfied_build >= 1:
         return "BEOBACHTEN", conditions
@@ -291,8 +293,13 @@ class PreSignalStateMachine:
     process. History lives for the lifetime of the process only.
     """
 
-    def __init__(self, clock: Callable[[], float] | None = None):
+    def __init__(
+        self,
+        clock: Callable[[], float] | None = None,
+        event_sink: Callable[[dict[str, Any]], None] | None = None,
+    ):
         self._clock = clock or (lambda: datetime.now(UTC).timestamp())
+        self._event_sink = event_sink
         self._lock = threading.Lock()
         now = self._clock()
         self.state = "RUHIG"
@@ -331,6 +338,8 @@ class PreSignalStateMachine:
             "severity": ALERT_SEVERITY[state],
         }
         self._timeline.appendleft(event)
+        if self._event_sink is not None:
+            self._event_sink({**event, "execution": "DISABLED"})
         self._emit_alert(state, now, reason)
 
     def _emit_alert(self, state: str, now: float, reason: str) -> None:

@@ -1,0 +1,1198 @@
+{
+  "window": {
+    "start": "2026-08-24T22:00:00+00:00",
+    "end": "2026-08-25T22:00:00+00:00"
+  },
+  "vantage_ticks": 4933,
+  "vantage_first": "2026-08-24T22:00:00.790000+00:00",
+  "vantage_last": "2026-08-24T23:17:05.221000+00:00",
+  "evaluations": 3797,
+  "directions": {
+    "SHORT": 1645,
+    "LONG": 2152
+  },
+  "raw_state_evaluations": {
+    "BEOBACHTEN": 1490,
+    "SETUP_ENTSTEHT": 2275,
+    "RUHIG": 32
+  },
+  "episodes": [
+    {
+      "setup_id": "20260825-001",
+      "start": "2026-08-24T22:00:10.409212+00:00",
+      "end": "2026-08-24T22:00:58.593547+00:00",
+      "duration_s": 48.184,
+      "direction": "SHORT",
+      "evaluations": 47,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78927.51,
+        "mfe": 70.06999999999243,
+        "mae": -71.91000000000349,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": true,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-002",
+      "start": "2026-08-24T22:01:05.189257+00:00",
+      "end": "2026-08-24T22:05:25.133743+00:00",
+      "duration_s": 259.944,
+      "direction": "LONG",
+      "evaluations": 235,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78884.13,
+        "mfe": 98.33000000000175,
+        "mae": -38.38999999999942,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": true,
+        "hit_75": true,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-003",
+      "start": "2026-08-24T22:05:31.429797+00:00",
+      "end": "2026-08-24T22:06:56.146265+00:00",
+      "duration_s": 84.716,
+      "direction": "LONG",
+      "evaluations": 73,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78957.09,
+        "mfe": 16.44999999999709,
+        "mae": -81.95999999999185,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-004",
+      "start": "2026-08-24T22:07:03.047872+00:00",
+      "end": "2026-08-24T22:08:55.923014+00:00",
+      "duration_s": 112.875,
+      "direction": "SHORT",
+      "evaluations": 95,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78949.3,
+        "mfe": 61.01000000000931,
+        "mae": -20.029999999998836,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": true,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-005",
+      "start": "2026-08-24T22:09:00.261677+00:00",
+      "end": "2026-08-24T22:09:24.183512+00:00",
+      "duration_s": 23.922,
+      "direction": "LONG",
+      "evaluations": 16,
+      "best_missing": [
+        "momentum",
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78934.7,
+        "mfe": -11.289999999993597,
+        "mae": -112.47000000000116,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-006",
+      "start": "2026-08-24T22:09:33.882736+00:00",
+      "end": "2026-08-24T22:10:54.010609+00:00",
+      "duration_s": 80.128,
+      "direction": "LONG",
+      "evaluations": 68,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78934.72,
+        "mfe": -14.60000000000582,
+        "mae": -112.49000000000524,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-007",
+      "start": "2026-08-24T22:10:59.429319+00:00",
+      "end": "2026-08-24T22:11:57.522641+00:00",
+      "duration_s": 58.093,
+      "direction": "SHORT",
+      "evaluations": 43,
+      "best_missing": [
+        "futures",
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78876.85,
+        "mfe": 37.60000000000582,
+        "mae": -51.629999999990105,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-008",
+      "start": "2026-08-24T22:12:11.372907+00:00",
+      "end": "2026-08-24T22:13:37.993804+00:00",
+      "duration_s": 86.621,
+      "direction": "SHORT",
+      "evaluations": 80,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78878.0,
+        "mfe": 38.75,
+        "mae": -53.25999999999476,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-009",
+      "start": "2026-08-24T22:13:50.517103+00:00",
+      "end": "2026-08-24T22:14:20.563651+00:00",
+      "duration_s": 30.047,
+      "direction": "SHORT",
+      "evaluations": 29,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78822.32,
+        "mfe": -16.969999999986612,
+        "mae": -119.46999999998661,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-010",
+      "start": "2026-08-24T22:14:30.735038+00:00",
+      "end": "2026-08-24T22:17:43.593265+00:00",
+      "duration_s": 192.858,
+      "direction": "LONG",
+      "evaluations": 157,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78881.87,
+        "mfe": 42.830000000001746,
+        "mae": -33.080000000001746,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-011",
+      "start": "2026-08-24T22:17:59.138007+00:00",
+      "end": "2026-08-24T22:19:10.302970+00:00",
+      "duration_s": 71.165,
+      "direction": "LONG",
+      "evaluations": 49,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78927.98,
+        "mfe": -3.279999999998836,
+        "mae": -113.30000000000291,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-012",
+      "start": "2026-08-24T22:19:29.140984+00:00",
+      "end": "2026-08-24T22:21:42.688337+00:00",
+      "duration_s": 133.547,
+      "direction": "SHORT",
+      "evaluations": 115,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78905.37,
+        "mfe": 73.66999999999825,
+        "mae": -17.419999999998254,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": true,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-013",
+      "start": "2026-08-24T22:23:14.144065+00:00",
+      "end": "2026-08-24T22:23:40.214307+00:00",
+      "duration_s": 26.07,
+      "direction": "SHORT",
+      "evaluations": 24,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78845.09,
+        "mfe": 77.89999999999418,
+        "mae": -26.620000000009895,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": true,
+        "hit_75": true,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-014",
+      "start": "2026-08-24T22:23:52.310805+00:00",
+      "end": "2026-08-24T22:24:28.480997+00:00",
+      "duration_s": 36.17,
+      "direction": "SHORT",
+      "evaluations": 29,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78822.11,
+        "mfe": 54.919999999998254,
+        "mae": -49.60000000000582,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": true,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-015",
+      "start": "2026-08-24T22:25:06.209609+00:00",
+      "end": "2026-08-24T22:25:40.642337+00:00",
+      "duration_s": 34.433,
+      "direction": "SHORT",
+      "evaluations": 26,
+      "best_missing": [
+        "momentum",
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78835.38,
+        "mfe": 68.19000000000233,
+        "mae": -17.039999999993597,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": true,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-016",
+      "start": "2026-08-24T22:25:58.312795+00:00",
+      "end": "2026-08-24T22:27:07.004979+00:00",
+      "duration_s": 68.692,
+      "direction": "SHORT",
+      "evaluations": 58,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78815.36,
+        "mfe": 48.169999999998254,
+        "mae": -24.319999999992433,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-017",
+      "start": "2026-08-24T22:27:14.509017+00:00",
+      "end": "2026-08-24T22:27:55.406877+00:00",
+      "duration_s": 40.898,
+      "direction": "SHORT",
+      "evaluations": 31,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78753.63,
+        "mfe": -1.6299999999901047,
+        "mae": -86.04999999998836,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-018",
+      "start": "2026-08-24T22:28:11.311422+00:00",
+      "end": "2026-08-24T22:29:05.375997+00:00",
+      "duration_s": 54.065,
+      "direction": "SHORT",
+      "evaluations": 41,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78753.63,
+        "mfe": -1.6299999999901047,
+        "mae": -86.04999999998836,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-019",
+      "start": "2026-08-24T22:29:12.013412+00:00",
+      "end": "2026-08-24T22:29:24.299548+00:00",
+      "duration_s": 12.286,
+      "direction": "SHORT",
+      "evaluations": 12,
+      "best_missing": [
+        "momentum",
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78761.4,
+        "mfe": 6.139999999999418,
+        "mae": -117.47000000000116,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-020",
+      "start": "2026-08-24T22:29:35.712835+00:00",
+      "end": "2026-08-24T22:30:02.652450+00:00",
+      "duration_s": 26.94,
+      "direction": "LONG",
+      "evaluations": 20,
+      "best_missing": [
+        "momentum",
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78790.66,
+        "mfe": 109.83999999999651,
+        "mae": -52.370000000009895,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": true,
+        "hit_75": true,
+        "hit_100": true,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-021",
+      "start": "2026-08-24T22:30:17.918173+00:00",
+      "end": "2026-08-24T22:36:59.517016+00:00",
+      "duration_s": 401.599,
+      "direction": "LONG",
+      "evaluations": 332,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78796.99,
+        "mfe": 103.50999999999476,
+        "mae": -58.70000000001164,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": true,
+        "hit_75": true,
+        "hit_100": true,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-022",
+      "start": "2026-08-24T22:37:15.070427+00:00",
+      "end": "2026-08-24T22:37:37.446256+00:00",
+      "duration_s": 22.376,
+      "direction": "LONG",
+      "evaluations": 20,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78923.38,
+        "mfe": -11.520000000004075,
+        "mae": -131.45000000001164,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-023",
+      "start": "2026-08-24T22:37:43.132303+00:00",
+      "end": "2026-08-24T22:39:03.800529+00:00",
+      "duration_s": 80.668,
+      "direction": "LONG",
+      "evaluations": 60,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78911.6,
+        "mfe": 0.2599999999947613,
+        "mae": -144.52999999999884,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-024",
+      "start": "2026-08-24T22:39:11.819903+00:00",
+      "end": "2026-08-24T22:41:47.575876+00:00",
+      "duration_s": 155.756,
+      "direction": "LONG",
+      "evaluations": 122,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78912.32,
+        "mfe": -17.070000000006985,
+        "mae": -194.61000000000058,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-025",
+      "start": "2026-08-24T22:42:24.207518+00:00",
+      "end": "2026-08-24T22:42:40.393865+00:00",
+      "duration_s": 16.186,
+      "direction": "SHORT",
+      "evaluations": 13,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78768.58,
+        "mfe": 33.85000000000582,
+        "mae": -54.720000000001164,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-026",
+      "start": "2026-08-24T22:42:46.337210+00:00",
+      "end": "2026-08-24T22:43:07.455677+00:00",
+      "duration_s": 21.118,
+      "direction": "SHORT",
+      "evaluations": 20,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78753.39,
+        "mfe": 18.660000000003492,
+        "mae": -69.91000000000349,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-027",
+      "start": "2026-08-24T22:43:11.137406+00:00",
+      "end": "2026-08-24T22:44:46.254625+00:00",
+      "duration_s": 95.117,
+      "direction": "SHORT",
+      "evaluations": 80,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78738.88,
+        "mfe": 4.150000000008731,
+        "mae": -84.41999999999825,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-028",
+      "start": "2026-08-24T22:44:53.634899+00:00",
+      "end": "2026-08-24T22:46:03.303362+00:00",
+      "duration_s": 69.668,
+      "direction": "SHORT",
+      "evaluations": 61,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78757.84,
+        "mfe": -8.980000000010477,
+        "mae": -65.4600000000064,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-029",
+      "start": "2026-08-24T22:46:15.932724+00:00",
+      "end": "2026-08-24T22:46:48.433743+00:00",
+      "duration_s": 32.501,
+      "direction": "SHORT",
+      "evaluations": 28,
+      "best_missing": [
+        "momentum",
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78783.97,
+        "mfe": 9.309999999997672,
+        "mae": -44.80000000000291,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-030",
+      "start": "2026-08-24T22:46:57.704133+00:00",
+      "end": "2026-08-24T22:47:25.121380+00:00",
+      "duration_s": 27.417,
+      "direction": "LONG",
+      "evaluations": 23,
+      "best_missing": [
+        "momentum",
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78803.35,
+        "mfe": 8.439999999987776,
+        "mae": -45.7100000000064,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-031",
+      "start": "2026-08-24T22:47:38.587885+00:00",
+      "end": "2026-08-24T22:50:21.054954+00:00",
+      "duration_s": 162.467,
+      "direction": "LONG",
+      "evaluations": 132,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78801.55,
+        "mfe": 10.239999999990687,
+        "mae": -59.33999999999651,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-032",
+      "start": "2026-08-24T22:50:27.537270+00:00",
+      "end": "2026-08-24T22:51:04.462304+00:00",
+      "duration_s": 36.925,
+      "direction": "LONG",
+      "evaluations": 37,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78821.58,
+        "mfe": 10.14999999999418,
+        "mae": -79.36999999999534,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-033",
+      "start": "2026-08-24T22:51:50.049578+00:00",
+      "end": "2026-08-24T22:52:00.156076+00:00",
+      "duration_s": 10.106,
+      "direction": "SHORT",
+      "evaluations": 10,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78778.99,
+        "mfe": 64.19000000000233,
+        "mae": -69.7899999999936,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": true,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-034",
+      "start": "2026-08-24T22:52:06.016979+00:00",
+      "end": "2026-08-24T22:54:45.018434+00:00",
+      "duration_s": 159.001,
+      "direction": "SHORT",
+      "evaluations": 134,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78759.12,
+        "mfe": 44.31999999999243,
+        "mae": -89.66000000000349,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-035",
+      "start": "2026-08-24T22:55:13.952280+00:00",
+      "end": "2026-08-24T22:57:32.353450+00:00",
+      "duration_s": 138.401,
+      "direction": "SHORT",
+      "evaluations": 103,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78761.08,
+        "mfe": 46.279999999998836,
+        "mae": -17.110000000000582,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-036",
+      "start": "2026-08-24T22:57:42.898132+00:00",
+      "end": "2026-08-24T22:58:10.025250+00:00",
+      "duration_s": 27.127,
+      "direction": "LONG",
+      "evaluations": 26,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78754.91,
+        "mfe": -0.8200000000069849,
+        "mae": -109.16999999999825,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-037",
+      "start": "2026-08-24T22:58:22.214780+00:00",
+      "end": "2026-08-24T22:59:16.296220+00:00",
+      "duration_s": 54.081,
+      "direction": "LONG",
+      "evaluations": 36,
+      "best_missing": [
+        "momentum",
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78748.4,
+        "mfe": 5.690000000002328,
+        "mae": -134.40999999998894,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-038",
+      "start": "2026-08-24T22:59:35.520407+00:00",
+      "end": "2026-08-24T23:01:22.065609+00:00",
+      "duration_s": 106.545,
+      "direction": "LONG",
+      "evaluations": 93,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78751.22,
+        "mfe": 2.8699999999953434,
+        "mae": -137.22999999999593,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-039",
+      "start": "2026-08-24T23:01:32.266253+00:00",
+      "end": "2026-08-24T23:03:02.502453+00:00",
+      "duration_s": 90.236,
+      "direction": "LONG",
+      "evaluations": 80,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78729.13,
+        "mfe": 19.64999999999418,
+        "mae": -115.13999999999942,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-040",
+      "start": "2026-08-24T23:03:07.657357+00:00",
+      "end": "2026-08-24T23:05:31.156584+00:00",
+      "duration_s": 143.499,
+      "direction": "SHORT",
+      "evaluations": 127,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78617.0,
+        "mfe": -13.990000000005239,
+        "mae": -148.8000000000029,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-041",
+      "start": "2026-08-24T23:05:35.867692+00:00",
+      "end": "2026-08-24T23:06:18.159196+00:00",
+      "duration_s": 42.292,
+      "direction": "LONG",
+      "evaluations": 41,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78748.5,
+        "mfe": 65.52000000000407,
+        "mae": -34.88000000000466,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": true,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-042",
+      "start": "2026-08-24T23:06:30.131367+00:00",
+      "end": "2026-08-24T23:06:37.259498+00:00",
+      "duration_s": 7.128,
+      "direction": "SHORT",
+      "evaluations": 8,
+      "best_missing": [
+        "momentum",
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78721.93,
+        "mfe": -8.75,
+        "mae": -109.07000000000698,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-043",
+      "start": "2026-08-24T23:07:12.417841+00:00",
+      "end": "2026-08-24T23:07:49.250882+00:00",
+      "duration_s": 36.833,
+      "direction": "SHORT",
+      "evaluations": 31,
+      "best_missing": [
+        "momentum",
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78721.19,
+        "mfe": -9.489999999990687,
+        "mae": -109.80999999999767,
+        "complete_5m": true,
+        "hit_25": false,
+        "hit_50": false,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-044",
+      "start": "2026-08-24T23:07:55.616129+00:00",
+      "end": "2026-08-24T23:08:16.455572+00:00",
+      "duration_s": 20.839,
+      "direction": "LONG",
+      "evaluations": 21,
+      "best_missing": [
+        "momentum",
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78736.4,
+        "mfe": 77.6200000000099,
+        "mae": -18.369999999995343,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": true,
+        "hit_75": true,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-045",
+      "start": "2026-08-24T23:08:31.489892+00:00",
+      "end": "2026-08-24T23:14:21.621830+00:00",
+      "duration_s": 350.132,
+      "direction": "LONG",
+      "evaluations": 303,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78739.08,
+        "mfe": 74.94000000000233,
+        "mae": -17.04000000000815,
+        "complete_5m": true,
+        "hit_25": true,
+        "hit_50": true,
+        "hit_75": false,
+        "hit_100": false,
+        "hit_150": false,
+        "hit_200": false
+      }
+    },
+    {
+      "setup_id": "20260825-046",
+      "start": "2026-08-24T23:14:45.628626+00:00",
+      "end": "2026-08-24T23:15:11.202055+00:00",
+      "duration_s": 25.573,
+      "direction": "SHORT",
+      "evaluations": 25,
+      "best_missing": [
+        "momentum",
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78716.87,
+        "mfe": -17.10000000000582,
+        "mae": -86.19000000000233,
+        "complete_5m": false,
+        "hit_25": null,
+        "hit_50": null,
+        "hit_75": null,
+        "hit_100": null,
+        "hit_150": null,
+        "hit_200": null
+      }
+    },
+    {
+      "setup_id": "20260825-047",
+      "start": "2026-08-24T23:15:20.276005+00:00",
+      "end": "2026-08-24T23:15:49.242885+00:00",
+      "duration_s": 28.967,
+      "direction": "LONG",
+      "evaluations": 26,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78773.37,
+        "mfe": 12.700000000011642,
+        "mae": -23.84999999999127,
+        "complete_5m": false,
+        "hit_25": null,
+        "hit_50": null,
+        "hit_75": null,
+        "hit_100": null,
+        "hit_150": null,
+        "hit_200": null
+      }
+    },
+    {
+      "setup_id": "20260825-048",
+      "start": "2026-08-24T23:16:04.117388+00:00",
+      "end": "2026-08-24T23:17:06.123143+00:00",
+      "duration_s": 62.006,
+      "direction": "LONG",
+      "evaluations": 50,
+      "best_missing": [
+        "zustand",
+        "scharf"
+      ],
+      "outcome": {
+        "entry": 78775.59,
+        "mfe": 10.480000000010477,
+        "mae": -16.94999999999709,
+        "complete_5m": false,
+        "hit_25": null,
+        "hit_50": null,
+        "hit_75": null,
+        "hit_100": null,
+        "hit_150": null,
+        "hit_200": null
+      }
+    }
+  ],
+  "episode_count": 48,
+  "missing_condition_buckets": {
+    "2": 36,
+    "3": 12
+  },
+  "only_missing": {},
+  "complete_5m_episodes": 45,
+  "target_hits_5m": {
+    "25": 20,
+    "50": 13,
+    "75": 5,
+    "100": 2
+  }
+}

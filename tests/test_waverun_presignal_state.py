@@ -34,13 +34,13 @@ def machine() -> tuple[PreSignalStateMachine, FakeClock]:
 
 CALM = Evidence(setup_state="NEUTRAL", direction="NEUTRAL", pressure=0.0, flow_agreement="NEUTRAL")
 
-WATCHING = Evidence(setup_state="WATCH", direction="SHORT", pressure=10.0, flow_agreement="NEUTRAL")
+WATCHING = Evidence(setup_state="WATCH", direction="SHORT", pressure=40.0, flow_agreement="NEUTRAL")
 
 BUILDING = Evidence(
     setup_state="WATCH",
     direction="SHORT",
     pressure=60.0,
-    flow_agreement="CONFIRMED",
+    flow_agreement="NEUTRAL",
     return_60s=-0.0009,
     range_expansion=1.9,
 )
@@ -92,6 +92,35 @@ def test_data_quality_alone_never_lifts_the_ui_off_ruhig():
     assert conditions["datenqualitaet"] is True
     assert not any(conditions[key] for key in BUILD_UP_GROUPS)
     assert state == "RUHIG"
+
+
+def test_forecast_neutral_does_not_duplicate_block_signal_near():
+    evidence = Evidence(
+        setup_state="NEUTRAL",
+        direction="SHORT",
+        pressure=70.0,
+        flow_agreement="CONFIRMED",
+        l2_aligned=True,
+        return_60s=-0.0012,
+    )
+    state, conditions = classify(evidence)
+    assert state == "SIGNAL_NAHE"
+    assert "zustand" not in conditions
+    assert "scharf" not in conditions
+
+
+def test_explicit_contradiction_is_a_gate_but_neutral_l2_is_soft():
+    assert classify(NEARLY)[0] == "SIGNAL_NAHE"
+    contradicted = Evidence(
+        setup_state="NEUTRAL",
+        direction="SHORT",
+        pressure=70.0,
+        flow_agreement="CONFIRMED",
+        l2_aligned=None,
+        return_60s=-0.0012,
+        contradictions=("cross-group directional conflict",),
+    )
+    assert classify(contradicted)[0] == "SETUP_ENTSTEHT"
 
 
 # ------------------------------------------------------------------ hysteresis
@@ -208,8 +237,19 @@ def test_alerts_fire_once_per_transition_only():
     drive(sm, clock, NEARLY, 30)
     states = [alert["state"] for alert in sm.alerts()]
     assert states == ["SIGNAL_NAHE", "SETUP_ENTSTEHT", "BEOBACHTEN"]
-    assert len(set(alert["id"] for alert in sm.alerts())) == 3
+    assert len({alert["id"] for alert in sm.alerts()}) == 3
     assert sm.alerts()[0]["sound"] is True
+
+
+def test_transition_sink_is_append_only_and_transition_scoped():
+    events = []
+    clock = FakeClock()
+    sm = PreSignalStateMachine(clock=clock, event_sink=events.append)
+    drive(sm, clock, WATCHING, 20)
+    assert [event["to"] for event in events] == ["BEOBACHTEN"]
+    assert events[0]["execution"] == "DISABLED"
+    drive(sm, clock, BUILDING, 20)
+    assert [event["to"] for event in events] == ["BEOBACHTEN", "SETUP_ENTSTEHT"]
 
 
 def test_ruhig_never_produces_an_alert():
@@ -247,6 +287,9 @@ def test_api_exposes_presignal_and_keeps_proximity(tmp_path):
     dedicated = client.get("/api/presignal").json()
     assert dedicated["execution"] == "DISABLED"
     assert dedicated["presignal"]["state"] == payload["presignal"]["state"]
+    event_path = tmp_path / "runtime/waverun/presignal_events.jsonl"
+    # Calm snapshots do not manufacture transition records.
+    assert not event_path.exists()
 
 
 @pytest.mark.parametrize("state", ["RUHIG", "BEOBACHTEN", "SETUP_ENTSTEHT", "SIGNAL_NAHE", "TESTSIGNAL"])
