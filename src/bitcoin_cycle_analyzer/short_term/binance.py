@@ -9,6 +9,25 @@ from .events import MarketEvent, normalize_binance_message
 from .health import FeedHealth
 
 
+def _recoverable_feed_errors() -> tuple[type[BaseException], ...]:
+    """Errors that must trigger a reconnect instead of killing the collector.
+
+    ``websockets`` raises ``ConnectionClosed`` / ``ConnectionClosedOK`` /
+    ``ConnectionClosedError`` on a normal network drop. None of these inherit from
+    ``OSError`` or ``RuntimeError``, so without listing them here a routine
+    disconnect would propagate through ``asyncio.gather`` and stop the feed (B-1).
+    """
+
+    errors: tuple[type[BaseException], ...] = (OSError, RuntimeError)
+    try:  # optional dependency, mirrors _run_connection
+        from websockets.exceptions import ConnectionClosed, WebSocketException
+
+        errors = (*errors, ConnectionClosed, WebSocketException)
+    except ImportError:
+        pass
+    return errors
+
+
 class BinancePublicFeed:
     """Optional-dependency WebSocket feed. It has no private/trading endpoints."""
 
@@ -35,6 +54,7 @@ class BinancePublicFeed:
 
     async def _run_market(self, url, market, callback, started, duration_seconds):
         delay = 1.0
+        recoverable = _recoverable_feed_errors()
         while not self._stop and (duration_seconds is None or asyncio.get_running_loop().time() - started < duration_seconds):
             try:
                 remaining = None if duration_seconds is None else max(0.1, duration_seconds - (asyncio.get_running_loop().time() - started))
@@ -47,7 +67,7 @@ class BinancePublicFeed:
                 raise
             except TimeoutError:
                 return
-            except (OSError, RuntimeError) as exc:
+            except recoverable as exc:
                 self.health[market].disconnect(type(exc).__name__)
                 await asyncio.sleep(delay)
                 delay = min(self.max_reconnect_delay, delay * 2)
