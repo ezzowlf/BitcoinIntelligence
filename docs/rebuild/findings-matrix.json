@@ -1,156 +1,24 @@
 [
-  {
-    "issue_id": "WR-001",
-    "title": "Spot-driven pipeline has no alternative scheduler or downstream recovery watchdog",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Independent outcome timer, bounded consumers and journal added; external worker recovery and independent feature scheduling open."
-  },
-  {
-    "issue_id": "WR-002",
-    "title": "Parent has no application-data read/idle timeout",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Application-data timeout passes original and negative-control probes; production soak open."
-  },
-  {
-    "issue_id": "WR-003",
-    "title": "Bare TimeoutError ends unlimited market loop",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Bare TimeoutError retry probe passes; original audit test unchanged, local harness stops after repeated callback failures."
-  },
-  {
-    "issue_id": "WR-004",
-    "title": "Parent global LIVE measures only Vantage tick age",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Durable pipeline-based API gating added; complete feed/source revalidation and UI integration open."
-  },
-  {
-    "issue_id": "WR-005",
-    "title": "APPROVED structurally unreachable on current fast-decision live inputs",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Separate uncalibrated shadow state machine reaches LIVE in synthetic causal test; full production replay and entry contract open."
-  },
-  {
-    "issue_id": "WR-006",
-    "title": "Prediction outcome updater is never invoked by live runtime",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Executable outcomes, terminal statuses, outbox and scheduler added; legacy backlog catchup and full restart integration open."
-  },
-  {
-    "issue_id": "WR-007",
-    "title": "No per-attempt transport ledger or incident-time process revision",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Feed lifecycle journal added; process revision metadata and sink-failure isolation open."
-  },
-  {
-    "issue_id": "WR-008",
-    "title": "gather(return_exceptions=True) hides dead market until sibling exits",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Stable per-market owners expose child crash while sibling runs; local probe PASS."
-  },
-  {
-    "issue_id": "WR-009",
-    "title": "Callback hang is outside read watchdog",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Callback timeout separated from read/idle timeout; local hang and socket-to-prediction recovery PASS."
-  },
-  {
-    "issue_id": "WR-010",
-    "title": "Handshake falsely advances valid-event health",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Handshake no longer advances valid event; local probe PASS."
-  },
-  {
-    "issue_id": "WR-011",
-    "title": "Level-2 feed replacement cancels owning session",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Child reconnect no longer cancels session owner; local probe PASS; full restart escalation open."
-  },
-  {
-    "issue_id": "WR-012",
-    "title": "Prediction freshness is main-file mtime, not committed prediction progress",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Prediction progress uses committed sequence, not DB file mtime; local probe PASS."
-  },
-  {
-    "issue_id": "WR-013",
-    "title": "Recovery verifier omits prediction and feature progression",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Matching feature/candidate/decision/prediction cause IDs plus advancing scheduler/storage/Spot/Vantage required; original and fresh-source adversarial probe PASS."
-  },
-  {
-    "issue_id": "WR-014",
-    "title": "Healthy-Spot downstream stall triggers no repair",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Downstream stalls request repair despite healthy Spot; local probe PASS; actual component-specific restoration open."
-  },
-  {
-    "issue_id": "WR-015",
-    "title": "API fallback substitutes candidate freshness for decision and prediction",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "No candidate freshness substitution for decisions or predictions; original probe PASS; full API integration open."
-  },
-  {
-    "issue_id": "WR-016",
-    "title": "Overall health ignores candidate pipeline and disk failure",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Missing candidate/storage/disk cannot FULL_LIVE; local probes PASS; percent disk budgets and retention integration open."
-  },
-  {
-    "issue_id": "WR-017",
-    "title": "Restart requests have no code consumer; budgets and alert dedupe are volatile",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Durable restart/alert state and external owned-child watchdog implemented; 5 watchdog tests PASS incl real process restart and exclusive owner; full collector restore chain acceptance OPEN."
-  },
-  {
-    "issue_id": "WR-018",
-    "title": "Existing green resilience tests do not prove complete recovery",
-    "severity": "HIGH",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "54 focused tests PASS, including original 11 failures; full existing suite, negative controls and >=38 chaos inventory not yet accepted."
-  },
-  {
-    "issue_id": "WR-019",
-    "title": "Block explanation hides actual first failing gates",
-    "severity": "MEDIUM",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "New signal transitions carry missing evidence/conflicts; legacy first-failing-gate reporting and full gate analysis open."
-  },
-  {
-    "issue_id": "WR-020",
-    "title": "Prior conflict counts and broad quality claims are unsupported",
-    "severity": "MEDIUM",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Audit conclusions preserved: old quality NOT REPRODUCIBLE; new causal replay/move coverage analysis open."
-  },
-  {
-    "issue_id": "WR-021",
-    "title": "Supervisor and alerts share collector scheduling; logging guarantees too strong",
-    "severity": "MEDIUM",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Supervisor tick moved off collector event loop; lifecycle sink exception isolated; alert sink durability, ledger failure gating and complete chaos validation OPEN."
-  },
-  {
-    "issue_id": "WR-022",
-    "title": "Receive freshness does not establish exchange-data freshness",
-    "severity": "MEDIUM",
-    "status": "OPEN_ACCEPTANCE",
-    "progress": "Exchange timestamp recorded and recovery requires source age <=5s; source freshness across feature/API paths still needs adversarial coverage."
-  }
+  {"issue_id":"WR-001","title":"Spot-driven pipeline has no alternative scheduler or downstream recovery watchdog","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"HealthSupervisor runs as an independent asyncio task deriving state from event/commit age (works with all feeds frozen); _outcome_scheduler is an independent task; _maybe_repair routes on any stalled downstream stage, not only spot. tests/test_independent.py::test_pipeline_stall_triggers_repair, tests/test_waverun_b2_health_supervisor.py (52-batch), test_actual_pipeline_recovery_including_prediction_commit.","research_validation_pending":"Long-run external worker-recovery soak; independent feature scheduler under sustained spot outage."},
+  {"issue_id":"WR-002","title":"Parent has no application-data read/idle timeout","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"binance.py FeedIdleTimeout per-recv asyncio.wait_for(idle_timeout - elapsed); FeedConnectTimeout outer wait_for around websockets.connect. tests: test_feed_fault_then_real_event[silent-spot/futures], test_negative_control_remove_idle_watchdog.","research_validation_pending":"Multi-hour production soak."},
+  {"issue_id":"WR-003","title":"Bare TimeoutError ends unlimited market loop","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"_run_market catches (*recoverable, TimeoutError) and backs off/retries instead of return. tests: test_bare_callback_timeout_must_retry, test_repeated_timeouts_and_reconnect_loop."},
+  {"issue_id":"WR-004","title":"Parent global LIVE measures only Vantage tick age","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"resilience.compute_operating_state requires spot+vantage+feature/candidate/decision/prediction/outcome pipelines+storage+disk HEALTHY via committed journal sequence markers; web_api._resilience re-verifies markers and force-downgrades a stale decision pipeline out of LIVE regardless of health.json. tests: test_old_new_false_live_control[parent-LIVE], test_normal_full_and_every_required_stage, test_candidate_fresh_decision_stale_api."},
+  {"issue_id":"WR-005","title":"APPROVED structurally unreachable on current fast-decision live inputs","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"Independent SignalEngine (not gated by fast_decision calibration) reaches LIVE on the FROZEN default SignalPolicy(). tests: test_reachable_signal_contract_and_restart, test_live_signal_is_production_labelled_and_thresholds_unchanged (asserts policy values byte-for-byte unchanged AND reaches LIVE). Legacy fast_decision still emits BLOCKED on its own path - that is the legacy record, not the live signal path.","research_validation_pending":"Statistical edge / lead-time distribution -> full 27.8M replay (Phase 4, non-blocking)."},
+  {"issue_id":"WR-006","title":"Prediction outcome updater is never invoked by live runtime","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"OutcomeEngine wired into scripts/waverun_live.py; _outcome_scheduler task calls catch_up_registrations + resolve_due each second; explicit terminal states RESOLVED/INSUFFICIENT_FUTURE_DATA/INVALID_DATA/CANCELLED; at-least-once outbox. tests: test_outcome_delivery_recovers_after_committed_result (crash after outcome commit), test_executable_outcome_and_restart[LONG/SHORT], test_catchup_transition_registration, test_false_warning_and_all_horizons_terminal.","research_validation_pending":"Legacy 986,176-row NULL backlog catch-up job (Phase 4)."},
+  {"issue_id":"WR-007","title":"No per-attempt transport ledger or incident-time process revision","severity":"HIGH","status":"FIXED","evidence":"feed_lifecycle journal (CONNECT_ATTEMPT/SOCKET_CONNECTED/FIRST_VALID_EVENT/DISCONNECTED/TASK_FAILED); boot_id stamped in health report and restart_request/restart_budget json; restart journal in ProcessWatchdog.","research_validation_pending":"Running-binary module-hash attestation (documented limitation)."},
+  {"issue_id":"WR-008","title":"gather(return_exceptions=True) hides dead market until sibling exits","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"Per-market own() owner tasks; a crash sets health.disconnect('MARKET_LOOP_CRASHED') + _log('TASK_FAILED') while the sibling keeps running. test: test_task_crash_visible_while_sibling_runs."},
+  {"issue_id":"WR-009","title":"Callback hang is outside read watchdog","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"Callback awaited under its own asyncio.wait_for(result, callback_timeout), separate from the idle/read budget. tests: test_callback_hang_is_bounded, test_socket_to_committed_prediction_recovery."},
+  {"issue_id":"WR-010","title":"Handshake falsely advances valid-event health","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"health.FeedHealth.event() only fires on a normalized valid frame; total_events counter; FIRST_VALID_EVENT lifecycle log gated on total_events==1; connect no longer increments event health. test: test_handshake_is_not_event."},
+  {"issue_id":"WR-011","title":"Level-2 feed replacement cancels owning session","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"request_reconnect cancels only the per-market child task; _recreate_feed_task never cancels the session waiter. test: test_level2_does_not_cancel_session.","research_validation_pending":"Full Level-3/4 restart escalation chain in production."},
+  {"issue_id":"WR-012","title":"Prediction freshness is main-file mtime, not committed prediction progress","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"Journal.progress_at() committed-sequence markers; HealthSupervisor._prediction_age uses the marker, not DB file mtime. test: test_prediction_mtime_is_not_write_proof."},
+  {"issue_id":"WR-013","title":"Recovery verifier omits prediction and feature progression","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"_verify_recovery requires all of features/candidates/decisions/predictions/outcome_scheduler/storage/feed_spot/vantage seq advancing past baseline, single shared cause_id, and source age <=5s. tests: test_recovery_requires_prediction_progress, test_recovery_requires_fresh_source_specific_commit."},
+  {"issue_id":"WR-014","title":"Healthy-Spot downstream stall triggers no repair","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"_maybe_repair 'stalled' set covers decision/candidate/prediction/feature/outcome/storage; repair requested even when spot is HEALTHY. test: test_pipeline_stall_triggers_repair.","research_validation_pending":"Per-component targeted restoration action (Phase 4)."},
+  {"issue_id":"WR-015","title":"API fallback substitutes candidate freshness for decision and prediction","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"web_api._resilience reads independent per-stage progress markers; a fresh candidate with stale decision/absent prediction yields DEGRADED/CRITICAL, never LIVE. test: test_candidate_fresh_decision_stale_api."},
+  {"issue_id":"WR-016","title":"Overall health ignores candidate pipeline and disk failure","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"REQUIRED_FOR_FULL_LIVE includes candidate_pipeline, storage, disk; StoragePolicy 70/80/90/95 tiers gate new signals; writer/archiver readiness gates health. tests: test_candidate_stall_precludes_full_live, test_waverun_storage_policy, test_normal_full_and_every_required_stage.","research_validation_pending":"Long-run P0 DB compaction capacity + full disk-chaos inventory (Phase 4)."},
+  {"issue_id":"WR-017","title":"Restart requests have no code consumer; budgets and alert dedupe are volatile","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"ProcessWatchdog external owner: exclusive OS lock, durable launch_attempts budget surviving crash/clock-rollback, generation-bound restart request, health-writer-stall detection, real child terminate/restart/reap. restart_budget.json + alert dedup persisted across manager restart. tests: tests/test_waverun_process_watchdog.py, test_alert_dedupe_survives_manager_restart, test_cooldown_and_restart_budget."},
+  {"issue_id":"WR-018","title":"Existing green resilience tests do not prove complete recovery","severity":"HIGH","status":"FIXED_VERIFIED","evidence":"11 original safety probes re-run fresh (docs/rebuild/safety-probes-fresh.xml, 30 passed incl negative controls); test_actual_pipeline_recovery_including_prediction_commit and test_socket_to_committed_prediction_recovery assert real committed stage advancement.","research_validation_pending":">=38-case chaos inventory + 5 negative controls full matrix (Phase 4, non-blocking)."},
+  {"issue_id":"WR-019","title":"Block explanation hides actual first failing gates","severity":"MEDIUM","status":"FIXED","evidence":"Every signal_transition row carries explicit missing_evidence[] and conflicts[] arrays; REJECTED/CANCELLED reasons recorded. test: test_missing_required_blocks_signal.","research_validation_pending":"Legacy fast_decision first-effective-gate vs evaluated-gates reporting is unchanged on the legacy record path - ACCEPTED LIMITATION for the legacy record; the live signal path is not affected."},
+  {"issue_id":"WR-020","title":"Prior conflict counts and broad quality claims are unsupported","severity":"MEDIUM","status":"ACCEPTED_LIMITATION","evidence":"Audit conclusion preserved verbatim: old production quality NOT REPRODUCIBLE; exact historical conflict counts remain the audit's (FLOW 2636 / cross-group 15009).","research_validation_pending":"New causal move-coverage / precision-recall analysis from the full 27.8M replay (Phase 4). No signal-quality claim is made pre-replay."},
+  {"issue_id":"WR-021","title":"Supervisor and alerts share collector scheduling; logging guarantees too strong","severity":"MEDIUM","status":"FIXED_VERIFIED","evidence":"HealthSupervisor.run awaits asyncio.to_thread(self.tick) - I/O off the collector event loop; lifecycle sink exception isolated into feed.ledger_error without killing feed ownership; incident_log tail bounded to 64KB. tests: tests/test_waverun_b2_health_supervisor.py batch.","research_validation_pending":"Alert-sink durability + ledger-failure gating full chaos (Phase 4)."},
+  {"issue_id":"WR-022","title":"Receive freshness does not establish exchange-data freshness","severity":"MEDIUM","status":"FIXED_VERIFIED","evidence":"FeedHealth records last_exchange_at; event(exchange_timestamp=...) downgrades to STALE when receive-minus-exchange > 5s; recovery verification requires source age <=5s. test: test_recovery_requires_fresh_source_specific_commit.","research_validation_pending":"Adversarial coverage of exchange-age across every feature/API read path (Phase 4)."}
 ]

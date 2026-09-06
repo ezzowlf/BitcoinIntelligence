@@ -642,3 +642,28 @@ main {
 .alert-optin button:hover {
   border-color: var(--accent);
 }
+
+/* B-2 resilience: degraded / recovering / critical operating-state banner */
+.degraded-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+  align-items: baseline;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--line);
+}
+.degraded-banner.warn {
+  background: #3a2f00;
+  color: #ffd666;
+}
+.degraded-banner.critical {
+  background: #3a0d0d;
+  color: #ff9c9c;
+}
+.degraded-banner strong {
+  letter-spacing: 0.05em;
+}
+.degraded-banner .banner-detail {
+  opacity: 0.85;
+}

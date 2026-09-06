@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useAlertAnnouncer, useLiveState, useNotificationPermission } from "./lib/api";
+import { useLiveState, useNotificationPermission, useSignalAudio } from "./lib/api";
+import { ShadowSignalPanel } from "./components/ShadowSignalPanel";
 import { PriceChart } from "./components/PriceChart";
 import {
   ExpertPanel,
@@ -23,7 +24,7 @@ type NavKey =
 const NAV: Array<{ key: NavKey; label: string; ready: boolean }> = [
   { key: "LIVE", label: "LIVE", ready: true },
   { key: "CHART", label: "CHART", ready: true },
-  { key: "SIGNALE", label: "SIGNALE", ready: false },
+  { key: "SIGNALE", label: "SIGNALE", ready: true },
   { key: "MEINE_ZONEN", label: "MEINE ZONEN", ready: false },
   { key: "PAPER_TRADING", label: "PAPER TRADING", ready: false },
   { key: "AUSWERTUNG", label: "AUSWERTUNG", ready: false },
@@ -32,14 +33,58 @@ const NAV: Array<{ key: NavKey; label: string; ready: boolean }> = [
 ];
 
 const CONNECTION_LABEL: Record<string, string> = {
-  LIVE: "LIVE",
+  LIVE: "FULL LIVE",
+  STARTING: "STARTET",
+  DEGRADED: "DEGRADIERT",
+  RECOVERING: "RECOVERY LÄUFT",
+  CRITICAL: "KRITISCH",
   STALE: "VERZÖGERT",
   OFFLINE: "OFFLINE",
 };
 
+function connDot(connection: string, streamOk: boolean): string {
+  if (!streamOk || connection === "OFFLINE" || connection === "CRITICAL") return "offline";
+  if (connection === "DEGRADED" || connection === "RECOVERING" || connection === "STALE" || connection === "STARTING")
+    return "warn";
+  return "online";
+}
+
+function DegradedBanner({ state }: { state: LiveState }) {
+  const conn = state.connection;
+  if (conn === "LIVE") return null;
+  const health = state.health;
+  const bad = health
+    ? Object.values(health.components).filter(
+        (c) => !["HEALTHY", "CONNECTED", "LIVE", "IDLE_FEED_DOWN"].includes(c.state.toUpperCase()),
+      )
+    : [];
+  const dpAge = health?.decision_pipeline_age_seconds;
+  return (
+    <div className={`degraded-banner ${conn === "CRITICAL" ? "critical" : "warn"}`} role="alert">
+      <strong>{CONNECTION_LABEL[conn] ?? conn}</strong>
+      <span>
+        {conn === "CRITICAL"
+          ? "Mindestdatenbasis für neue Decisions fehlt. Auto-Recovery aktiv."
+          : "Mindestens eine Quelle/Pipeline ist gestört. Auto-Recovery aktiv."}
+      </span>
+      {bad.length > 0 && (
+        <span className="banner-detail">
+          Betroffen: {bad.map((c) => `${c.key}=${c.state}`).join(" · ")}
+        </span>
+      )}
+      {typeof dpAge === "number" && dpAge > 120 && (
+        <span className="banner-detail">Decision-Pipeline seit {Math.round(dpAge)}s ohne neue Records.</span>
+      )}
+      {health && health.recovery.level > 0 && (
+        <span className="banner-detail">Recovery-Level: {health.recovery.level}</span>
+      )}
+    </div>
+  );
+}
+
 function Header({ state, streamOk }: { state: LiveState | null; streamOk: boolean }) {
   const connection = state?.connection ?? "OFFLINE";
-  const dotClass = !streamOk || connection === "OFFLINE" ? "offline" : connection === "STALE" ? "warn" : "online";
+  const dotClass = connDot(connection, streamOk);
   const price = state?.price.mid;
   return (
     <header className="header">
@@ -75,7 +120,8 @@ function LiveView({ state }: { state: LiveState }) {
   return (
     <>
       {/* Mobile priority order is enforced by the source order below. */}
-      <PreSignalPanel state={state} />
+      <ShadowSignalPanel state={state} />
+      <details><summary>Historische Vorstufenansicht</summary><PreSignalPanel state={state} /></details>
       <div className="grid">
         <div>
           <PriceChart />
@@ -110,13 +156,15 @@ export default function App() {
   const { state, status } = useLiveState();
   const streamOk = status === "OPEN";
   // Fires only on server-confirmed state transitions, never on every poll.
-  useAlertAnnouncer(state?.alerts, true);
+  const audio = useSignalAudio(state?.shadow_signal, streamOk);
 
   return (
     <div className="app">
       <Header state={state} streamOk={streamOk} />
       <div className="mode-banner">RESEARCH / SHADOW-MODUS · KEIN ECHTER HANDEL · AUSFÜHRUNG DEAKTIVIERT</div>
+      {state ? <DegradedBanner state={state} /> : null}
       <AlertOptIn />
+      <div className="alert-optin"><span>Signalton für neue PREWARNING- und LIVE-Übergänge</span><button type="button" aria-pressed={audio.enabled} onClick={audio.toggle}>{audio.enabled ? "Ton ausschalten" : "Ton aktivieren"}</button></div>
       <nav className="nav">
         {NAV.map((item) => (
           <button
@@ -143,6 +191,8 @@ export default function App() {
           <LiveView state={state} />
         ) : active === "CHART" ? (
           <PriceChart />
+        ) : active === "SIGNALE" ? (
+          <ShadowSignalPanel state={state} />
         ) : active === "DATENQUELLEN" ? (
           <SourcesPanel state={state} />
         ) : (

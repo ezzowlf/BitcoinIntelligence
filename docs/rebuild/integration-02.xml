@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="2" failures="0" skipped="0" tests="2" time="2.037" timestamp="2026-09-06T23:27:34.468237+02:00" hostname="Djaezzo"><testcase classname="" name="tests.test_independent" time="0.000"><error message="collection failure">..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\_pytest\python.py:508: in importtestmodule
+    mod = import_path(
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\_pytest\pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.runtime\python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1395: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\_pytest\assertion\rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests\test_independent.py:20: in &lt;module&gt;
+    import waverun_live
+E     File "C:\Users\djaez\.codex\worktrees\9b72\Bitcoin\scripts\waverun_live.py", line 403
+E       self.feed=BinancePublicFeed(self.feed.symbol,include_futures=True,separate_l2=True)
+E                                                                                          ^
+E   IndentationError: unindent does not match any outer indentation level</error></testcase><testcase classname="" name="tests.test_extended" time="0.000"><error message="collection failure">..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\_pytest\python.py:508: in importtestmodule
+    mod = import_path(
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\_pytest\pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.runtime\python313\Lib\importlib\__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1395: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\_pytest\assertion\rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests\test_extended.py:1: in &lt;module&gt;
+    from test_independent import (asyncio,json,sys,datetime,UTC,timedelta,Path,pytest,BinancePublicFeed,ComponentHealth,CONFIG,HealthSupervisor,waverun_live,_FakeWebsockets)
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\_pytest\assertion\rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests\test_independent.py:20: in &lt;module&gt;
+    import waverun_live
+E     File "C:\Users\djaez\.codex\worktrees\9b72\Bitcoin\scripts\waverun_live.py", line 403
+E       self.feed=BinancePublicFeed(self.feed.symbol,include_futures=True,separate_l2=True)
+E                                                                                          ^
+E   IndentationError: unindent does not match any outer indentation level</error></testcase></testsuite></testsuites>

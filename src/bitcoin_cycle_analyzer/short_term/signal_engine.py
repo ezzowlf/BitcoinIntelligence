@@ -40,7 +40,7 @@ class SignalEngine:
         a=self.active;p=self.policy;previous=a['state'];a['state']=state
         bid,ask=f.get('bid'),f.get('ask');sign=1 if a['direction']=='LONG' else -1
         entry=ask if sign==1 else bid
-        row={'setup_id':a['setup_id'],'timestamp':t.isoformat(),'state_from':previous,'state_to':state,'direction':a['direction'],'reasons':list(reasons),'evidence':f,'missing_evidence':list(missing),'conflicts':list(conflicts),'market_regime':f.get('regime','UNKNOWN'),'feed_health':f.get('feed_health',{}),'feature_version':p.feature_version,'signal_version':p.version,'confidence':None,'calibration_status':'UNCALIBRATED_RESEARCH','mode':'SHADOW','execution':'DISABLED','expected_move_class':p.target_usd,'expected_start_window':[(t+timedelta(seconds=60)).isoformat(),(t+timedelta(seconds=300)).isoformat()],'expected_horizon':p.horizon_seconds,'entry_zone':[bid,ask],'vantage_executable_side':'ASK' if sign==1 else 'BID','invalidation':a.get('invalidation'),'why_now':list(reasons),'expires_at':a['expires_at'],'synthetic':bool(f.get('synthetic',False))}
+        row={'setup_id':a['setup_id'],'timestamp':t.isoformat(),'state_from':previous,'state_to':state,'direction':a['direction'],'reasons':list(reasons),'evidence':f,'missing_evidence':list(missing),'conflicts':list(conflicts),'market_regime':f.get('regime','UNKNOWN'),'feed_health':f.get('feed_health',{}),'feature_version':p.feature_version,'signal_version':p.version,'confidence':None,'calibration_status':'UNCALIBRATED','mode':'LIVE','execution':'DISABLED','expected_move_class':p.target_usd,'expected_start_window':[(t+timedelta(seconds=60)).isoformat(),(t+timedelta(seconds=300)).isoformat()],'expected_horizon':p.horizon_seconds,'entry_zone':[bid,ask],'vantage_executable_side':'ASK' if sign==1 else 'BID','invalidation':a.get('invalidation'),'why_now':list(reasons),'expires_at':a['expires_at'],'synthetic':bool(f.get('synthetic',False))}
         transition_id=identity(a['setup_id'],state)
         if state in {'CANDIDATE','PREWARNING','ARMED','LIVE'}:a[state.lower()+'_at']=t.isoformat()
         self.journal.append('signal_transition',transition_id,t,row,stage='signal_transition',cause_id=f.get('cause_id',transition_id),state_updates={'active_setup':a,'last_signal_transition':row})
@@ -93,7 +93,7 @@ class SignalEngine:
         return row
 
     def snapshot(self):
-        return {'state':self.active['state'] if self.active else 'OBSERVING','setup':self.active,'signal':self.last_transition,'policy':asdict(self.policy),'confidence':None,'execution':'DISABLED','mode':'SHADOW'}
+        return {'state':self.active['state'] if self.active else 'OBSERVING','setup':self.active,'signal':self.last_transition,'policy':asdict(self.policy),'confidence':None,'execution':'DISABLED','mode':'LIVE'}
 
     def tick(self,timestamp):
         """Expire without new market callbacks; LIVE remains until a terminal outcome."""

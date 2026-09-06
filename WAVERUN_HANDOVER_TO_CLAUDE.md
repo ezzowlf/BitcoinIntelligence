@@ -1,48 +1,62 @@
 # WAVERUN handover to Claude
 
-Updated UTC: 2026-09-06T21:11:29.446312+00:00
+Updated UTC: 2026-09-06T21:30:55.359944+00:00
 Branch: `codex/waverun-final-rebuild`
-HEAD at last refresh: `98afecbbabca81c85667645f32329badb24fd0e3`. Always run `git rev-parse HEAD` for current HEAD (documentation commits may follow).
+HEAD at refresh: `5f32403` (run `git rev-parse HEAD` for any subsequent documentation commit).
 Base: `fd0319e07189ca04108d3b253372271f571d62ed`
 Workspace: `C:\Users\djaez\.codex\worktrees\9b72\Bitcoin`
-Python: `C:\Users\djaez\Documents\ChatGPT\Bitcoin\.venv\Scripts\python.exe`
 
-**EXECUTION DISABLED. LOCAL GATE NOT REACHED. DO NOT DEPLOY. VPS NOT MODIFIED OR INSPECTED DURING REBUILD.**
-Target from user: 207.180.245.205. Current VPS status NOT VERIFIED; rollback not applicable yet.
+**EXECUTION DISABLED. LOCAL GATE NOT REACHED. VPS UNCHANGED. DO NOT DEPLOY.**
+Target 207.180.245.205; no VPS connection/inspection during rebuild, current production state NOT VERIFIED; no rollback needed yet.
 
-## Resume without redoing basic audit
+## Read first
 
-Read WAVERUN_ASTRA_FINAL_REBUILD_REPORT.md, WAVERUN_REMEDIATION_DESIGN.md, docs/rebuild/findings-matrix.json and docs/rebuild/safety-probe-matrix.json. Binding full master attachment: C:\Users\djaez\.codex\attachments\9b87401a-5743-40e5-bba6-4980cbe948a6\pasted-text.txt. The user still wants the ENTIRE rebuild and gated deployment, not just this checkpoint.
+Master: `C:\Users\djaez\.codex\attachments\9b87401a-5743-40e5-bba6-4980cbe948a6\pasted-text.txt` (70 sections). User still requires ENTIRE rebuild and gated deployment plus >=24h observation. Handover requirement does not reduce acceptance criteria.
+Binding audit: WAVERUN_CODEX_FULL_PRODUCTION_ANALYSIS.md + WAVERUN_CODEX_FINDINGS.json (immutable, locally untracked); do not rerun completed entrance checks or regenerate audit/build_report.py.
+Current phase/history: WAVERUN_ASTRA_FINAL_REBUILD_REPORT.md. Live matrices: docs/rebuild/findings-matrix.json (22) and safety-probe-matrix.json (11). No whole-system finding finally closed; all OPEN_ACCEPTANCE, local evidence listed individually. All11 original safety failures currently pass.
 
-Completed: immutable production audit; reviewed design; first tested journal/archive commit; 54 focused tests PASS including all original 11 failed probes. Formal findings closed: none at whole-system acceptance level. All 22 remain OPEN_ACCEPTANCE with detailed local implementation evidence in matrix. Last fully completed phase: verified lossless archive foundation (4 standalone cases PASS, real100k benchmark PASS). Current phase: resilience/outcomes/signal integration, incomplete and mostly uncommitted.
+## Commits / completed phases
 
-Implemented working changes: stable per-market feed owners, separate L2 transport, bounded callback/idle/retry handling, durable causal progress, no handshake event spoof, source-specific recovery, SQLite outcome/outbox and forecast mirror cursor, versioned shadow signal states, independent expiry/outcome scheduler, move-first labels with gap rejection, bounded raw writer and verified Parquet/ZSTD manifests. These still need integration acceptance; full list of defects/open work in report.
+- 6052c28: durable journal / verified Parquet-ZSTD archive foundation; 4 archive tests PASS, real100k benchmark 23.30x exact roundtrip PASS.
+- b8779bd + 82d85e3: report/matrices/handover and honest failure evidence.
+- 98afecb: external owned-child watchdog, persistent budget, exclusive OS lock, boot-bound requests, stale-health detection; 5 PASS including real child restart/reaping.
+- a539a34: two known baseline Master test assumptions replaced with explicit test inputs. Frozen production code untouched; 42 Master/API PASS.
+- 9950628: conservative disk tiers/retention/event pins/pending-outcome floor; 7 PASS.
+Last completed validation: integrated archive/storage isolation 13 PASS; main integration 91 PASS. Backend integration foundation is now committed at 5f32403; frontend work remains uncommitted WIP.
 
-Known latest failed test rebuild-03 was source freshness budget misuse (53/1); fixed and rebuild-04 all54 PASS. Earlier tests failed Windows rb fsync and callback idle accounting; fixed. Current remaining known code issues: external restart consumer absent; sync supervisor/alerts; lifecycle sink exceptions; automatic retention/disk tiers absent; legacy outcome backlog/registration crash gaps; feature quote timestamp consistency; UI incomplete; full suite/causal replay/chaos coverage not yet run. Never promote focused PASS to local acceptance.
+## Current process / tests
 
-Evidence: docs/rebuild/ contains sanitized committed summaries/XML; ignored rebuild_artifacts/ has complete intermediate logs/sample benchmark data. Immutable audit originals and code clones in audit/; do NOT edit clones or regenerate audit report.
+Full03 COMPLETED: 570 PASS, 0 FAIL/ERROR/SKIP in196.10s. Evidence docs/rebuild/full-03.xml; backend baseline committed5f32403. Do not repeat unchanged full suite. Source hash snapshot: rebuild_artifacts/full-03-source-fingerprint.json.
+Full01: 501 PASS/13 FAIL/42 ERROR, missing historic DB fixtures. Four previously audited fixture DBs copied READONLY via SQLite backup into ignored database/; old locally generated DBs backed up in rebuild_artifacts/full_suite_fixture_backup, provenance full-suite-fixture-provenance.json.
+Full02: 558 PASS/3 FAIL: two audited baseline Master fixture defects and one candidate-only stale fixture; corrected. Focused rerun42 PASS. Integration02 collection IndentationError fixed; integration03 all91 PASS. Archive slow-compression/failure isolation +storage policy all13 PASS. No hidden skipped probes.
 
-## Exact next commands (PowerShell)
+## Implemented working architecture
+
+Stable independent Spot/Futures/L2 owners; bounded connect/read/valid-event/callback/retry budgets; source-specific committed progress; true recovery matches feature/candidate/decision/prediction causes and fresh advancing Spot/Vantage. Journal and outcome outbox with forecast cursor; independent expiry/outcome scheduler; versioned uncalibrated shadow signal states and executable-side outcomes; move-first labels reject quote gaps. Raw ingestion and compression have separate bounded threads; verified manifests, storage readiness/disk gate and event-window pins wired. Supervisor I/O off event loop; external watchdog boot wiring added. Old696a57a diff was copied as implementation input, not accepted release.
+
+## Still open (do not claim accepted)
+
+1. End-to-end watchdog/service recovery, worker hangs/task exits/MT5 recovery, boot revision metadata, persistent ledger-error gating across restarts.
+2. Alert outbox/delivery independence/reminders and P0 rotation/compaction; archive retention capacity long-run. All compressed raw archives currently retained, P0 never auto deleted.
+3. Legacy prediction backlog and candidate registration crash gaps; causal quote/source timestamps, feature completeness/derivatives/windows, move definition and event pin timestamps. New policy uncalibrated, no edge claim.
+4. Dashboard full signal/stage contract, true health, opt-in PREWARNING/LIVE sounds with durable dedup; frontend build/E2E.
+5. All >=38 specified chaos cases, 5 negative controls, complete production chronological replay, gate/missed-move/lead/outcome metrics, no winner tuning. Frozen V5.3/holdout untouched.
+6. Complete report/matrices and local acceptance. Only then VPS inventory/backups/accepted commit deployment/live verification/24h observation.
+
+## Exact continuation
 
 ```powershell
 Set-Location 'C:\Users\djaez\.codex\worktrees\9b72\Bitcoin'
 git branch --show-current
 git rev-parse HEAD
 git status --short
+Get-Content rebuild_artifacts/full-03.log -Tail 35
 $env:PYTHONDONTWRITEBYTECODE='1'
 $env:TELEGRAM_ENABLED='false'
 $env:MT5_ENABLED='false'
-& 'C:\Users\djaez\Documents\ChatGPT\Bitcoin\.venv\Scripts\python.exe' -m pytest tests/test_waverun_archive.py tests/test_waverun_rebuild.py tests/test_independent.py tests/test_extended.py -q -p no:cacheprovider --basetemp=rebuild_artifacts/resume_tmp --junitxml=rebuild_artifacts/resume.xml --tb=short
+# Only after prior run completes and new changes justify rerun:
+& 'C:\Users\djaez\Documents\ChatGPT\Bitcoin\.venv\Scripts\python.exe' -m pytest -q -p no:cacheprovider --basetemp=rebuild_artifacts/resume_tmp --junitxml=rebuild_artifacts/resume.xml --tb=short
 ```
 
-Next implement external watchdog plus actual component restoration and source freshness integration; add adversarial process-level tests. Then full suite using fresh basetemp/JUnit before further release decisions. Preserve original negative controls under audit/parent and audit/candidate. Full replay inputs: `C:\Users\djaez\Documents\TAKEOFF\Exports\exports\WAVERUN_FULL_TRANSFER_20260906_132904`, especially 04_market_events_full/market_events.jsonl, 05_vantage/vantage_ticks.jsonl, 08_candidates_decisions and 03_databases. All read-only. Full raw27,812,107 rows already entrance-verified. Historical quality NOT REPRODUCIBLE. No winner optimization; frozen V5.3 and closed holdout untouched.
-
-Commit only finished tested source units and reports; keep incomplete source on disk. Update report/matrices/handover after each phase. Never stage broad directories containing runtime/data/secrets. The Git common metadata is outside writable root, so approved git add/commit may need require_escalated. No push or VPS until applicable gates and master authorization steps.
-
-## Latest checkpoint (supersedes older open-work wording above)
-
-External watchdog foundation is now committed as 98afecb, five tests PASS; scripts/waverun_watchdog.py is the intended eventual service entry point. OS lock prevents duplicate owners; only owned child is killed; generation-specific requests and persistent restart budget work. Runtime HealthSupervisor boot-ID wiring and to_thread tick are working-tree changes, not complete accepted recovery.
-
-Full suite first run: 501 PASS / 13 FAIL / 42 ERROR. Most empty-frame errors lacked historical test DBs. Four audited test fixtures now exist locally in ignored database/; provenance and backups in rebuild_artifacts/. Integration rerun: 83 PASS /1 FAIL, component-health reconciliation bug fixed afterward. Full suite second run RUNNING: `rebuild_artifacts/full-02.log`, `full-02.xml`, tool session 86483 if still alive. First action: inspect completion, do not relaunch duplicate tests. Then finish source/ledger/storage gating and recovery chain. All old11 probes passed in last54 focused run; subsequent changes require regression rerun.
-
-Reports and 22/11 matrices persisted and committed at b8779bd; update them after full suite result. Latest known accepted implementation commits: 6052c28 archive foundation, 98afecb process-owner foundation. Most integration/signal/outcome/frontend changes remain intentional uncommitted WIP. Local gate NOT REACHED, VPS untouched, EXECUTION DISABLED.
+Next: finish frontend shadow contract and opt-in audio; npm ci --ignore-scripts completed locally, frontend not yet built/tested. Then continue unfinished acceptance work above. Update reports/matrices/handover after every phase, explicit source staging only (Git metadata outside sandbox may require escalation). Do not commit secrets, runtime, databases, raw benchmark data, production snapshot or audit code clones.
+Replay source READONLY: `C:\Users\djaez\Documents\TAKEOFF\Exports\exports\WAVERUN_FULL_TRANSFER_20260906_132904` (04_market_events_full,05_vantage,08_candidates_decisions,03_databases). Original27,812,107 market rows already verified. Historical quality NOT REPRODUCIBLE, exact transport trigger INCONCLUSIVE. No deployment before local gate.

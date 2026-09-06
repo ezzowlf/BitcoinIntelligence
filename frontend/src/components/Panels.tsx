@@ -235,6 +235,32 @@ export function SourcesPanel({ state }: { state: LiveState }) {
           </span>
         </div>
       ))}
+      {state.health ? (
+        <>
+          <h2 className="panel-title" style={{ marginTop: "0.75rem" }}>PIPELINE</h2>
+          {(["decision_pipeline", "prediction_persistence", "candidate_pipeline"] as const).map((key) => {
+            const c = state.health!.components[key];
+            if (!c) return null;
+            const ok = ["HEALTHY", "CONNECTED", "IDLE_FEED_DOWN"].includes(c.state.toUpperCase());
+            return (
+              <div className="row" key={key}>
+                <span>
+                  <span className={`dot ${ok ? "online" : "offline"}`} style={{ marginRight: ".5rem" }} />
+                  {key.replace(/_/g, " ")}
+                </span>
+                <span className="value" style={{ color: ok ? "var(--long)" : "var(--short)" }}>
+                  {c.state}
+                  {typeof c.age_seconds === "number" ? ` · ${Math.round(c.age_seconds)}s` : ""}
+                </span>
+              </div>
+            );
+          })}
+          <p className="note">
+            Betriebszustand: {state.health.operating_state ?? state.connection}
+            {state.health.reasons?.length ? ` — ${state.health.reasons.join("; ")}` : ""}
+          </p>
+        </>
+      ) : null}
       <p className="note">Rohstatus der Engine: {state.sources.map((s) => `${s.label}=${s.state}`).join(" · ")}</p>
     </section>
   );

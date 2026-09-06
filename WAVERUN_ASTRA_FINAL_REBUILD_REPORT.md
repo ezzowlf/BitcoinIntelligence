@@ -97,3 +97,21 @@ Updated UTC: 2026-09-06T21:19:49.575498+00:00. HEAD: `98afecbbabca81c85667645f32
 - Integration 01: 83 PASS / 1 FAIL (47.98s). Genuine API inconsistency: old decision record forced unhealthy overall label while component still HEALTHY from journal. Fixed component reconciliation; awaiting rerun.
 - Full suite 02 is RUNNING, log rebuild_artifacts/full-02.log, JUnit rebuild_artifacts/full-02.xml. Do not claim PASS until process completion and XML inspection.
 - Next concrete step: inspect full-02 failures, then finish source/ledger/disk health and actual restart recovery acceptance. Frozen math remains unchanged. Local gate NOT REACHED; VPS unchanged; execution DISABLED.
+
+## Checkpoint: fixture corrections and integrated storage isolation
+
+Updated UTC: 2026-09-06T21:30:55.359944+00:00; HEAD at checkpoint `9950628399f449f4678a4849e8bf79a3e57d6aab`.
+
+- Full suite 02: 558 PASS / 3 FAIL in 186.40s. Two known audited baseline failures were fixture assumptions (current market always ACCUMULATE; NONE-to-NONE treated as candidate transition). Fixed by explicit scenario inputs, frozen source unchanged, committed a539a34. Third test now ages actual decision records and journal markers instead of candidate-only proxy. Master/API rerun: 42 PASS.
+- Storage policy foundation committed 9950628: seven tests PASS. Permanent event pins, pending-outcome floor, pin-index backlog fail-closed, P0 protection, verified hot-copy removal, WARM/COLD manifest tiers, measured growth/remaining days and configured 70/80/90/95 tiers. No compressed raw archive is automatically deleted; long-run capacity and P0 database compaction remain OPEN.
+- Raw compression moved to its own bounded worker queue; failed compression preserves full raw and fails readiness. Slow-compressor test proves raw writer continues draining input while compressor blocks. Archive/storage tests: 13 PASS in 2.32s.
+- Integrated writer readiness and high/critical disk limits now gate new signal stages and health. The initial integration run had an IndentationError; fixed, not omitted from evidence (integration-02.xml).
+- Integration 03: 91 PASS in 51.59s, including all original11 safety probes. Runtime source/feature/outcome/consumer/health integration still requires additional adversarial acceptance; PASS is scoped to listed tests.
+- Full suite 03 RUNNING: rebuild_artifacts/full-03.log, full-03.xml, source fingerprint full-03-source-fingerprint.json. Next action: inspect its complete result, preserve evidence, commit only tested coherent integration foundation. Then finish alert outbox/P0 rotation/legacy outcomes/features/UI/full causal replay and chaos inventory.
+- Local gate NOT REACHED. VPS unchanged. Execution DISABLED.
+
+## Completed phase: backend integration regression baseline
+
+Commit `5f32403` contains the coherent backend integration foundation. Full suite03: **570 PASS, zero FAIL/ERROR/SKIP, 196.10s**, one third-party Starlette/httpx deprecation warning. Evidence docs/rebuild/full-03.xml. All original11 safety probes pass as part of full suite. Code still requires the acceptance work listed below; a green existing suite is not complete chaos/replay/production proof.
+
+Next phase in progress: dashboard real shadow contract and opt-in sound, then outstanding restart/alert/P0/legacy outcome/feature/chaos/causal replay work. Frontend changes are uncommitted and not yet built/tested. Local gate NOT REACHED, VPS unchanged, EXECUTION DISABLED.

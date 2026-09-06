@@ -58,6 +58,36 @@ export interface PreSignal {
   execution: string;
 }
 
+export interface ComponentHealth {
+  key: string;
+  state: string;
+  last_event_at?: string | null;
+  age_seconds: number | null;
+  reconnect_count: number;
+  last_error: string | null;
+  recovery_level: number;
+  detail?: string | null;
+}
+
+export interface ResilienceHealth {
+  overall: string;
+  operating_state: string | null;
+  decision_pipeline_age_seconds: number | null;
+  supervisor_report_age_seconds: number | null;
+  reasons: string[];
+  components: Record<string, ComponentHealth>;
+  recovery: { level: number; attempts: number };
+}
+
+export type OperatingState =
+  | "LIVE"
+  | "DEGRADED"
+  | "RECOVERING"
+  | "CRITICAL"
+  | "STARTING"
+  | "STALE"
+  | "OFFLINE";
+
 export interface AlertEvent {
   id: string;
   state: PreSignalState;
@@ -69,8 +99,21 @@ export interface AlertEvent {
 }
 
 export interface LiveState {
+  shadow_signal?: {
+    state: string;
+    paused: boolean;
+    signal: ShadowSignal | null;
+    confidence: null;
+    mode: "SHADOW";
+    execution: "DISABLED";
+  };
   server_time: string;
-  connection: "LIVE" | "STALE" | "OFFLINE";
+  connection: OperatingState;
+  vantage_connection?: "LIVE" | "STALE" | "OFFLINE";
+  overall?: string;
+  operating_state?: string | null;
+  health?: ResilienceHealth;
+  recovery?: { level: number; attempts: number };
   price: {
     symbol: string;
     mid: number | null;
@@ -121,6 +164,25 @@ export interface LiveState {
   };
   execution: string;
   tick_count: number;
+}
+
+export interface ShadowSignal {
+  setup_id: string;
+  timestamp: string;
+  state_to: string;
+  direction: "LONG" | "SHORT";
+  expected_move_class: number;
+  expected_start_window: string[];
+  expected_horizon: number;
+  entry_zone: Array<number | null>;
+  vantage_executable_side: string;
+  invalidation: number | null;
+  reasons: string[];
+  missing_evidence: string[];
+  conflicts: string[];
+  expires_at: string;
+  calibration_status: string;
+  signal_version: string;
 }
 
 export interface Candle {

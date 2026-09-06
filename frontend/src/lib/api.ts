@@ -1,11 +1,31 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { AlertEvent, CandleResponse, LiveState, Timeframe } from "./types";
+import { SignalAnnouncements } from "./signalAnnouncements";
 
 // Single point of contact with the backend. The browser never speaks to MT5,
 // Binance or any exchange directly.
 const BASE = import.meta.env.VITE_WAVERUN_API ?? "";
 
 export type StreamStatus = "CONNECTING" | "OPEN" | "ERROR";
+
+export function useSignalAudio(shadow: LiveState["shadow_signal"], connected: boolean) {
+  const [enabled, setEnabled] = useState(() => {
+    try { return localStorage.getItem("waverun.signal.audio") === "true"; } catch { return false; }
+  });
+  const controller = useRef<SignalAnnouncements | null>(null);
+  useEffect(() => {
+    try {
+      controller.current ??= new SignalAnnouncements(localStorage);
+      const stage = controller.current.accept(shadow?.signal, enabled && connected && !shadow?.paused, Date.now());
+      if (stage) beep(stage === "LIVE");
+    } catch { /* storage unavailable: remain silent */ }
+  }, [shadow, enabled, connected]);
+  const toggle = () => {
+    const next = !enabled;
+    try { localStorage.setItem("waverun.signal.audio", String(next)); setEnabled(next); } catch { setEnabled(false); }
+  };
+  return { enabled, toggle };
+}
 
 export function useLiveState(): { state: LiveState | null; status: StreamStatus } {
   const [state, setState] = useState<LiveState | null>(null);

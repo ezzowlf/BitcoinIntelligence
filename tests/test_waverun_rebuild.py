@@ -157,6 +157,41 @@ def test_recovery_requires_fresh_source_specific_commit(engines,tmp_path):
 
 
 
+def test_live_signal_is_production_labelled_and_thresholds_unchanged(engines):
+    """Fast-gate: the LIVE path is reachable on the FROZEN default policy (no
+    threshold weakening), the emitted signal is labelled as a real production
+    LIVE signal with automatic execution DISABLED, the 60-300s start window is
+    stamped, and LIVE resolves to a terminal OUTCOME."""
+    from dataclasses import asdict as _asdict
+    from bitcoin_cycle_analyzer.short_term.signal_engine import SignalPolicy
+    # Frozen policy guard: these are the accepted shadow-flow-l2-v1 values. If a
+    # later change weakens any gate this test must fail loudly.
+    assert _asdict(SignalPolicy()) == {
+        'version': 'shadow-flow-l2-v1', 'feature_version': 'causal-windows-v1',
+        'flow_candidate': .30, 'flow_confirm': .50, 'l2_confirm': .20,
+        'minimum_samples': 20, 'arm_min_seconds': 5, 'expiry_seconds': 300,
+        'cooldown_seconds': 300, 'max_spread_usd': 30, 'target_usd': 100,
+        'horizon_seconds': 300,
+    }
+    j, o, e = engines
+    transitions = reach(e)            # default engine == default SignalPolicy()
+    assert [r['state_to'] for r in transitions] == ['CANDIDATE', 'PREWARNING', 'ARMED', 'LIVE']
+    live = transitions[-1]
+    assert live['mode'] == 'LIVE'
+    assert live['execution'] == 'DISABLED'
+    assert live['calibration_status'] == 'UNCALIBRATED'
+    start, end = [datetime.fromisoformat(x) for x in live['expected_start_window']]
+    live_at = datetime.fromisoformat(live['timestamp'])
+    assert (start - live_at).total_seconds() == 60
+    assert (end - live_at).total_seconds() == 300
+    assert e.snapshot()['mode'] == 'LIVE'
+    # LIVE closes to a terminal OUTCOME via the 300s horizon.
+    setup = e.active['setup_id']
+    e.accept_outcome({'kind': 'LIVE', 'horizon_seconds': 300, 'observation': {'setup_id': setup},
+                      'resolved_at': (T + timedelta(seconds=600)).isoformat(), 'status': 'RESOLVED'})
+    assert e.snapshot()['state'] == 'OUTCOME'
+
+
 def test_normal_full_and_every_required_stage(engines):
     healthy={k:ComponentHealth(k,'HEALTHY') for k in REQUIRED_FOR_FULL_LIVE}
     assert compute_operating_state(healthy)[0].value=='FULL_LIVE'
