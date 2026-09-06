@@ -85,6 +85,16 @@ class LiveSession:
         self._event_queues={}
         self._worker_error=None
         self._source_marker_second={}
+        # --- HOTFIX on 85bc61e: consumer backpressure (was: EVENT_QUEUE_FULL storm) --
+        # A full CONSUMER queue is NOT a transport fault. Replaceable high-rate
+        # depth/book events are coalesced (drop-oldest); causally required trade
+        # events are only shed under genuine severe stall, then counted and used
+        # to degrade data quality -> suppress NEW live signals. Never a reconnect
+        # storm, never FALSE-LIVE. Memory stays bounded by the fixed queue size.
+        self._bp={'coalesced':{}, 'dropped':{}}
+        self._bp_severe_until=0.0
+        self._bp_last_write=0.0
+        self.backpressure_path=self.output.parent/'backpressure.json'
 
     @staticmethod
     def _append(path: Path, value: dict) -> None:
@@ -241,6 +251,11 @@ class LiveSession:
         states=self.feed.refresh_states(received)
         quote_age=(received-pd.Timestamp(quote['timestamp']).to_pydatetime()).total_seconds() if quote.get('timestamp') else None
         source_states={'spot':'HEALTHY' if states.get('spot')=='CONNECTED' else 'UNAVAILABLE','futures':'HEALTHY' if states.get('futures')=='CONNECTED' else 'UNAVAILABLE','l2':'HEALTHY' if states.get('l2')=='CONNECTED' and self.book.synchronized else 'UNAVAILABLE','vantage':'HEALTHY' if quote.get('status')=='AVAILABLE' and quote_age is not None and 0<=quote_age<=3 else 'UNAVAILABLE'}
+        if time.time()<self._bp_severe_until:
+            # Severe consumer backpressure shed causally required trades -> the
+            # spot/L2 evidence is no longer trustworthy: the existing data-quality
+            # gate in SignalEngine.evaluate() will suppress NEW live signals.
+            source_states['spot']='UNAVAILABLE';source_states['l2']='UNAVAILABLE'
         markers=Journal.progress_at(self.journal.path)
         outcome_ready='outcome_scheduler' in markers and 0<=received.timestamp()-markers['outcome_scheduler']['committed_at']<=10
         compact=self.causal_features.snapshot(received,quote,l2=imbalance,feed_health=source_states,storage_ready=self.raw_writer is not None and self.raw_writer.ready and not getattr(self.feed,'ledger_error',None),outcomes_ready=outcome_ready)
@@ -343,13 +358,55 @@ class LiveSession:
             pass
         await self._recreate_feed_task()
 
+    _BP_SEVERE_HOLD=20.0  # seconds a shed critical event keeps signal generation degraded
+
+    def _bp_bump(self,kind,key):
+        table=self._bp[kind]
+        table[key]=table.get(key,0)+1
+
+    def _bp_flush(self,force=False):
+        now=time.time()
+        if not force and now-self._bp_last_write<1.0:return
+        self._bp_last_write=now
+        payload={'updated_at':datetime.now(UTC).isoformat(),
+                 'severe':now<self._bp_severe_until,
+                 'queues':{k:{'size':q.qsize(),'capacity':q.maxsize} for k,q in self._event_queues.items()},
+                 'coalesced':dict(self._bp['coalesced']),
+                 'dropped':dict(self._bp['dropped']),
+                 'execution':'DISABLED'}
+        try:atomic_json(self.backpressure_path,payload)
+        except OSError:pass
+
     async def _dispatch_event(self,event):
         key='l2' if event.event_type==EventType.DEPTH else event.payload.get('market','spot')
-        try:self._event_queues[key].put_nowait(event)
+        queue=self._event_queues[key]
+        try:
+            queue.put_nowait(event)
         except asyncio.QueueFull:
-            self._worker_error='EVENT_QUEUE_FULL:'+key
-            self.feed.health[key].disconnect('EVENT_QUEUE_FULL')
-            self.feed.request_reconnect(key)
+            # Bounded backpressure: evict the OLDEST queued event and enqueue the
+            # newest. Memory stays bounded; the freshest market state is kept. A
+            # full consumer queue is NEVER a transport disconnect and NEVER
+            # triggers a reconnect (that was the EVENT_QUEUE_FULL storm).
+            try:
+                stale=queue.get_nowait();queue.task_done()
+            except asyncio.QueueEmpty:
+                stale=None
+            if stale is not None and stale.event_type==EventType.TRADE:
+                # A causally required trade was shed: visible + counted, and it
+                # degrades data quality (suppresses NEW live signals) instead of
+                # being silently lost.
+                self._bp_bump('dropped',key)
+                self._bp_severe_until=time.time()+self._BP_SEVERE_HOLD
+            else:
+                # depth / bookTicker are replaceable high-frequency state -> coalesce
+                self._bp_bump('coalesced',key)
+            try:
+                queue.put_nowait(event)
+            except asyncio.QueueFull:
+                self._bp_bump('dropped' if event.event_type==EventType.TRADE else 'coalesced',key)
+                if event.event_type==EventType.TRADE:
+                    self._bp_severe_until=time.time()+self._BP_SEVERE_HOLD
+        self._bp_flush()
 
     async def _consume_events(self,key,stop):
         while not stop.is_set():

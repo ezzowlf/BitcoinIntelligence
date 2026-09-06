@@ -183,7 +183,7 @@ class OperatingState(str, Enum):
 #   * vantage             REQUIRED  (price reference + V5.3 outcome resolution)
 #   * binance_futures     OPTIONAL  (confirmation flow only)
 #   * l2                  OPTIONAL  (orderbook predictor degrades cleanly)
-REQUIRED_FOR_FULL_LIVE = ("binance_spot", "vantage", "feature_pipeline", "candidate_pipeline", "decision_pipeline", "prediction_persistence", "outcome_scheduler", "storage", "disk")
+REQUIRED_FOR_FULL_LIVE = ("binance_spot", "vantage", "feature_pipeline", "candidate_pipeline", "decision_pipeline", "prediction_persistence", "outcome_scheduler", "storage", "disk", "consumer_backpressure")
 # Loss of any of these means new *decisions/signals* can no longer be produced
 # on their defined data basis -> CRITICAL (never silently "LIVE").
 MIN_DATA_BASIS = ("binance_spot", "decision_pipeline")

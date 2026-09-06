@@ -210,13 +210,43 @@ class HealthSupervisor:
             ) if spot_fresh else "IDLE_FEED_DOWN",
             age_seconds=pred_age,
         )
+        markers=Journal.progress_at(self.journal_path)
+        # market_event_pipeline: the monolithic market_events.jsonl was retired in
+        # favour of the RawWriter/journal. Track the newest per-market feed marker
+        # (feed_spot/feed_futures/feed_l2), falling back to writer_health.json.
+        _feed_marks=[markers.get(s) for s in ('feed_spot','feed_futures','feed_l2')]
+        _feed_ts=max((m['committed_at'] for m in _feed_marks if m), default=None)
+        _wh_age=None
+        try:
+            _wh=json.loads((rt/'writer_health.json').read_text())
+            _wh_age=age_seconds(_wh.get('timestamp'),now) if _wh.get('ready') else None
+        except (OSError,ValueError):
+            pass
+        _mep_age=(max(0.0,now.timestamp()-_feed_ts) if _feed_ts is not None else _wh_age)
         components["market_event_pipeline"] = ComponentHealth(
             key="market_event_pipeline",
-            state=self._age_state(age_seconds(market_ts, now), CONFIG.feed_stale_after, CONFIG.feed_offline_after),
-            last_event_at=market_ts,
-            age_seconds=age_seconds(market_ts, now),
+            state=self._age_state(_mep_age, CONFIG.feed_stale_after, CONFIG.feed_offline_after),
+            last_event_at=(datetime.fromtimestamp(_feed_ts,UTC).isoformat() if _feed_ts is not None else None),
+            age_seconds=_mep_age,
+            detail="journal feed_* markers + writer_health (market_events.jsonl retired)",
         )
-        markers=Journal.progress_at(self.journal_path)
+        # consumer_backpressure: a full processing queue is separate from transport
+        # health. Coalescing replaceable book/depth is fine; shedding causally
+        # required trades degrades data quality (and suppresses new LIVE signals).
+        try:
+            _bp=json.loads((rt/'backpressure.json').read_text())
+            _bp_age=age_seconds(_bp.get('updated_at'),now)
+            _dropped=sum(int(v) for v in (_bp.get('dropped') or {}).values())
+            _coalesced=sum(int(v) for v in (_bp.get('coalesced') or {}).values())
+            if _bp_age is not None and _bp_age<=30:
+                _bp_state='CRITICAL' if _bp.get('severe') else ('DEGRADED' if _dropped>0 else 'HEALTHY')
+            else:
+                _bp_state='HEALTHY'
+            components['consumer_backpressure']=ComponentHealth(
+                'consumer_backpressure',_bp_state,age_seconds=_bp_age,
+                detail=f"dropped_trades={_dropped} coalesced={_coalesced} severe={bool(_bp.get('severe'))}")
+        except (OSError,ValueError):
+            components['consumer_backpressure']=ComponentHealth('consumer_backpressure','HEALTHY',detail='no backpressure telemetry yet')
         for key,stage in [('feature_pipeline','features'),('candidate_pipeline','candidates'),('decision_pipeline','decisions'),('prediction_persistence','predictions'),('outcome_scheduler','outcome_scheduler'),('storage','storage')]:
             marker=markers.get(stage)
             if marker:
