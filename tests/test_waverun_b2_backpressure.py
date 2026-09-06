@@ -132,6 +132,31 @@ async def _run(ls, events):
         await ls._dispatch_event(e)
 
 
+def test_causal_features_snapshot_survives_zero_price_trade():
+    """A malformed 0-price trade frame previously crashed the spot consumer with
+    ZeroDivisionError at causal_features.snapshot (return = prices[-1]/prices[0])
+    and permanently froze feed_spot->features->candidates->decisions->predictions."""
+    from bitcoin_cycle_analyzer.short_term.causal_features import CausalFeatures
+    cf = CausalFeatures()
+    now = datetime.now(UTC)
+    cf.trade("spot", now, 0.0, 0.1, False)          # poison frame
+    cf.trade("spot", now, 79000.0, 0.2, False)
+    cf.trade("spot", now, 79010.0, 0.2, True)
+    snap = cf.snapshot(now, {"bid": 79000.0, "ask": 79010.0})  # must not raise
+    assert snap["feature_version"] == "causal-windows-v1"
+    # the zero frame is ignored; a real return is still computed
+    assert snap["windows"]["15"]["spot"]["return"] is not None
+
+
+def test_consume_events_skips_a_poison_event_and_keeps_running():
+    """One event that raises must not permanently kill the consumer (was: return)."""
+    import inspect
+    src = inspect.getsource(waverun_live.LiveSession._consume_events)
+    assert "continue  # one poison event" in src
+    assert "recent>=12" in src  # only a sustained failure hands off to the watchdog
+    assert "traceback" in src   # the crash location is now recorded
+
+
 # --------------------------------------------------------- supervisor / health
 
 

@@ -417,14 +417,24 @@ class LiveSession:
         self._bp_flush()
 
     async def _consume_events(self,key,stop):
+        fails=deque(maxlen=64)
         while not stop.is_set():
             event=await self._event_queues[key].get()
-            try:await asyncio.wait_for(self.on_event(event),timeout=10)
-            except Exception as exc:
+            try:
+                await asyncio.wait_for(self.on_event(event),timeout=10)
+            except asyncio.CancelledError:
+                raise
+            except Exception as exc:  # noqa: BLE001
+                import traceback
+                now=time.time();fails.append(now);recent=sum(1 for x in fails if now-x<=30)
                 self._worker_error='WORKER_FAILED:'+key+':'+type(exc).__name__
-                self.feed.health.get(key,self.feed.health['spot']).disconnect(self._worker_error)
-                self.journal.append('incident',identity(self._worker_error,time.time()),datetime.now(UTC),{'reason':self._worker_error})
-                return  # external process supervisor owns recovery; no orphan thread storm
+                self.journal.append('incident',identity(self._worker_error,now),datetime.now(UTC),
+                    {'reason':self._worker_error,'traceback':traceback.format_exc()[-1800:],'recent_30s':recent})
+                if recent>=12:
+                    # genuinely broken consumer -> hand recovery to the process watchdog
+                    self.feed.health.get(key,self.feed.health['spot']).disconnect(self._worker_error)
+                    return
+                continue  # one poison event/window must not freeze the whole feed
             finally:self._event_queues[key].task_done()
 
     async def _outcome_scheduler(self,stop):

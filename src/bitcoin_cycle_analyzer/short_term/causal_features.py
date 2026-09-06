@@ -23,8 +23,8 @@ class CausalFeatures:
             for market,rows in self.trades.items():
                 active=[r for r in rows if epoch-window<r[0]<=epoch]
                 buy=sum(r[2] for r in active if r[3]>0);sell=sum(r[2] for r in active if r[3]<0)
-                prices=[r[1] for r in active]
-                values[market]={'buy_volume':buy,'sell_volume':sell,'delta':(buy-sell)/(buy+sell) if buy+sell else None,'trade_count':len(active),'return':prices[-1]/prices[0]-1 if prices else None,'range_usd':max(prices)-min(prices) if prices else None,'realized_volatility':pstdev(prices) if len(prices)>1 else None}
+                prices=[r[1] for r in active if r[1]]  # ignore malformed 0-price trade frames
+                values[market]={'buy_volume':buy,'sell_volume':sell,'delta':(buy-sell)/(buy+sell) if buy+sell else None,'trade_count':len(active),'return':prices[-1]/prices[0]-1 if prices and prices[0] else None,'range_usd':max(prices)-min(prices) if prices else None,'realized_volatility':pstdev(prices) if len(prices)>1 else None}
             result['windows'][str(window)]=values
         spot=result['windows']['15']['spot'];futures=result['windows']['15']['futures']
         result.update(spot_delta=spot['delta'] or 0,futures_delta=futures['delta'],momentum=spot['return'] or 0,sample_size=spot['trade_count'],range_usd=spot['range_usd'] or 0,regime='EXPANDING' if (spot['range_usd'] or 0)>max(result['spread'] or 0,1)*2 else 'COMPRESSED')
