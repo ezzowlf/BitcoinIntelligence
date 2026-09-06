@@ -377,8 +377,16 @@ class LiveSession:
         try:atomic_json(self.backpressure_path,payload)
         except OSError:pass
 
+    def _queue_key(self,event):
+        # BOOK_TICKER is the highest-rate, fully-replaceable stream: give it its
+        # own coalescing lane so causally required spot/futures TRADEs are never
+        # starved out of their queue.
+        if event.event_type==EventType.DEPTH:return 'l2'
+        if event.event_type==EventType.BOOK_TICKER:return 'book'
+        return event.payload.get('market','spot')
+
     async def _dispatch_event(self,event):
-        key='l2' if event.event_type==EventType.DEPTH else event.payload.get('market','spot')
+        key=self._queue_key(event)
         queue=self._event_queues[key]
         try:
             queue.put_nowait(event)
@@ -414,7 +422,7 @@ class LiveSession:
             try:await asyncio.wait_for(self.on_event(event),timeout=10)
             except Exception as exc:
                 self._worker_error='WORKER_FAILED:'+key+':'+type(exc).__name__
-                self.feed.health[key].disconnect(self._worker_error)
+                self.feed.health.get(key,self.feed.health['spot']).disconnect(self._worker_error)
                 self.journal.append('incident',identity(self._worker_error,time.time()),datetime.now(UTC),{'reason':self._worker_error})
                 return  # external process supervisor owns recovery; no orphan thread storm
             finally:self._event_queues[key].task_done()
@@ -461,6 +469,7 @@ class LiveSession:
                 self.feed.raw_sink=lambda market,raw,received:self.raw_writer.submit(market,received,raw)
                 self.feed.lifecycle_sink=lambda row:self.journal.append('feed_lifecycle',identity(row,time.time()),row['timestamp'],row)
                 self._event_queues={key:asyncio.Queue(maxsize=2048) for key in self.feed.health}
+                self._event_queues['book']=asyncio.Queue(maxsize=4096)  # replaceable bookTicker lane
                 workers=[asyncio.create_task(self._consume_events(key,stop),name='consume-'+key) for key in self._event_queues]
                 outcome_task=asyncio.create_task(self._outcome_scheduler(stop))
                 self._callback=self._dispatch_event

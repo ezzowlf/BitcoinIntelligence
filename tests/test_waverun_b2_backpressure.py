@@ -78,13 +78,20 @@ def test_depth_flood_coalesces_and_never_disconnects(tmp_path):
     assert bp["execution"] == "DISABLED"
 
 
-def test_book_ticker_flood_is_coalesced_not_dropped(tmp_path):
+def test_book_ticker_has_its_own_coalescing_lane(tmp_path):
+    """bookTicker must not share the spot TRADE queue (that starved trades)."""
     ls = _session(tmp_path)
-    ls._event_queues = {"spot": asyncio.Queue(maxsize=3), "l2": asyncio.Queue(maxsize=3), "futures": asyncio.Queue(maxsize=3)}
+    ls._event_queues = {"spot": asyncio.Queue(maxsize=3), "book": asyncio.Queue(maxsize=3),
+                        "l2": asyncio.Queue(maxsize=3), "futures": asyncio.Queue(maxsize=3)}
+    assert ls._queue_key(_ev(EventType.BOOK_TICKER)) == "book"
+    assert ls._queue_key(_ev(EventType.DEPTH)) == "l2"
+    assert ls._queue_key(_ev(EventType.TRADE, "spot")) == "spot"
+    assert ls._queue_key(_ev(EventType.TRADE, "futures")) == "futures"
     asyncio.run(_run(ls, [_ev(EventType.BOOK_TICKER) for _ in range(50)]))
-    assert ls._bp["coalesced"].get("spot", 0) >= 45
+    assert ls._bp["coalesced"].get("book", 0) >= 45
     assert ls._bp["dropped"] == {}
     assert ls._bp_severe_until == 0.0
+    assert ls._event_queues["spot"].qsize() == 0  # spot trade lane untouched
 
 
 def test_trade_shed_under_severe_stall_is_counted_and_degrades(tmp_path):
