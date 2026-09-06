@@ -20,3 +20,7 @@ python-*-amd64.exe
 .agents/
 .claude/
 dashboard/*.png
+audit/
+rebuild_artifacts/
+*.db-wal
+*.db-shm
