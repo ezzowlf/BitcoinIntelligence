@@ -1,0 +1,59 @@
+{
+  "input": "C:\\Users\\djaez\\Documents\\TAKEOFF\\Exports\\exports\\WAVERUN_FULL_TRANSFER_20260906_132904\\04_market_events_full\\market_events.jsonl",
+  "sample_records": 100000,
+  "sample_raw_bytes": 39099705,
+  "sample_sha256": "27103614275c89a9dbe69cefa34777a1dbbf9cdfd4cf505b20c8af3b6a402545",
+  "start": "2026-08-31 21:48:37.240761+00:00",
+  "end": "2026-08-31 22:12:07.784720+00:00",
+  "formats": {
+    "jsonl": {
+      "bytes": 39099705,
+      "compression_ratio": 1.0,
+      "write_seconds": 0.06500770000275224,
+      "write_records_second": 1538279.3114625849,
+      "read_seconds": 0.02330989995971322,
+      "read_records_second": 4290022.7016345505,
+      "cpu_write_seconds": 0.046875,
+      "cpu_read_seconds": 0.0,
+      "range_seconds": 4.459114099969156,
+      "range_rows": 33366,
+      "lossless_roundtrip": true
+    },
+    "gzip": {
+      "bytes": 1803173,
+      "compression_ratio": 21.683834551648676,
+      "write_seconds": 0.4454058000119403,
+      "write_records_second": 224514.36419848874,
+      "read_seconds": 0.1154425999848172,
+      "read_records_second": 866231.3566495541,
+      "cpu_write_seconds": 0.359375,
+      "cpu_read_seconds": 0.078125,
+      "range_seconds": 4.187250999966636,
+      "range_rows": 33366,
+      "lossless_roundtrip": true
+    },
+    "parquet_zstd": {
+      "bytes": 1677899,
+      "compression_ratio": 23.3027762696086,
+      "write_seconds": 2.470663300016895,
+      "write_records_second": 40474.960711690735,
+      "read_seconds": 1.3854651000583544,
+      "read_records_second": 72177.92782783782,
+      "cpu_write_seconds": 2.046875,
+      "cpu_read_seconds": 1.4375,
+      "range_seconds": 0.05074400000739843,
+      "range_rows": 33366,
+      "lossless_roundtrip": true
+    }
+  },
+  "python_peak_traced_bytes": 252894061,
+  "arrow_allocated_bytes_at_end": 0,
+  "disk": {
+    "total": 992670453760,
+    "used": 834064371712,
+    "free": 158606082048
+  },
+  "scope": "local warm-cache sample; not a VPS throughput guarantee",
+  "crash_safety_evidence": "tests/test_waverun_rebuild.py archive restart/corruption/retention tests; throughput benchmark alone does not prove crash safety",
+  "execution": "DISABLED"
+}

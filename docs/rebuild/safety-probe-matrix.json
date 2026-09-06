@@ -1,0 +1,79 @@
+[
+  {
+    "probe": "test_bare_callback_timeout_must_retry",
+    "before": "FAIL",
+    "current": "PASS",
+    "evidence": "docs/rebuild/rebuild-04.xml",
+    "scope": "local adapted harness; immutable originals in audit; not full production acceptance"
+  },
+  {
+    "probe": "test_handshake_is_not_event",
+    "before": "FAIL",
+    "current": "PASS",
+    "evidence": "docs/rebuild/rebuild-04.xml",
+    "scope": "local adapted harness; immutable originals in audit; not full production acceptance"
+  },
+  {
+    "probe": "test_recovery_requires_prediction_progress",
+    "before": "FAIL",
+    "current": "PASS",
+    "evidence": "docs/rebuild/rebuild-04.xml",
+    "scope": "local adapted harness; immutable originals in audit; not full production acceptance"
+  },
+  {
+    "probe": "test_candidate_fresh_decision_stale_api",
+    "before": "FAIL",
+    "current": "PASS",
+    "evidence": "docs/rebuild/rebuild-04.xml",
+    "scope": "local adapted harness; immutable originals in audit; not full production acceptance"
+  },
+  {
+    "probe": "test_prediction_mtime_is_not_write_proof",
+    "before": "FAIL",
+    "current": "PASS",
+    "evidence": "docs/rebuild/rebuild-04.xml",
+    "scope": "local adapted harness; immutable originals in audit; not full production acceptance"
+  },
+  {
+    "probe": "test_pipeline_stall_triggers_repair",
+    "before": "FAIL",
+    "current": "PASS",
+    "evidence": "docs/rebuild/rebuild-04.xml",
+    "scope": "local adapted harness; immutable originals in audit; not full production acceptance"
+  },
+  {
+    "probe": "test_alert_dedupe_survives_manager_restart",
+    "before": "FAIL",
+    "current": "PASS",
+    "evidence": "docs/rebuild/rebuild-04.xml",
+    "scope": "local adapted harness; immutable originals in audit; not full production acceptance"
+  },
+  {
+    "probe": "test_level2_does_not_cancel_session",
+    "before": "FAIL",
+    "current": "PASS",
+    "evidence": "docs/rebuild/rebuild-04.xml",
+    "scope": "local adapted harness; immutable originals in audit; not full production acceptance"
+  },
+  {
+    "probe": "test_candidate_stall_precludes_full_live",
+    "before": "FAIL",
+    "current": "PASS",
+    "evidence": "docs/rebuild/rebuild-04.xml",
+    "scope": "local adapted harness; immutable originals in audit; not full production acceptance"
+  },
+  {
+    "probe": "test_task_crash_visible_while_sibling_runs",
+    "before": "FAIL",
+    "current": "PASS",
+    "evidence": "docs/rebuild/rebuild-04.xml",
+    "scope": "local adapted harness; immutable originals in audit; not full production acceptance"
+  },
+  {
+    "probe": "test_callback_hang_is_bounded",
+    "before": "FAIL",
+    "current": "PASS",
+    "evidence": "docs/rebuild/rebuild-04.xml",
+    "scope": "local adapted harness; immutable originals in audit; not full production acceptance"
+  }
+]

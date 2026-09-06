@@ -1,0 +1,156 @@
+[
+  {
+    "issue_id": "WR-001",
+    "title": "Spot-driven pipeline has no alternative scheduler or downstream recovery watchdog",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Independent outcome timer, bounded consumers and journal added; external worker recovery and independent feature scheduling open."
+  },
+  {
+    "issue_id": "WR-002",
+    "title": "Parent has no application-data read/idle timeout",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Application-data timeout passes original and negative-control probes; production soak open."
+  },
+  {
+    "issue_id": "WR-003",
+    "title": "Bare TimeoutError ends unlimited market loop",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Bare TimeoutError retry probe passes; original audit test unchanged, local harness stops after repeated callback failures."
+  },
+  {
+    "issue_id": "WR-004",
+    "title": "Parent global LIVE measures only Vantage tick age",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Durable pipeline-based API gating added; complete feed/source revalidation and UI integration open."
+  },
+  {
+    "issue_id": "WR-005",
+    "title": "APPROVED structurally unreachable on current fast-decision live inputs",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Separate uncalibrated shadow state machine reaches LIVE in synthetic causal test; full production replay and entry contract open."
+  },
+  {
+    "issue_id": "WR-006",
+    "title": "Prediction outcome updater is never invoked by live runtime",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Executable outcomes, terminal statuses, outbox and scheduler added; legacy backlog catchup and full restart integration open."
+  },
+  {
+    "issue_id": "WR-007",
+    "title": "No per-attempt transport ledger or incident-time process revision",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Feed lifecycle journal added; process revision metadata and sink-failure isolation open."
+  },
+  {
+    "issue_id": "WR-008",
+    "title": "gather(return_exceptions=True) hides dead market until sibling exits",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Stable per-market owners expose child crash while sibling runs; local probe PASS."
+  },
+  {
+    "issue_id": "WR-009",
+    "title": "Callback hang is outside read watchdog",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Callback timeout separated from read/idle timeout; local hang and socket-to-prediction recovery PASS."
+  },
+  {
+    "issue_id": "WR-010",
+    "title": "Handshake falsely advances valid-event health",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Handshake no longer advances valid event; local probe PASS."
+  },
+  {
+    "issue_id": "WR-011",
+    "title": "Level-2 feed replacement cancels owning session",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Child reconnect no longer cancels session owner; local probe PASS; full restart escalation open."
+  },
+  {
+    "issue_id": "WR-012",
+    "title": "Prediction freshness is main-file mtime, not committed prediction progress",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Prediction progress uses committed sequence, not DB file mtime; local probe PASS."
+  },
+  {
+    "issue_id": "WR-013",
+    "title": "Recovery verifier omits prediction and feature progression",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Matching feature/candidate/decision/prediction cause IDs plus advancing scheduler/storage/Spot/Vantage required; original and fresh-source adversarial probe PASS."
+  },
+  {
+    "issue_id": "WR-014",
+    "title": "Healthy-Spot downstream stall triggers no repair",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Downstream stalls request repair despite healthy Spot; local probe PASS; actual component-specific restoration open."
+  },
+  {
+    "issue_id": "WR-015",
+    "title": "API fallback substitutes candidate freshness for decision and prediction",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "No candidate freshness substitution for decisions or predictions; original probe PASS; full API integration open."
+  },
+  {
+    "issue_id": "WR-016",
+    "title": "Overall health ignores candidate pipeline and disk failure",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Missing candidate/storage/disk cannot FULL_LIVE; local probes PASS; percent disk budgets and retention integration open."
+  },
+  {
+    "issue_id": "WR-017",
+    "title": "Restart requests have no code consumer; budgets and alert dedupe are volatile",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Restart budget and alert dedup persisted; dedup probe PASS; external restart consumer and alert outbox open."
+  },
+  {
+    "issue_id": "WR-018",
+    "title": "Existing green resilience tests do not prove complete recovery",
+    "severity": "HIGH",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "54 focused tests PASS, including original 11 failures; full existing suite, negative controls and >=38 chaos inventory not yet accepted."
+  },
+  {
+    "issue_id": "WR-019",
+    "title": "Block explanation hides actual first failing gates",
+    "severity": "MEDIUM",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "New signal transitions carry missing evidence/conflicts; legacy first-failing-gate reporting and full gate analysis open."
+  },
+  {
+    "issue_id": "WR-020",
+    "title": "Prior conflict counts and broad quality claims are unsupported",
+    "severity": "MEDIUM",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Audit conclusions preserved: old quality NOT REPRODUCIBLE; new causal replay/move coverage analysis open."
+  },
+  {
+    "issue_id": "WR-021",
+    "title": "Supervisor and alerts share collector scheduling; logging guarantees too strong",
+    "severity": "MEDIUM",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Raw bounded writer and bounded callback consumers added; supervisor synchronous I/O, alert sink and logging lifecycle still open."
+  },
+  {
+    "issue_id": "WR-022",
+    "title": "Receive freshness does not establish exchange-data freshness",
+    "severity": "MEDIUM",
+    "status": "OPEN_ACCEPTANCE",
+    "progress": "Exchange timestamp recorded and recovery requires source age <=5s; source freshness across feature/API paths still needs adversarial coverage."
+  }
+]
