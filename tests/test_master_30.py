@@ -33,7 +33,16 @@ def test_master_state_and_model_hierarchy(current):
 
 
 def test_master_current_decision_separates_actions(current):
-    d=current["master"]["decision"];assert d["long_term_action"]=="ACCUMULATE" and d["new_entry_action"]=="ACCUMULATE" and d["existing_position_action"]=="HOLD"
+    # Test an explicit accumulation input, not whichever market state the local DB has today.
+    def accumulate(state):
+        state['precision']['data_health']['critical_healthy']=True
+        state['rare_signal']['buy_state']='ACCUMULATE'
+        state['rare_signal']['level_a']['signal']='NO_PRODUCTION_SIGNAL'
+        state['rare_signal']['sell']['state']='NONE'
+        state['rare_signal']['sell']['distribution']='NONE'
+    _,master=rebuild(current,accumulate)
+    d=master['decision']
+    assert d['long_term_action']=='ACCUMULATE' and d['new_entry_action']=='ACCUMULATE' and d['existing_position_action']=='HOLD'
 
 
 def test_factor_registry_contract_and_rejected_sell(current):
@@ -135,7 +144,9 @@ def test_master_production_alert_and_candidate_silence(current):
 
 
 def test_candidate_change_is_separate_from_production(current):
-    previous=deepcopy(current);now=deepcopy(current);now["master"]["state"]["buy_candidate"]="NONE"
+    previous=deepcopy(current);now=deepcopy(current)
+    previous['master']['state']['buy_candidate']='BUY_CANDIDATE'
+    now["master"]["state"]["buy_candidate"]="NONE"
     events=detect_events(now,previous);assert "MASTER_CANDIDATE_CHANGE" in events and "MASTER_PRODUCTION_SIGNAL" not in events
 
 
