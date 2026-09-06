@@ -5,6 +5,8 @@ import asyncio
 import json
 import sys
 import time
+import threading
+import uuid
 from collections import deque
 from dataclasses import asdict
 from datetime import UTC, datetime
@@ -22,6 +24,15 @@ from bitcoin_cycle_analyzer.short_term.binance import BinancePublicFeed
 from bitcoin_cycle_analyzer.short_term.contracts import MarketTick
 from bitcoin_cycle_analyzer.short_term.engine import ShortTermEngine
 from bitcoin_cycle_analyzer.short_term.events import EventType
+from bitcoin_cycle_analyzer.short_term.health_supervisor import HealthSupervisor
+from bitcoin_cycle_analyzer.short_term.resilience import age_seconds as _res_age_seconds
+from bitcoin_cycle_analyzer.short_term.journal import Journal,identity,atomic_json
+from bitcoin_cycle_analyzer.short_term.outcome_engine import OutcomeEngine
+from bitcoin_cycle_analyzer.short_term.signal_engine import SignalEngine
+from bitcoin_cycle_analyzer.short_term.move_tracker import MoveTracker
+from bitcoin_cycle_analyzer.short_term.causal_features import CausalFeatures
+from bitcoin_cycle_analyzer.short_term.archive import RawWriter
+from bitcoin_cycle_analyzer.short_term.storage_policy import StorageMaintenance
 from bitcoin_cycle_analyzer.short_term.orderbook import OrderBookState
 from bitcoin_cycle_analyzer.short_term.pressure import (
     completed_bars,
@@ -58,13 +69,33 @@ class LiveSession:
         self.output.parent.mkdir(parents=True, exist_ok=True)
         self.v2_forward = ForwardV2Collector(ROOT / "runtime/waverun_v5_3_fast_v2_forward")
         self._last_v2_bar = None
+        # --- B-2 resilience wiring -----------------------------------------
+        self._last_vantage_wall: datetime | None = None
+        self._feed_task: asyncio.Task | None = None
+        self._supervisor: HealthSupervisor | None = None
+        self._callback = None
+        self.journal=Journal(self.output.parent/'journal.db')
+        self.outcomes=OutcomeEngine(self.journal)
+        self.signals=SignalEngine(self.journal,self.outcomes)
+        self.moves=MoveTracker(self.journal)
+        self.causal_features=CausalFeatures()
+        self.raw_writer=None
+        self._process_lock=threading.RLock()
+        self._mt5_lock=threading.RLock()
+        self._event_queues={}
+        self._worker_error=None
+        self._source_marker_second={}
 
     @staticmethod
     def _append(path: Path, value: dict) -> None:
+        if path.exists() and path.stat().st_size>8*1024*1024:
+            path.rename(path.with_name(path.stem+'.'+uuid.uuid4().hex+path.suffix))
         with path.open("a", encoding="utf-8") as handle:
             handle.write(json.dumps(value, sort_keys=True, default=str) + "\n")
 
     def _record_event(self, event) -> None:
+        if self.raw_writer:
+            return  # full wire frame already entered the bounded raw writer
         self._append(self.event_path, {
             "event_type": event.event_type.value, "exchange": event.exchange, "symbol": event.symbol,
             "exchange_timestamp": event.exchange_timestamp, "received_timestamp": event.received_timestamp,
@@ -72,7 +103,7 @@ class LiveSession:
         })
 
     def _record_vantage_tick(self) -> None:
-        tick = self.mt5.tick()
+        with self._mt5_lock:tick = self.mt5.tick()
         if tick.get("status") != "AVAILABLE" or tick.get("time_msc") is None:
             return
         time_msc = int(tick["time_msc"])
@@ -86,6 +117,10 @@ class LiveSession:
             "source": "MT5_VANTAGE", "execution": "DISABLED",
         }
         self._append(self.vantage_tick_path, record)
+        self._last_vantage_wall = datetime.now(UTC)
+        self.outcomes.quote(record['timestamp'],record['bid'],record['ask'])
+        self.journal.mark('vantage',identity(record['time_msc']),record['timestamp'])
+        self.moves.quote(record['timestamp'],record['bid'],record['ask'])
         self.v2_forward.record_vantage_tick(record)
 
     def _flow_delta(self, market: str, now: datetime) -> float:
@@ -134,11 +169,32 @@ class LiveSession:
         receive_ns = time.perf_counter_ns()
         self._record_event(event)
         if event.event_type == EventType.DEPTH:
-            result = self.book.apply(event)
+            result = await asyncio.to_thread(self._apply_depth,event)
             if result in {"GAP", "NEEDS_SNAPSHOT"}:
-                self.feed.health["spot"].gap()
+                self.feed.health.get('l2',self.feed.health['spot']).gap()
                 await self._refresh_book()
+            await asyncio.to_thread(self._mark_source,event)
             return
+        await asyncio.to_thread(self._evaluate_locked,event)
+        await asyncio.to_thread(self._mark_source,event)
+
+    def _mark_source(self,event):
+        source='l2' if event.event_type==EventType.DEPTH else event.payload.get('market','spot')
+        timestamp=event.exchange_timestamp
+        if timestamp is None:return  # receive-only events cannot prove source freshness
+        second=int(timestamp.timestamp())
+        if second<=self._source_marker_second.get(source,-1):return
+        self.journal.mark('feed_'+source,identity(source,timestamp,event.received_timestamp),timestamp)
+        self._source_marker_second[source]=second
+
+    def _evaluate_locked(self,event):
+        with self._process_lock:return self._evaluate_event(event)
+
+    def _apply_depth(self,event):
+        with self._process_lock:return self.book.apply(event)
+
+    def _evaluate_event(self,event):
+        receive_ns=time.perf_counter_ns()
         if event.event_type == EventType.BOOK_TICKER:
             self.last_book = event
             return
@@ -146,6 +202,7 @@ class LiveSession:
             return
         payload = event.payload
         market = payload.get("market", "spot")
+        self.causal_features.trade(market,event.received_timestamp,payload['price'],payload['quantity'],payload['buyer_is_maker'])
         buy = payload["quantity"] if not payload["buyer_is_maker"] else 0.0
         sell = payload["quantity"] if payload["buyer_is_maker"] else 0.0
         self.flow_buffer[market].append((event.received_timestamp, buy, sell))
@@ -179,10 +236,22 @@ class LiveSession:
                 momentum = momentum_pressure_state(bars, l2_imbalance=imbalance)
         features_ready_ns = time.perf_counter_ns()
         decision = fast_decision(DecisionInput("BTCUSDT", received.isoformat(), tuple(signals), 1.0, tick.age_seconds(received), "UNKNOWN", "LIVE", None, False))
+        cause=identity('evaluation',received.isoformat())
+        with self._mt5_lock:quote=self.mt5.tick()
+        states=self.feed.refresh_states(received)
+        quote_age=(received-pd.Timestamp(quote['timestamp']).to_pydatetime()).total_seconds() if quote.get('timestamp') else None
+        source_states={'spot':'HEALTHY' if states.get('spot')=='CONNECTED' else 'UNAVAILABLE','futures':'HEALTHY' if states.get('futures')=='CONNECTED' else 'UNAVAILABLE','l2':'HEALTHY' if states.get('l2')=='CONNECTED' and self.book.synchronized else 'UNAVAILABLE','vantage':'HEALTHY' if quote.get('status')=='AVAILABLE' and quote_age is not None and 0<=quote_age<=3 else 'UNAVAILABLE'}
+        markers=Journal.progress_at(self.journal.path)
+        outcome_ready='outcome_scheduler' in markers and 0<=received.timestamp()-markers['outcome_scheduler']['committed_at']<=10
+        compact=self.causal_features.snapshot(received,quote,l2=imbalance,feed_health=source_states,storage_ready=self.raw_writer is not None and self.raw_writer.ready and not getattr(self.feed,'ledger_error',None),outcomes_ready=outcome_ready)
+        compact['cause_id']=cause
+        self.journal.append('features',cause,received,compact,stage='features',cause_id=cause)
+        transition=self.signals.evaluate(received,compact)
+        atomic_json(self.output.with_name('signal.json'),self.signals.snapshot())
         decision_ns = time.perf_counter_ns()
         self.decision_path.parent.mkdir(parents=True, exist_ok=True)
         decision_record = decision.to_record()
-        mt5_quote = self.mt5.tick()
+        mt5_quote = quote
         self.v2_forward.heartbeat(mt5_quote, self.feed.status())
         bars30 = completed_bars(frame, 30, asof=pd.Timestamp(received)) if len(self.trade_buffer) >= 10 else pd.DataFrame()
         if len(bars30) >= 35 and bars30.index[-1] != self._last_v2_bar:
@@ -247,18 +316,125 @@ class LiveSession:
         })
         for forecast in forecasts:
             self.store.append(forecast)
+            observation_id=identity('prediction',forecast.timestamp.isoformat(),forecast.horizon_seconds)
+            self.outcomes.register(observation_id,'prediction',forecast.timestamp,'LONG' if forecast.p_up>=forecast.p_down else 'SHORT',horizons=(forecast.horizon_seconds,),payload={'prediction_timestamp':forecast.timestamp.isoformat()})
+        self.journal.append('candidate',cause,received,{'legacy_direction':decision.direction,'signal_setup':self.signals.snapshot()},stage='candidates',cause_id=cause)
+        self.journal.append('decision',cause,received,{'legacy':decision.to_record(),'signal':transition,'version':'shadow-flow-l2-v1'},stage='decisions',cause_id=cause)
+        self.outcomes.register(cause,'candidate',received,decision.direction)
+        self.journal.mark('predictions',cause,received)
         snapshot = ForecastSnapshot.from_forecasts(forecasts, "LIVE", self.feed.status(), payload["price"], tick.age_seconds(received))
         self.output.write_text(json.dumps(snapshot.to_dict(), indent=2, ensure_ascii=False), encoding="utf-8")
+
+    def _vantage_age(self) -> float | None:
+        return _res_age_seconds(self._last_vantage_wall)
+
+    async def _recreate_feed_task(self) -> None:
+        """Ask stable feed owners to replace children; never cancel the session waiter."""
+        if hasattr(self.feed,'request_reconnect'):
+            for market in self.feed.health:self.feed.request_reconnect(market)
+
+    async def _reinit_subcomponents(self) -> None:
+        """Auto-repair Level 3: rebuild the order book and re-seed it; reconnect MT5."""
+        self.book = OrderBookState()
+        self.last_book = None
+        try:
+            await self._refresh_book()
+        except Exception:  # noqa: BLE001
+            pass
+        await self._recreate_feed_task()
+
+    async def _dispatch_event(self,event):
+        key='l2' if event.event_type==EventType.DEPTH else event.payload.get('market','spot')
+        try:self._event_queues[key].put_nowait(event)
+        except asyncio.QueueFull:
+            self._worker_error='EVENT_QUEUE_FULL:'+key
+            self.feed.health[key].disconnect('EVENT_QUEUE_FULL')
+            self.feed.request_reconnect(key)
+
+    async def _consume_events(self,key,stop):
+        while not stop.is_set():
+            event=await self._event_queues[key].get()
+            try:await asyncio.wait_for(self.on_event(event),timeout=10)
+            except Exception as exc:
+                self._worker_error='WORKER_FAILED:'+key+':'+type(exc).__name__
+                self.feed.health[key].disconnect(self._worker_error)
+                self.journal.append('incident',identity(self._worker_error,time.time()),datetime.now(UTC),{'reason':self._worker_error})
+                return  # external process supervisor owns recovery; no orphan thread storm
+            finally:self._event_queues[key].task_done()
+
+    async def _outcome_scheduler(self,stop):
+        while not stop.is_set():
+            await asyncio.to_thread(self.outcomes.catch_up_registrations)
+            await asyncio.to_thread(self.outcomes.resolve_due,datetime.now(UTC))
+            cursor=await asyncio.to_thread(self.journal.state,'forecast_outcome_cursor',0)
+            events=await asyncio.to_thread(self.journal.rows,'outcome',after=cursor,limit=1000)
+            for event in events:
+                row=event['payload']
+                if row['kind']=='prediction':
+                    await asyncio.to_thread(self.store.apply_resolution,row['observation']['prediction_timestamp'],row['horizon_seconds'],row)
+                await asyncio.to_thread(self._signal_maintenance,row)
+                await asyncio.to_thread(self.journal.save,'forecast_outcome_cursor',event['seq'])
+            await asyncio.to_thread(self._signal_maintenance)
+            await asyncio.sleep(1)
+
+    def _signal_maintenance(self,row=None):
+        with self._process_lock:
+            if row:self.signals.accept_outcome(row)
+            self.signals.tick(datetime.now(UTC))
+            atomic_json(self.output.parent/'signal.json',self.signals.snapshot())
 
     async def run(self, duration: float | None):
         print("WAVERUN ENGINE STARTING\nDATA FEEDS CONNECTING\nFEATURE ENGINE READY\nPREDICTION ENGINE READY")
         stop = asyncio.Event()
         recorder = asyncio.create_task(self._vantage_recorder(stop))
+        self._callback = self.on_event
+        supervisor_task: asyncio.Task | None = None
+        workers=[];outcome_task=None
         try:
-            await self._refresh_book()
-            await self.feed.run(self.on_event, duration)
+            try:
+                await self._refresh_book()
+            except Exception as exc:  # noqa: BLE001 - a transient REST failure must not kill startup
+                print(f"WARN initial order-book snapshot failed ({type(exc).__name__}); will seed on first depth gap")
+            if duration is None:
+                self.raw_writer=RawWriter(self.output.parent/'raw',self.journal)
+                maintenance=StorageMaintenance(self.raw_writer.root,self.journal,self.outcomes)
+                self.raw_writer.maintenance=maintenance.run
+                self.raw_writer.start()
+                self.feed=BinancePublicFeed(self.feed.symbol,include_futures=True,separate_l2=True)
+                self.feed.raw_sink=lambda market,raw,received:self.raw_writer.submit(market,received,raw)
+                self.feed.lifecycle_sink=lambda row:self.journal.append('feed_lifecycle',identity(row,time.time()),row['timestamp'],row)
+                self._event_queues={key:asyncio.Queue(maxsize=2048) for key in self.feed.health}
+                workers=[asyncio.create_task(self._consume_events(key,stop),name='consume-'+key) for key in self._event_queues]
+                outcome_task=asyncio.create_task(self._outcome_scheduler(stop))
+                self._callback=self._dispatch_event
+                # Production path: run the feed as a supervised task and start the
+                # independent health supervisor (Phases 7-10).
+                self._feed_task = asyncio.create_task(self.feed.run(self._callback, None))
+                self._supervisor = HealthSupervisor(
+                    runtime_dir=self.output.parent,
+                    feed=self.feed,
+                    vantage_age=self._vantage_age,
+                    recreate_feed_task=self._recreate_feed_task,
+                    reinit_subcomponents=self._reinit_subcomponents,
+                )
+                supervisor_task = asyncio.create_task(self._supervisor.run())
+                await self._feed_task
+            else:
+                await self.feed.run(self.on_event, duration)
         finally:
             stop.set()
+            for task in workers:task.cancel()
+            if outcome_task:outcome_task.cancel()
+            await asyncio.gather(*workers,*([outcome_task] if outcome_task else []),return_exceptions=True)
+            if self.raw_writer:await asyncio.to_thread(self.raw_writer.close)
+            if self._supervisor is not None:
+                self._supervisor.stop()
+            if supervisor_task is not None:
+                supervisor_task.cancel()
+                try:
+                    await supervisor_task
+                except (asyncio.CancelledError, Exception):  # noqa: BLE001
+                    pass
             await recorder
             self.mt5.close()
 

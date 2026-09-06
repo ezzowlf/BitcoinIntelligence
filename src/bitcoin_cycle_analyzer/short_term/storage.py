@@ -20,6 +20,9 @@ class ForecastStore:
                 payload TEXT NOT NULL, actual_return REAL, mfe REAL, mae REAL,
                 outcome_at TEXT, UNIQUE(timestamp, horizon_seconds)
             )""")
+            columns={r[1] for r in db.execute('PRAGMA table_info(predictions)')}
+            for name,definition in [('resolution_status',"TEXT NOT NULL DEFAULT 'PENDING'"),('data_completeness','INTEGER'),('executable_outcome','REAL')]:
+                if name not in columns:db.execute(f'ALTER TABLE predictions ADD COLUMN {name} {definition}')
 
     def append(self, forecast: Forecast) -> str:
         payload = json.dumps(forecast.to_dict(), ensure_ascii=False, sort_keys=True)
@@ -29,9 +32,13 @@ class ForecastStore:
 
     def record_outcome(self, timestamp: str, horizon_seconds: int, actual_return: float, mfe: float | None = None, mae: float | None = None, outcome_at: str | None = None) -> None:
         with sqlite3.connect(self.path) as db:
-            db.execute("UPDATE predictions SET actual_return=?,mfe=?,mae=?,outcome_at=? WHERE timestamp=? AND horizon_seconds=?", (actual_return, mfe, mae, outcome_at, timestamp, horizon_seconds))
+            db.execute("UPDATE predictions SET actual_return=?,mfe=?,mae=?,outcome_at=?,resolution_status='RESOLVED' WHERE timestamp=? AND horizon_seconds=?", (actual_return, mfe, mae, outcome_at, timestamp, horizon_seconds))
 
     def pending(self) -> list[dict]:
         with sqlite3.connect(self.path) as db:
             db.row_factory = sqlite3.Row
-            return [dict(row) for row in db.execute("SELECT * FROM predictions WHERE actual_return IS NULL ORDER BY timestamp")]
+            return [dict(row) for row in db.execute("SELECT * FROM predictions WHERE resolution_status='PENDING' ORDER BY timestamp")]
+
+    def apply_resolution(self,timestamp,horizon,result):
+        with sqlite3.connect(self.path) as db:
+            db.execute('UPDATE predictions SET actual_return=?,mfe=?,mae=?,outcome_at=?,resolution_status=?,data_completeness=?,executable_outcome=? WHERE timestamp=? AND horizon_seconds=?',(result.get('actual_return'),result.get('mfe'),result.get('mae'),result['resolved_at'],result['status'],int(result['data_completeness']),result.get('executable_outcome'),timestamp,horizon))

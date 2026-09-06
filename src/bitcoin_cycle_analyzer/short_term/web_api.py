@@ -31,6 +31,16 @@ from bitcoin_cycle_analyzer.short_term.product import (
     read_json,
     tail_jsonl,
 )
+from bitcoin_cycle_analyzer.short_term.resilience import (
+    CONFIG as RES_CONFIG,
+)
+from bitcoin_cycle_analyzer.short_term.journal import Journal
+from bitcoin_cycle_analyzer.short_term.resilience import (
+    ComponentHealth,
+    age_seconds,
+    api_overall_label,
+    compute_operating_state,
+)
 
 # Discovery-era evidence for the frozen V5.3 Fast V2 hypothesis. This is NOT a live
 # result and must always be presented separately from forward validation.
@@ -350,9 +360,106 @@ class StateReader:
         self.root = root
         self.runtime = root / "runtime"
         self.ticks = TickCache(self.runtime / "waverun/vantage_ticks.jsonl")
+        self.health_path = self.runtime / "waverun/health.json"
+        self.latest_path = self.runtime / "waverun/latest.json"
+        self.candidates_path = self.runtime / "waverun/pre_gate_candidates.jsonl"
+        self.decisions_path = self.runtime / "waverun/decision_records.jsonl"
         # Pre-signal presentation layer. In-memory, process lifetime only. It reads
         # the fields below and never feeds anything back into the engine.
         self.presignal = PreSignalStateMachine()
+
+    # ------------------------------------------------------------ resilience health
+
+    def _decision_pipeline_age(self, now: datetime) -> float | None:
+        """Age of the newest decision-pipeline write. A quiet market still writes
+        one pre_gate record per evaluation second, so a large age here means the
+        pipeline stopped processing, not that the market was quiet."""
+        stamp = None
+        latest = read_json(self.latest_path) or {}
+        if latest.get("generated_at"):
+            stamp = latest["generated_at"]
+        rows = tail_jsonl(self.decisions_path, 1)
+        if rows and rows[-1].get("timestamp"):
+            stamp = rows[-1]["timestamp"]
+        else:
+            stamp = None
+        return age_seconds(stamp, now)
+
+    def _resilience(self, now: datetime, vantage_state: str, spot_state: str, futures_state: str, l2_state: str) -> dict[str, Any]:
+        """Prefer the independent supervisor's health.json; fall back to an
+        API-side computation so a stale decision pipeline is never shown as LIVE
+        even if the supervisor is not (yet) running."""
+        report = read_json(self.health_path) or {}
+        report_age = age_seconds(report.get("server_time"), now)
+        fresh = report_age is not None and report_age <= max(30.0, RES_CONFIG.supervisor_interval * 4)
+
+        decision_age = self._decision_pipeline_age(now)
+        if fresh and report.get("components"):
+            comps = report["components"]
+            overall = api_overall_label(compute_operating_state({k: ComponentHealth(**v) for k,v in comps.items()})[0])
+            recovery = report.get("recovery", {})
+        else:
+            # Fallback: derive from the freshness signals the API already has.
+            def st(state: str) -> str:
+                return {"AVAILABLE": "HEALTHY", "LIVE": "HEALTHY", "CONNECTED": "HEALTHY"}.get(state, state)
+
+            dp_state = (
+                "HEALTHY" if decision_age is not None and decision_age <= RES_CONFIG.decision_stale_after
+                else "STALE" if decision_age is not None and decision_age <= RES_CONFIG.decision_offline_after
+                else "OFFLINE"
+            )
+            comps = {
+                "vantage": ComponentHealth("vantage", st(vantage_state)).to_dict(),
+                "binance_spot": ComponentHealth("binance_spot", st(spot_state)).to_dict(),
+                "binance_futures": ComponentHealth("binance_futures", st(futures_state)).to_dict(),
+                "l2": ComponentHealth("l2", st(l2_state)).to_dict(),
+                "decision_pipeline": ComponentHealth("decision_pipeline", dp_state, age_seconds=decision_age).to_dict(),
+                "prediction_persistence": ComponentHealth("prediction_persistence", 'UNKNOWN').to_dict(),
+            }
+            op_state, _ = compute_operating_state({k: ComponentHealth(**v) for k, v in comps.items()})
+            overall = api_overall_label(op_state)
+            recovery = {"level": 0, "attempts": 0}
+
+        # Independently verify actual committed stage markers, even for a fresh report.
+        progress=Journal.progress_at(self.runtime/'waverun/journal.db')
+        for key,stage in [('binance_spot','feed_spot'),('binance_futures','feed_futures'),('l2','feed_l2'),('vantage','vantage')]:
+            marker=progress.get(stage)
+            age=max(now.timestamp()-marker['committed_at'],now.timestamp()-marker['event_at']) if marker else None
+            if age is None or not 0<=age<=5:
+                comps[key]=ComponentHealth(key,'OFFLINE',age_seconds=age,detail='source-specific freshness not proven').to_dict()
+        if vantage_state not in {'AVAILABLE','LIVE','HEALTHY'}:
+            comps['vantage']=ComponentHealth('vantage',vantage_state).to_dict()
+        for key,stage in [('feature_pipeline','features'),('candidate_pipeline','candidates'),('decision_pipeline','decisions'),('prediction_persistence','predictions'),('outcome_scheduler','outcome_scheduler'),('storage','storage')]:
+            marker=progress.get(stage)
+            age=max(now.timestamp()-marker['committed_at'],now.timestamp()-marker['event_at']) if marker else None
+            state='HEALTHY' if age is not None and 0<=age<=RES_CONFIG.decision_stale_after else 'OFFLINE'
+            comps[key]=ComponentHealth(key,state,age_seconds=age).to_dict()
+        if not fresh:
+            comps['disk']=ComponentHealth('disk','UNKNOWN').to_dict()
+        writer_path=self.runtime/'waverun/writer_health.json'
+        if writer_path.exists():
+            writer=read_json(writer_path) or {}
+            writer_age=age_seconds(writer.get('timestamp'),now)
+            if not writer.get('ready') or writer_age is None or writer_age>5:
+                comps['storage']=ComponentHealth('storage','OFFLINE',detail='writer/archiver not ready or stale').to_dict()
+        if decision_age is not None and decision_age>RES_CONFIG.decision_stale_after:
+            comps['decision_pipeline']=ComponentHealth('decision_pipeline','OFFLINE' if decision_age>RES_CONFIG.decision_offline_after else 'STALE',age_seconds=decision_age,detail='decision record disagrees with progress marker').to_dict()
+        op_state,reasons=compute_operating_state({k:ComponentHealth(**v) for k,v in comps.items()})
+        overall=api_overall_label(op_state)
+        # Defence in depth: never allow a global healthy label while the decision
+        # pipeline is demonstrably stale, whatever health.json claims.
+        if decision_age is not None and decision_age > RES_CONFIG.decision_stale_after and overall in {"LIVE", "STARTING"}:
+            overall = "CRITICAL" if decision_age > RES_CONFIG.decision_offline_after else "DEGRADED"
+
+        return {
+            "overall": overall,
+            "operating_state": op_state.value,
+            "decision_pipeline_age_seconds": None if decision_age is None else round(decision_age, 1),
+            "components": comps,
+            "recovery": recovery,
+            "supervisor_report_age_seconds": None if report_age is None else round(report_age, 1),
+            "reasons": reasons,
+        }
 
     def snapshot(self) -> dict[str, Any]:
         ticks = self.ticks.refresh()
@@ -383,6 +490,19 @@ class StateReader:
         futures_state = _feed_state(feeds, "futures")
         l2_state = str(availability.get("l2", "UNAVAILABLE"))
         vantage_state = "AVAILABLE" if live_state == "LIVE" else "STALE" if live_state == "STALE" else "OFFLINE"
+
+        # The V5.3 status.json feed block freezes together with the spot trade
+        # path. Prefer the independent supervisor's live feed_health.json when it
+        # is fresher, so a dead spot feed is never masked by a stale "CONNECTED".
+        supervisor_feeds = read_json(self.runtime / "waverun/feed_health.json") or {}
+        if age_seconds(supervisor_feeds.get("server_time"), now) is not None and (
+            age_seconds(supervisor_feeds.get("server_time"), now) <= max(30.0, RES_CONFIG.supervisor_interval * 4)
+        ):
+            sf = supervisor_feeds.get("feeds", {}) or {}
+            if sf.get("spot", {}).get("state"):
+                spot_state = str(sf["spot"]["state"])
+            if sf.get("futures", {}).get("state"):
+                futures_state = str(sf["futures"]["state"])
 
         sources = [
             {"key": "vantage", "label": "Vantage (MT5)", "state": vantage_state, "online": _online(vantage_state)},
@@ -467,9 +587,26 @@ class StateReader:
             )
         )
 
+        res = self._resilience(now, vantage_state, spot_state, futures_state, l2_state)
+
         return {
             "server_time": now.isoformat(),
-            "connection": live_state,
+            # `connection` is the rolled-up operating state, NOT bare vantage
+            # freshness. A stale decision pipeline can no longer read as "LIVE".
+            "connection": res["overall"],
+            "vantage_connection": live_state,
+            "overall": res["overall"],
+            "operating_state": res["operating_state"],
+            "health": {
+                "overall": res["overall"],
+                "operating_state": res["operating_state"],
+                "decision_pipeline_age_seconds": res["decision_pipeline_age_seconds"],
+                "supervisor_report_age_seconds": res["supervisor_report_age_seconds"],
+                "reasons": res["reasons"],
+                "components": res["components"],
+                "recovery": res["recovery"],
+            },
+            "recovery": res["recovery"],
             "price": {
                 "symbol": latest_tick.get("symbol", "BTCUSD"),
                 "mid": price,

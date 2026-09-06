@@ -7,6 +7,8 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 from fastapi.testclient import TestClient
+from bitcoin_cycle_analyzer.short_term.journal import Journal
+from bitcoin_cycle_analyzer.short_term.resilience import ComponentHealth,REQUIRED_FOR_FULL_LIVE
 
 from bitcoin_cycle_analyzer.short_term.web_api import (
     TIMEFRAMES,
@@ -71,6 +73,14 @@ def root(tmp_path):
             "spot": {"state": "CONNECTED"}, "futures": {"state": "DEGRADED"}}},
         "execution": "DISABLED",
     }), encoding="utf-8")
+    journal=Journal(runtime/'waverun/journal.db')
+    for stage in ('features','candidates','decisions','predictions','outcome_scheduler','storage','feed_spot','feed_futures','feed_l2','vantage'):
+        journal.mark(stage,'fixture-chain',now,committed_at=now)
+    _write(runtime/'waverun/decision_records.jsonl',[{'timestamp':now.isoformat()}])
+    components={k:ComponentHealth(k,'HEALTHY').to_dict() for k in REQUIRED_FOR_FULL_LIVE}
+    components['binance_futures']=ComponentHealth('binance_futures','DEGRADED').to_dict()
+    components['l2']=ComponentHealth('l2','HEALTHY').to_dict()
+    (runtime/'waverun/health.json').write_text(json.dumps({'server_time':now.isoformat(),'components':components}))
     return tmp_path
 
 
@@ -88,11 +98,52 @@ def test_health_reports_execution_disabled(client):
 def test_state_exposes_real_engine_fields(client):
     payload = client.get("/api/state").json()
     assert payload["execution"] == "DISABLED"
-    assert payload["connection"] == "LIVE"
+    # `connection` is now the rolled-up operating state. Vantage + the decision
+    # pipeline are fresh in the fixture, but futures is DEGRADED -> DEGRADED_LIVE.
+    assert payload["connection"] == "DEGRADED"
+    assert payload["vantage_connection"] == "LIVE"
+    assert payload["health"]["components"]["decision_pipeline"]["state"] == "HEALTHY"
+    assert payload["health"]["components"]["binance_futures"]["state"] == "DEGRADED"
     assert payload["market_state"]["setup_state"] == "ARMED"
     assert payload["market_state"]["direction_bias"] == "SHORT"
     assert payload["market_state"]["flow_agreement"] == "CONFIRMED"
     assert payload["price"]["bid"] == pytest.approx(77599.0)
+
+
+def test_connection_is_live_when_everything_fresh(client, root):
+    """All feeds CONNECTED and a fresh decision pipeline -> global LIVE."""
+    status = root / "runtime" / "waverun_v5_3_fast_v2_forward" / "status.json"
+    data = json.loads(status.read_text())
+    data["source_health"]["feeds"]["futures"] = {"state": "CONNECTED"}
+    status.write_text(json.dumps(data), encoding="utf-8")
+    report=root/'runtime/waverun/health.json'
+    health=json.loads(report.read_text());health['components']['binance_futures']['state']='HEALTHY'
+    report.write_text(json.dumps(health))
+    payload = client.get("/api/state").json()
+    assert payload["connection"] == "LIVE"
+    assert payload["health"]["components"]["decision_pipeline"]["state"] == "HEALTHY"
+
+
+def test_stale_decision_pipeline_is_never_live(client, root):
+    """Core B-2 contract: fresh vantage + frozen decision pipeline is not LIVE."""
+    stale = (datetime.now(UTC) - timedelta(hours=6)).isoformat()
+    _write(root/'runtime/waverun/decision_records.jsonl',[{'timestamp':stale}])
+    journal=Journal(root/'runtime/waverun/journal.db')
+    for stage in ('decisions','candidates','predictions'):
+        journal.mark(stage,'frozen-pipeline',stale,committed_at=stale)
+    _write(root / "runtime" / "waverun" / "pre_gate_candidates.jsonl", [{
+        "timestamp": stale, "direction_bias": "NEUTRAL", "final_decision": "BLOCKED",
+        "contradictions": [], "availability": {}, "execution": "DISABLED",
+    }])
+    (root / "runtime" / "waverun" / "latest.json").write_text(
+        json.dumps({"mode": "LIVE", "state": "NEUTRAL", "generated_at": stale, "forecasts": []}),
+        encoding="utf-8",
+    )
+    payload = client.get("/api/state").json()
+    assert payload["connection"] != "LIVE"
+    assert payload["connection"] in {"DEGRADED", "CRITICAL"}
+    assert payload["vantage_connection"] == "LIVE"
+    assert payload["health"]["components"]["decision_pipeline"]["state"] in {"STALE", "OFFLINE"}
 
 
 def test_v5_3_separates_discovery_from_live_validation(client):

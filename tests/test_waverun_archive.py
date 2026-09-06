@@ -1,6 +1,8 @@
 import json
 from datetime import UTC,datetime,timedelta
 import pytest
+import threading
+import time
 from bitcoin_cycle_analyzer.short_term.journal import Journal
 from bitcoin_cycle_analyzer.short_term.archive import archive_segment,verify_archive,retain_segment,RawWriter
 T=datetime(2026,1,1,tzinfo=UTC)
@@ -36,3 +38,33 @@ def test_archive_restart_salvage_and_queue_bounds(tmp_path):
     assert verify_archive(root/'interrupted.parquet')['records']==3
     assert writer.submit('spot',T,'x') and not writer.submit('spot',T,'y')
     assert writer.error=='RAW_QUEUE_FULL' and writer.dropped==1
+
+def test_slow_compressor_does_not_block_raw_writer(tmp_path,monkeypatch):
+    entered=threading.Event();release=threading.Event()
+    def blocked(path):
+        entered.set()
+        assert release.wait(5)
+    monkeypatch.setattr('bitcoin_cycle_analyzer.short_term.archive.archive_segment',blocked)
+    writer=RawWriter(tmp_path/'raw',Journal(tmp_path/'journal.db'),segment_records=1)
+    try:
+        writer.start();assert writer.submit('spot',T,'first')
+        assert entered.wait(3)
+        for i in range(10):assert writer.submit('spot',T,str(i))
+        deadline=time.monotonic()+3
+        while writer.written<11 and time.monotonic()<deadline:time.sleep(.01)
+        assert writer.written==11 and writer.queue.qsize()==0
+        assert writer.archive_queue.qsize()>=1
+    finally:release.set();writer.close()
+
+def test_compressor_failure_keeps_complete_raw_and_fails_health(tmp_path,monkeypatch):
+    def broken(path):raise OSError('simulated archive failure')
+    monkeypatch.setattr('bitcoin_cycle_analyzer.short_term.archive.archive_segment',broken)
+    writer=RawWriter(tmp_path/'raw',Journal(tmp_path/'journal.db'),segment_records=1)
+    try:
+        writer.start();writer.submit('spot',T,'source-payload')
+        deadline=time.monotonic()+3
+        while not writer.error and time.monotonic()<deadline:time.sleep(.01)
+        assert writer.error=='ARCHIVE_OSError' and not writer.ready
+        raw=list(writer.root.glob('*.jsonl'))
+        assert len(raw)==1 and 'source-payload' in raw[0].read_text()
+    finally:writer.close()

@@ -76,8 +76,15 @@ class RawWriter:
         self.segment_records=segment_records;self.segment_seconds=segment_seconds
         self.error=None;self.dropped=0;self.written=0;self.archived=0
         self.stop_event=threading.Event();self.thread=None
+        self.archive_queue=queue.Queue(maxsize=32);self.archive_thread=None
+        self.archive_ready=False;self.maintenance=None;self.storage_metrics=None
+
+    @property
+    def ready(self):
+        return bool(self.archive_ready and self.thread and self.thread.is_alive() and self.archive_thread and self.archive_thread.is_alive() and not self.error and (self.storage_metrics or {}).get('new_signals_allowed',False))
 
     def start(self):
+        self.archive_thread=threading.Thread(target=self._archive_run,name='waverun-archiver',daemon=True);self.archive_thread.start()
         self.thread=threading.Thread(target=self._run,name='waverun-raw-writer',daemon=True);self.thread.start()
 
     def submit(self,source,received_at,payload):
@@ -91,6 +98,23 @@ class RawWriter:
         self.stop_event.set()
         if self.thread:self.thread.join(timeout)
         if self.thread and self.thread.is_alive():self.error='STORAGE_CLOSE_TIMEOUT'
+        if self.archive_thread:self.archive_thread.join(timeout)
+        if self.archive_thread and self.archive_thread.is_alive():self.error='ARCHIVE_CLOSE_TIMEOUT'
+
+    def _archive_run(self):
+        last_maintenance=0
+        try:
+            self.catch_up();self.archive_ready=True
+            while not self.stop_event.is_set() or self.thread and self.thread.is_alive() or not self.archive_queue.empty():
+                try:raw=self.archive_queue.get(timeout=.1)
+                except queue.Empty:raw=None
+                if raw:
+                    try:archive_segment(raw);self.archived+=1
+                    finally:self.archive_queue.task_done()
+                if self.maintenance and time.monotonic()-last_maintenance>=60:
+                    self.storage_metrics=self.maintenance()
+                    last_maintenance=time.monotonic()
+        except Exception as exc:self.error='ARCHIVE_'+type(exc).__name__
 
     def catch_up(self):
         for path in self.root.glob('*.jsonl'):
@@ -115,7 +139,6 @@ class RawWriter:
     def _run(self):
         handle=None;path=None;n=0;started=time.monotonic();last_flush=0
         try:
-            self.catch_up()
             while not self.stop_event.is_set() or not self.queue.empty():
                 try:item=self.queue.get(timeout=.1)
                 except queue.Empty:item=None
@@ -127,11 +150,13 @@ class RawWriter:
                 if clock-last_flush>=1:
                     if handle:handle.flush();os.fsync(handle.fileno())
                     self.journal.mark('storage',identity('raw-flush',clock),utc())
+                    atomic_json(self.root.parent/'writer_health.json',{'timestamp':utc().isoformat(),'ready':self.ready,'error':self.error,'dropped':self.dropped,'execution':'DISABLED'})
                     last_flush=clock
                 if handle and (n>=self.segment_records or clock-started>=self.segment_seconds or self.stop_event.is_set() and self.queue.empty()):
                     handle.flush();os.fsync(handle.fileno());handle.close();handle=None
                     raw=path.with_suffix('.jsonl');os.replace(path,raw)
-                    archive_segment(raw);self.archived+=1
+                    try:self.archive_queue.put_nowait(raw)
+                    except queue.Full:self.error='ARCHIVE_QUEUE_FULL'  # complete raw remains recoverable on disk
         except Exception as exc:
             self.error='STORAGE_'+type(exc).__name__
         finally:
