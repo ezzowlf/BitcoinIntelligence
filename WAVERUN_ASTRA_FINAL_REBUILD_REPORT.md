@@ -86,3 +86,14 @@ No finding is declared finally closed before full integration/acceptance. Local 
 ## Reproducibility and preservation
 
 Only source, tests, documentation and sanitized aggregate/JUnit evidence may be committed. audit/, rebuild_artifacts/, runtime, databases, raw snapshots, environment secrets and credentials stay uncommitted. Current remaining source changes are intentional work in progress, not accepted production code. See WAVERUN_HANDOVER_TO_CLAUDE.md for exact continuation commands.
+
+## Checkpoint: external process owner and first full-suite run
+
+Updated UTC: 2026-09-06T21:19:49.575498+00:00. HEAD: `98afecbbabca81c85667645f32329badb24fd0e3`.
+
+- Completed/tested commit `98afecb`: external watchdog owns only its launched child; per-runtime exclusive OS lock, generation-bound atomic restart request, durable launch budget surviving clock rollback, stale/future health rejection, real child termination/restart/reaping. Five tests PASS in docs/rebuild/watchdog-01.xml. This is process-owner foundation; complete collector recovery acceptance remains OPEN.
+- Supervisor boot ID/request wiring and off-event-loop health I/O added to working tree. Lifecycle sink failure no longer terminates feed ownership, but storage/ledger failure health gating still needs completion.
+- Full suite 01: 501 PASS, 13 FAIL, 42 ERROR (113.29s). Missing historical databases in the new worktree caused many empty-frame failures. Previously audited fixtures copied via read-only SQLite backup; previous local empty DBs preserved under rebuild_artifacts/full_suite_fixture_backup/. Provenance recorded in rebuild_artifacts/full-suite-fixture-provenance.json. No runtime data committed.
+- Integration 01: 83 PASS / 1 FAIL (47.98s). Genuine API inconsistency: old decision record forced unhealthy overall label while component still HEALTHY from journal. Fixed component reconciliation; awaiting rerun.
+- Full suite 02 is RUNNING, log rebuild_artifacts/full-02.log, JUnit rebuild_artifacts/full-02.xml. Do not claim PASS until process completion and XML inspection.
+- Next concrete step: inspect full-02 failures, then finish source/ledger/disk health and actual restart recovery acceptance. Frozen math remains unchanged. Local gate NOT REACHED; VPS unchanged; execution DISABLED.

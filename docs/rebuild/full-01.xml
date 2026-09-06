@@ -1,0 +1,801 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="42" failures="13" skipped="0" tests="556" time="113.270" timestamp="2026-09-06T23:11:44.835831+02:00" hostname="Djaezzo"><testcase classname="tests.test_action_story" name="test_every_canonical_decision_state_has_a_german_label" time="0.002" /><testcase classname="tests.test_action_story" name="test_translate_decision_falls_back_gracefully_for_unknown_state" time="0.001" /><testcase classname="tests.test_action_story" name="test_translate_macro_action_covers_the_three_macro7_actions" time="0.001" /><testcase classname="tests.test_action_story" name="test_translate_entry_status_is_german_not_a_raw_enum" time="0.001" /><testcase classname="tests.test_action_story" name="test_zone_message_when_no_zone_is_explicit_not_silent" time="0.001" /><testcase classname="tests.test_action_story" name="test_zone_message_when_zone_active_shows_concrete_numbers" time="0.001" /><testcase classname="tests.test_action_story" name="test_golden_scenario_translates_without_raising_for_every_decision_state[STRONG_BUY]" time="0.001" /><testcase classname="tests.test_action_story" name="test_golden_scenario_translates_without_raising_for_every_decision_state[BUY]" time="0.001" /><testcase classname="tests.test_action_story" name="test_golden_scenario_translates_without_raising_for_every_decision_state[ACCUMULATE]" time="0.001" /><testcase classname="tests.test_action_story" name="test_golden_scenario_translates_without_raising_for_every_decision_state[WATCH]" time="0.001" /><testcase classname="tests.test_action_story" name="test_golden_scenario_translates_without_raising_for_every_decision_state[WAIT]" time="0.001" /><testcase classname="tests.test_action_story" name="test_golden_scenario_translates_without_raising_for_every_decision_state[REDUCE]" time="0.001" /><testcase classname="tests.test_action_story" name="test_golden_scenario_translates_without_raising_for_every_decision_state[TAKE_PROFIT]" time="0.001" /><testcase classname="tests.test_action_story" name="test_golden_scenario_translates_without_raising_for_every_decision_state[HIGH_RISK]" time="0.001" /><testcase classname="tests.test_action_story" name="test_golden_scenario_translates_without_raising_for_every_decision_state[SELL]" time="0.002" /><testcase classname="tests.test_action_story" name="test_golden_scenario_translates_without_raising_for_every_decision_state[NO_EDGE]" time="0.001" /><testcase classname="tests.test_action_story" name="test_wait_scenario_has_a_why_not_now_explanation" time="0.001" /><testcase classname="tests.test_action_story" name="test_wait_scenario_without_any_zone_still_gets_a_reason" time="0.001" /><testcase classname="tests.test_action_story" name="test_buy_scenario_has_full_playbook_fields" time="0.001" /><testcase classname="tests.test_action_story" name="test_strong_buy_scenario_also_produces_a_playbook" time="0.001" /><testcase classname="tests.test_action_story" name="test_take_profit_and_high_risk_and_sell_scenarios_do_not_crash" time="0.001" /><testcase classname="tests.test_action_story" name="test_elliott_roadmap_only_uses_the_engines_own_hypothesis_text" time="0.001" /><testcase classname="tests.test_action_story" name="test_elliott_roadmap_covers_every_known_cycle_bucket" time="0.001" /><testcase classname="tests.test_action_story" name="test_elliott_roadmap_carries_the_known_limitation_disclaimer" time="0.000" /><testcase classname="tests.test_action_story" name="test_elliott_roadmap_flags_conflict_when_engine_says_conflict" time="0.001" /><testcase classname="tests.test_action_story" name="test_elliott_basics_mentions_only_the_five_wave_impulse_and_abc_correction" time="0.001" /><testcase classname="tests.test_action_story" name="test_strategic_and_tactical_labels_can_legitimately_differ_without_being_a_bug" time="0.000" /><testcase classname="tests.test_action_story" name="test_event_relevance_with_no_events_is_explicit" time="0.001" /><testcase classname="tests.test_action_story" name="test_event_relevance_with_events_states_it_does_not_change_decision_by_default" time="0.005" /><testcase classname="tests.test_action_story" name="test_action_story_module_never_imports_ai" time="0.003" /><testcase classname="tests.test_action_story" name="test_action_story_module_never_imported_by_decision_intelligence" time="0.002" /><testcase classname="tests.test_best_entries" name="test_causal_features_ignore_future_mutation" time="0.292" /><testcase classname="tests.test_best_entries" name="test_future_is_used_only_for_outcome_labels" time="0.180" /><testcase classname="tests.test_best_entries" name="test_episode_clustering_is_independent_and_positive" time="0.213" /><testcase classname="tests.test_best_entries" name="test_research_does_not_change_frozen_or_execution" time="0.001" /><testcase classname="tests.test_binance_history" name="test_official_url_and_microsecond_normalization" time="0.029" /><testcase classname="tests.test_binance_history" name="test_download_is_idempotent_and_preserves_raw_partition" time="0.191" /><testcase classname="tests.test_causality" name="test_indicators_have_no_future_dependency" time="0.019" /><testcase classname="tests.test_causality" name="test_similarity_is_point_in_time" time="0.049" /><testcase classname="tests.test_causality" name="test_forward_return_summary" time="0.013" /><testcase classname="tests.test_causality" name="test_score_is_explainable_and_bounded" time="0.001" /><testcase classname="tests.test_causality" name="test_backtest_executes_next_bar" time="0.006" /><testcase classname="tests.test_causality" name="test_walk_forward_disjoint" time="0.002" /><testcase classname="tests.test_causality" name="test_full_analysis_at_cutoff_ignores_future_prices" time="0.217" /><testcase classname="tests.test_core" name="test_data_import_and_incremental_store" time="0.052" /><testcase classname="tests.test_core" name="test_missing_and_invalid_data" time="0.009" /><testcase classname="tests.test_core" name="test_indicators_and_resample" time="0.025" /><testcase classname="tests.test_core" name="test_swings_are_known_only_after_confirmation" time="0.112" /><testcase classname="tests.test_core" name="test_fibonacci_and_confluence" time="0.001" /><testcase classname="tests.test_core" name="test_elliott_is_probabilistic" time="0.111" /><testcase classname="tests.test_core" name="test_api_failure" time="0.001" /><testcase classname="tests.test_decision_24" name="test_long_term_and_swing_are_separate_accumulate_wait" time="0.001" /><testcase classname="tests.test_decision_24" name="test_buy_requires_confirmation_and_non_bear_regime" time="0.001" /><testcase classname="tests.test_decision_24" name="test_sell_has_own_evidence_and_is_not_inverse_buy" time="0.002" /><testcase classname="tests.test_decision_24" name="test_no_edge_and_data_unreliable" time="0.001" /><testcase classname="tests.test_decision_24" name="test_confidence_upgrade_downgrade_and_execution" time="0.001" /><testcase classname="tests.test_decision_24" name="test_zone_generation_is_existing_confluence_only" time="0.001" /><testcase classname="tests.test_decision_24" name="test_telegram_commands_and_research_labels" time="0.001" /><testcase classname="tests.test_decision_24" name="test_telegram_dedup_only_state_changes" time="0.001" /><testcase classname="tests.test_decision_24" name="test_telegram_alert_is_persisted_in_forward_ledger" time="0.094" /><testcase classname="tests.test_decision_24" name="test_intrabar_alert_is_preview_and_not_persisted" time="0.082" /><testcase classname="tests.test_decision_24" name="test_forward_cutoff_append_only_and_alert_ledger" time="0.096" /><testcase classname="tests.test_decision_24" name="test_database_triggers_reject_snapshot_mutation" time="0.087" /><testcase classname="tests.test_decision_24" name="test_frozen_model_detects_mutation" time="0.006" /><testcase classname="tests.test_decision_intelligence" name="test_evidence_families_cover_all_seven_and_are_independent" time="0.095"><error message="failed on setup with &quot;IndexError: index 0 is out of bounds for axis 0 with size 0&quot;">tests\test_decision_intelligence.py:45: in real_state
+    "fusion_discovery": HistoricalPatternDiscoveryEngine().discover(frame),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:26: in discover
+    visible=frame.loc[:as_of] if as_of is not None else frame;features,outcomes=_feature_frame(visible);eras,breaks,_=_era(visible);regimes=outcomes.regime
+                                                                                                                      ^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:20: in _era
+    vol=frame.close.pct_change().rolling(180).std();volume=frame.volume.rolling(180).median();score=(vol.rank(pct=True)+volume.rank(pct=True)).fillna(0);breaks=[frame.index[int(len(frame)*q)] for q in (.25,.5,.75)];return pd.cut(pd.Series(np.arange(len(frame)),index=frame.index),[-1,int(len(frame)*.25),int(len(frame)*.5),int(len(frame)*.75),len(frame)],labels=["STATISTICAL_ERA_1","STATISTICAL_ERA_2","STATISTICAL_ERA_3","STATISTICAL_ERA_4"]).astype(str),breaks,score
+                                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:5401: in __getitem__
+    return getitem(key)
+           ^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimelike.py:393: in __getitem__
+    result = cast(Union[Self, DTScalarOrNaT], super().__getitem__(key))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\_mixins.py:293: in __getitem__
+    result = self._ndarray[key]
+             ^^^^^^^^^^^^^^^^^^
+E   IndexError: index 0 is out of bounds for axis 0 with size 0</error></testcase><testcase classname="tests.test_decision_intelligence" name="test_unavailable_macro_data_is_never_treated_as_neutral_bearish" time="0.001"><error message="failed on setup with &quot;IndexError: index 0 is out of bounds for axis 0 with size 0&quot;">tests\test_decision_intelligence.py:45: in real_state
+    "fusion_discovery": HistoricalPatternDiscoveryEngine().discover(frame),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:26: in discover
+    visible=frame.loc[:as_of] if as_of is not None else frame;features,outcomes=_feature_frame(visible);eras,breaks,_=_era(visible);regimes=outcomes.regime
+                                                                                                                      ^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:20: in _era
+    vol=frame.close.pct_change().rolling(180).std();volume=frame.volume.rolling(180).median();score=(vol.rank(pct=True)+volume.rank(pct=True)).fillna(0);breaks=[frame.index[int(len(frame)*q)] for q in (.25,.5,.75)];return pd.cut(pd.Series(np.arange(len(frame)),index=frame.index),[-1,int(len(frame)*.25),int(len(frame)*.5),int(len(frame)*.75),len(frame)],labels=["STATISTICAL_ERA_1","STATISTICAL_ERA_2","STATISTICAL_ERA_3","STATISTICAL_ERA_4"]).astype(str),breaks,score
+                                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:5401: in __getitem__
+    return getitem(key)
+           ^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimelike.py:393: in __getitem__
+    result = cast(Union[Self, DTScalarOrNaT], super().__getitem__(key))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\_mixins.py:293: in __getitem__
+    result = self._ndarray[key]
+             ^^^^^^^^^^^^^^^^^^
+E   IndexError: index 0 is out of bounds for axis 0 with size 0</error></testcase><testcase classname="tests.test_decision_intelligence" name="test_historical_family_strength_bounded_by_sample_size" time="0.002"><error message="failed on setup with &quot;IndexError: index 0 is out of bounds for axis 0 with size 0&quot;">tests\test_decision_intelligence.py:45: in real_state
+    "fusion_discovery": HistoricalPatternDiscoveryEngine().discover(frame),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:26: in discover
+    visible=frame.loc[:as_of] if as_of is not None else frame;features,outcomes=_feature_frame(visible);eras,breaks,_=_era(visible);regimes=outcomes.regime
+                                                                                                                      ^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:20: in _era
+    vol=frame.close.pct_change().rolling(180).std();volume=frame.volume.rolling(180).median();score=(vol.rank(pct=True)+volume.rank(pct=True)).fillna(0);breaks=[frame.index[int(len(frame)*q)] for q in (.25,.5,.75)];return pd.cut(pd.Series(np.arange(len(frame)),index=frame.index),[-1,int(len(frame)*.25),int(len(frame)*.5),int(len(frame)*.75),len(frame)],labels=["STATISTICAL_ERA_1","STATISTICAL_ERA_2","STATISTICAL_ERA_3","STATISTICAL_ERA_4"]).astype(str),breaks,score
+                                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:5401: in __getitem__
+    return getitem(key)
+           ^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimelike.py:393: in __getitem__
+    result = cast(Union[Self, DTScalarOrNaT], super().__getitem__(key))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\_mixins.py:293: in __getitem__
+    result = self._ndarray[key]
+             ^^^^^^^^^^^^^^^^^^
+E   IndexError: index 0 is out of bounds for axis 0 with size 0</error></testcase><testcase classname="tests.test_decision_intelligence" name="test_independent_agreement_does_not_double_count_correlated_signals" time="0.001"><error message="failed on setup with &quot;IndexError: index 0 is out of bounds for axis 0 with size 0&quot;">tests\test_decision_intelligence.py:45: in real_state
+    "fusion_discovery": HistoricalPatternDiscoveryEngine().discover(frame),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:26: in discover
+    visible=frame.loc[:as_of] if as_of is not None else frame;features,outcomes=_feature_frame(visible);eras,breaks,_=_era(visible);regimes=outcomes.regime
+                                                                                                                      ^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:20: in _era
+    vol=frame.close.pct_change().rolling(180).std();volume=frame.volume.rolling(180).median();score=(vol.rank(pct=True)+volume.rank(pct=True)).fillna(0);breaks=[frame.index[int(len(frame)*q)] for q in (.25,.5,.75)];return pd.cut(pd.Series(np.arange(len(frame)),index=frame.index),[-1,int(len(frame)*.25),int(len(frame)*.5),int(len(frame)*.75),len(frame)],labels=["STATISTICAL_ERA_1","STATISTICAL_ERA_2","STATISTICAL_ERA_3","STATISTICAL_ERA_4"]).astype(str),breaks,score
+                                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:5401: in __getitem__
+    return getitem(key)
+           ^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimelike.py:393: in __getitem__
+    result = cast(Union[Self, DTScalarOrNaT], super().__getitem__(key))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\_mixins.py:293: in __getitem__
+    result = self._ndarray[key]
+             ^^^^^^^^^^^^^^^^^^
+E   IndexError: index 0 is out of bounds for axis 0 with size 0</error></testcase><testcase classname="tests.test_decision_intelligence" name="test_cycle_bucket_is_one_of_known_buckets" time="0.001"><error message="failed on setup with &quot;IndexError: index 0 is out of bounds for axis 0 with size 0&quot;">tests\test_decision_intelligence.py:45: in real_state
+    "fusion_discovery": HistoricalPatternDiscoveryEngine().discover(frame),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:26: in discover
+    visible=frame.loc[:as_of] if as_of is not None else frame;features,outcomes=_feature_frame(visible);eras,breaks,_=_era(visible);regimes=outcomes.regime
+                                                                                                                      ^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:20: in _era
+    vol=frame.close.pct_change().rolling(180).std();volume=frame.volume.rolling(180).median();score=(vol.rank(pct=True)+volume.rank(pct=True)).fillna(0);breaks=[frame.index[int(len(frame)*q)] for q in (.25,.5,.75)];return pd.cut(pd.Series(np.arange(len(frame)),index=frame.index),[-1,int(len(frame)*.25),int(len(frame)*.5),int(len(frame)*.75),len(frame)],labels=["STATISTICAL_ERA_1","STATISTICAL_ERA_2","STATISTICAL_ERA_3","STATISTICAL_ERA_4"]).astype(str),breaks,score
+                                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:5401: in __getitem__
+    return getitem(key)
+           ^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimelike.py:393: in __getitem__
+    result = cast(Union[Self, DTScalarOrNaT], super().__getitem__(key))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\_mixins.py:293: in __getitem__
+    result = self._ndarray[key]
+             ^^^^^^^^^^^^^^^^^^
+E   IndexError: index 0 is out of bounds for axis 0 with size 0</error></testcase><testcase classname="tests.test_decision_intelligence" name="test_elliott_cycle_context_flags_consistency_not_certainty" time="0.001"><error message="failed on setup with &quot;IndexError: index 0 is out of bounds for axis 0 with size 0&quot;">tests\test_decision_intelligence.py:45: in real_state
+    "fusion_discovery": HistoricalPatternDiscoveryEngine().discover(frame),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:26: in discover
+    visible=frame.loc[:as_of] if as_of is not None else frame;features,outcomes=_feature_frame(visible);eras,breaks,_=_era(visible);regimes=outcomes.regime
+                                                                                                                      ^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:20: in _era
+    vol=frame.close.pct_change().rolling(180).std();volume=frame.volume.rolling(180).median();score=(vol.rank(pct=True)+volume.rank(pct=True)).fillna(0);breaks=[frame.index[int(len(frame)*q)] for q in (.25,.5,.75)];return pd.cut(pd.Series(np.arange(len(frame)),index=frame.index),[-1,int(len(frame)*.25),int(len(frame)*.5),int(len(frame)*.75),len(frame)],labels=["STATISTICAL_ERA_1","STATISTICAL_ERA_2","STATISTICAL_ERA_3","STATISTICAL_ERA_4"]).astype(str),breaks,score
+                                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:5401: in __getitem__
+    return getitem(key)
+           ^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimelike.py:393: in __getitem__
+    result = cast(Union[Self, DTScalarOrNaT], super().__getitem__(key))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\_mixins.py:293: in __getitem__
+    result = self._ndarray[key]
+             ^^^^^^^^^^^^^^^^^^
+E   IndexError: index 0 is out of bounds for axis 0 with size 0</error></testcase><testcase classname="tests.test_decision_intelligence" name="test_elliott_never_claims_certainty_language" time="0.001"><error message="failed on setup with &quot;IndexError: index 0 is out of bounds for axis 0 with size 0&quot;">tests\test_decision_intelligence.py:45: in real_state
+    "fusion_discovery": HistoricalPatternDiscoveryEngine().discover(frame),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:26: in discover
+    visible=frame.loc[:as_of] if as_of is not None else frame;features,outcomes=_feature_frame(visible);eras,breaks,_=_era(visible);regimes=outcomes.regime
+                                                                                                                      ^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:20: in _era
+    vol=frame.close.pct_change().rolling(180).std();volume=frame.volume.rolling(180).median();score=(vol.rank(pct=True)+volume.rank(pct=True)).fillna(0);breaks=[frame.index[int(len(frame)*q)] for q in (.25,.5,.75)];return pd.cut(pd.Series(np.arange(len(frame)),index=frame.index),[-1,int(len(frame)*.25),int(len(frame)*.5),int(len(frame)*.75),len(frame)],labels=["STATISTICAL_ERA_1","STATISTICAL_ERA_2","STATISTICAL_ERA_3","STATISTICAL_ERA_4"]).astype(str),breaks,score
+                                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:5401: in __getitem__
+    return getitem(key)
+           ^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimelike.py:393: in __getitem__
+    result = cast(Union[Self, DTScalarOrNaT], super().__getitem__(key))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\_mixins.py:293: in __getitem__
+    result = self._ndarray[key]
+             ^^^^^^^^^^^^^^^^^^
+E   IndexError: index 0 is out of bounds for axis 0 with size 0</error></testcase><testcase classname="tests.test_decision_intelligence" name="test_zones_have_provenance_and_no_bare_decoration" time="0.001"><error message="failed on setup with &quot;IndexError: index 0 is out of bounds for axis 0 with size 0&quot;">tests\test_decision_intelligence.py:45: in real_state
+    "fusion_discovery": HistoricalPatternDiscoveryEngine().discover(frame),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:26: in discover
+    visible=frame.loc[:as_of] if as_of is not None else frame;features,outcomes=_feature_frame(visible);eras,breaks,_=_era(visible);regimes=outcomes.regime
+                                                                                                                      ^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:20: in _era
+    vol=frame.close.pct_change().rolling(180).std();volume=frame.volume.rolling(180).median();score=(vol.rank(pct=True)+volume.rank(pct=True)).fillna(0);breaks=[frame.index[int(len(frame)*q)] for q in (.25,.5,.75)];return pd.cut(pd.Series(np.arange(len(frame)),index=frame.index),[-1,int(len(frame)*.25),int(len(frame)*.5),int(len(frame)*.75),len(frame)],labels=["STATISTICAL_ERA_1","STATISTICAL_ERA_2","STATISTICAL_ERA_3","STATISTICAL_ERA_4"]).astype(str),breaks,score
+                                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:5401: in __getitem__
+    return getitem(key)
+           ^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimelike.py:393: in __getitem__
+    result = cast(Union[Self, DTScalarOrNaT], super().__getitem__(key))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\_mixins.py:293: in __getitem__
+    result = self._ndarray[key]
+             ^^^^^^^^^^^^^^^^^^
+E   IndexError: index 0 is out of bounds for axis 0 with size 0</error></testcase><testcase classname="tests.test_decision_intelligence" name="test_active_zone_picks_price_containing_zone" time="0.001"><error message="failed on setup with &quot;IndexError: index 0 is out of bounds for axis 0 with size 0&quot;">tests\test_decision_intelligence.py:45: in real_state
+    "fusion_discovery": HistoricalPatternDiscoveryEngine().discover(frame),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:26: in discover
+    visible=frame.loc[:as_of] if as_of is not None else frame;features,outcomes=_feature_frame(visible);eras,breaks,_=_era(visible);regimes=outcomes.regime
+                                                                                                                      ^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:20: in _era
+    vol=frame.close.pct_change().rolling(180).std();volume=frame.volume.rolling(180).median();score=(vol.rank(pct=True)+volume.rank(pct=True)).fillna(0);breaks=[frame.index[int(len(frame)*q)] for q in (.25,.5,.75)];return pd.cut(pd.Series(np.arange(len(frame)),index=frame.index),[-1,int(len(frame)*.25),int(len(frame)*.5),int(len(frame)*.75),len(frame)],labels=["STATISTICAL_ERA_1","STATISTICAL_ERA_2","STATISTICAL_ERA_3","STATISTICAL_ERA_4"]).astype(str),breaks,score
+                                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:5401: in __getitem__
+    return getitem(key)
+           ^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimelike.py:393: in __getitem__
+    result = cast(Union[Self, DTScalarOrNaT], super().__getitem__(key))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\_mixins.py:293: in __getitem__
+    result = self._ndarray[key]
+             ^^^^^^^^^^^^^^^^^^
+E   IndexError: index 0 is out of bounds for axis 0 with size 0</error></testcase><testcase classname="tests.test_decision_intelligence" name="test_confirmation_triggers_are_all_present_and_boolean" time="0.001"><error message="failed on setup with &quot;IndexError: index 0 is out of bounds for axis 0 with size 0&quot;">tests\test_decision_intelligence.py:45: in real_state
+    "fusion_discovery": HistoricalPatternDiscoveryEngine().discover(frame),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:26: in discover
+    visible=frame.loc[:as_of] if as_of is not None else frame;features,outcomes=_feature_frame(visible);eras,breaks,_=_era(visible);regimes=outcomes.regime
+                                                                                                                      ^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:20: in _era
+    vol=frame.close.pct_change().rolling(180).std();volume=frame.volume.rolling(180).median();score=(vol.rank(pct=True)+volume.rank(pct=True)).fillna(0);breaks=[frame.index[int(len(frame)*q)] for q in (.25,.5,.75)];return pd.cut(pd.Series(np.arange(len(frame)),index=frame.index),[-1,int(len(frame)*.25),int(len(frame)*.5),int(len(frame)*.75),len(frame)],labels=["STATISTICAL_ERA_1","STATISTICAL_ERA_2","STATISTICAL_ERA_3","STATISTICAL_ERA_4"]).astype(str),breaks,score
+                                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:5401: in __getitem__
+    return getitem(key)
+           ^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimelike.py:393: in __getitem__
+    result = cast(Union[Self, DTScalarOrNaT], super().__getitem__(key))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\_mixins.py:293: in __getitem__
+    result = self._ndarray[key]
+             ^^^^^^^^^^^^^^^^^^
+E   IndexError: index 0 is out of bounds for axis 0 with size 0</error></testcase><testcase classname="tests.test_decision_intelligence" name="test_confirmation_met_count_matches_confirmation_state" time="0.001"><error message="failed on setup with &quot;IndexError: index 0 is out of bounds for axis 0 with size 0&quot;">tests\test_decision_intelligence.py:45: in real_state
+    "fusion_discovery": HistoricalPatternDiscoveryEngine().discover(frame),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:26: in discover
+    visible=frame.loc[:as_of] if as_of is not None else frame;features,outcomes=_feature_frame(visible);eras,breaks,_=_era(visible);regimes=outcomes.regime
+                                                                                                                      ^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:20: in _era
+    vol=frame.close.pct_change().rolling(180).std();volume=frame.volume.rolling(180).median();score=(vol.rank(pct=True)+volume.rank(pct=True)).fillna(0);breaks=[frame.index[int(len(frame)*q)] for q in (.25,.5,.75)];return pd.cut(pd.Series(np.arange(len(frame)),index=frame.index),[-1,int(len(frame)*.25),int(len(frame)*.5),int(len(frame)*.75),len(frame)],labels=["STATISTICAL_ERA_1","STATISTICAL_ERA_2","STATISTICAL_ERA_3","STATISTICAL_ERA_4"]).astype(str),breaks,score
+                                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:5401: in __getitem__
+    return getitem(key)
+           ^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimelike.py:393: in __getitem__
+    result = cast(Union[Self, DTScalarOrNaT], super().__getitem__(key))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\_mixins.py:293: in __getitem__
+    result = self._ndarray[key]
+             ^^^^^^^^^^^^^^^^^^
+E   IndexError: index 0 is out of bounds for axis 0 with size 0</error></testcase><testcase classname="tests.test_decision_intelligence" name="test_playbook_registry_has_seven_archetypes" time="0.002" /><testcase classname="tests.test_decision_intelligence" name="test_playbooks_require_eligibility_not_confirmation_to_appear" time="0.001" /><testcase classname="tests.test_decision_intelligence" name="test_playbooks_never_eligible_with_zero_zone" time="0.001" /><testcase classname="tests.test_decision_intelligence" name="test_decision_engine_high_risk_overrides_everything" time="0.006" /><testcase classname="tests.test_decision_intelligence" name="test_decision_engine_take_profit_at_distribution" time="0.005" /><testcase classname="tests.test_decision_intelligence" name="test_decision_engine_no_edge_with_no_zones" time="0.006" /><testcase classname="tests.test_decision_intelligence" name="test_decision_engine_hard_invalidation_blocks_buy" time="0.006" /><testcase classname="tests.test_decision_intelligence" name="test_decision_engine_watch_when_zone_active_but_cycle_ineligible" time="0.005" /><testcase classname="tests.test_decision_intelligence" name="test_decision_engine_never_issues_strong_buy_without_full_confirmation" time="0.006" /><testcase classname="tests.test_decision_intelligence" name="test_decision_state_is_json_serializable" time="0.005" /><testcase classname="tests.test_decision_intelligence" name="test_explanation_facts_never_recommend_without_confirmation" time="0.004" /><testcase classname="tests.test_decision_intelligence" name="test_explanation_summary_mentions_decision_and_confidence" time="0.006" /><testcase classname="tests.test_decision_intelligence" name="test_rule_registry_ids_are_unique_and_referenced" time="0.001" /><testcase classname="tests.test_decision_intelligence" name="test_decision_state_at_historical_cutoff_uses_no_future_data[2018-12-15]" time="0.012"><failure message="TypeError: Cannot compare tz-naive and tz-aware datetime-like objects.">tests\test_decision_intelligence.py:319: in test_decision_state_at_historical_cutoff_uses_no_future_data
+    historical_frame = frame.loc[:cutoff]
+                       ^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1429: in _getitem_axis
+    return self._get_slice_axis(key, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1461: in _get_slice_axis
+    indexer = labels.slice_indexer(slice_obj.start, slice_obj.stop, slice_obj.step)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\datetimes.py:1072: in slice_indexer
+    return Index.slice_indexer(self, start, end, step)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:6804: in slice_indexer
+    start_slice, end_slice = self.slice_locs(start, end, step=step)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:7068: in slice_locs
+    end_slice = self.get_slice_bound(end, "right")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:6964: in get_slice_bound
+    label = self._maybe_cast_slice_bound(label, side)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\datetimes.py:1033: in _maybe_cast_slice_bound
+    self._data._assert_tzawareness_compat(label)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimes.py:796: in _assert_tzawareness_compat
+    raise TypeError(
+E   TypeError: Cannot compare tz-naive and tz-aware datetime-like objects.</failure></testcase><testcase classname="tests.test_decision_intelligence" name="test_decision_state_at_historical_cutoff_uses_no_future_data[2020-03-16]" time="0.010"><failure message="TypeError: Cannot compare tz-naive and tz-aware datetime-like objects.">tests\test_decision_intelligence.py:319: in test_decision_state_at_historical_cutoff_uses_no_future_data
+    historical_frame = frame.loc[:cutoff]
+                       ^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1429: in _getitem_axis
+    return self._get_slice_axis(key, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1461: in _get_slice_axis
+    indexer = labels.slice_indexer(slice_obj.start, slice_obj.stop, slice_obj.step)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\datetimes.py:1072: in slice_indexer
+    return Index.slice_indexer(self, start, end, step)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:6804: in slice_indexer
+    start_slice, end_slice = self.slice_locs(start, end, step=step)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:7068: in slice_locs
+    end_slice = self.get_slice_bound(end, "right")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:6964: in get_slice_bound
+    label = self._maybe_cast_slice_bound(label, side)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\datetimes.py:1033: in _maybe_cast_slice_bound
+    self._data._assert_tzawareness_compat(label)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimes.py:796: in _assert_tzawareness_compat
+    raise TypeError(
+E   TypeError: Cannot compare tz-naive and tz-aware datetime-like objects.</failure></testcase><testcase classname="tests.test_decision_intelligence" name="test_decision_state_at_historical_cutoff_uses_no_future_data[2022-11-21]" time="0.011"><failure message="TypeError: Cannot compare tz-naive and tz-aware datetime-like objects.">tests\test_decision_intelligence.py:319: in test_decision_state_at_historical_cutoff_uses_no_future_data
+    historical_frame = frame.loc[:cutoff]
+                       ^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1429: in _getitem_axis
+    return self._get_slice_axis(key, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1461: in _get_slice_axis
+    indexer = labels.slice_indexer(slice_obj.start, slice_obj.stop, slice_obj.step)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\datetimes.py:1072: in slice_indexer
+    return Index.slice_indexer(self, start, end, step)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:6804: in slice_indexer
+    start_slice, end_slice = self.slice_locs(start, end, step=step)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:7068: in slice_locs
+    end_slice = self.get_slice_bound(end, "right")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:6964: in get_slice_bound
+    label = self._maybe_cast_slice_bound(label, side)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\datetimes.py:1033: in _maybe_cast_slice_bound
+    self._data._assert_tzawareness_compat(label)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimes.py:796: in _assert_tzawareness_compat
+    raise TypeError(
+E   TypeError: Cannot compare tz-naive and tz-aware datetime-like objects.</failure></testcase><testcase classname="tests.test_drawing_state" name="test_add_and_list_round_trips_all_fields" time="0.012" /><testcase classname="tests.test_drawing_state" name="test_drawings_persist_across_a_new_store_instance" time="0.008" /><testcase classname="tests.test_drawing_state" name="test_invalid_drawing_type_is_rejected" time="0.008" /><testcase classname="tests.test_drawing_state" name="test_update_changes_fields_and_bumps_updated_at" time="0.009" /><testcase classname="tests.test_drawing_state" name="test_update_missing_id_returns_none" time="0.007" /><testcase classname="tests.test_drawing_state" name="test_delete_removes_drawing" time="0.009" /><testcase classname="tests.test_drawing_state" name="test_delete_missing_id_returns_none" time="0.008" /><testcase classname="tests.test_drawing_state" name="test_locked_drawing_cannot_be_deleted" time="0.010" /><testcase classname="tests.test_drawing_state" name="test_locked_drawing_cannot_be_edited_except_to_unlock" time="0.011" /><testcase classname="tests.test_drawing_state" name="test_timeframe_filter_only_returns_matching_drawings" time="0.011" /><testcase classname="tests.test_drawing_state" name="test_all_timeframes_marker_is_always_included" time="0.008" /><testcase classname="tests.test_drawing_state" name="test_different_symbols_use_separate_files" time="0.011" /><testcase classname="tests.test_drawing_state" name="test_restore_reinstates_a_deleted_drawing" time="0.010" /><testcase classname="tests.test_drawing_state" name="test_fib_levels_cover_the_required_ratios" time="0.001" /><testcase classname="tests.test_drawing_state" name="test_fib_anchor_a_and_b_map_to_0_and_1" time="0.001" /><testcase classname="tests.test_drawing_state" name="test_fib_midpoint_is_exact" time="0.001" /><testcase classname="tests.test_drawing_state" name="test_fib_works_for_downward_direction_too" time="0.001" /><testcase classname="tests.test_drawing_state" name="test_drawing_state_module_is_never_imported_by_decision_intelligence" time="0.002" /><testcase classname="tests.test_drawing_state" name="test_decision_engine_signature_has_no_drawing_parameter" time="0.001" /><testcase classname="tests.test_drawing_state" name="test_adding_a_drawing_does_not_change_a_precomputed_decision_state" time="0.007" /><testcase classname="tests.test_event_intelligence" name="test_event_schema_accepts_all_new_fields" time="0.069" /><testcase classname="tests.test_event_intelligence" name="test_invalid_importance_is_rejected" time="0.059" /><testcase classname="tests.test_event_intelligence" name="test_invalid_status_is_rejected" time="0.057" /><testcase classname="tests.test_event_intelligence" name="test_unsourced_https_url_is_rejected" time="0.059" /><testcase classname="tests.test_event_intelligence" name="test_migration_is_backward_compatible_with_pre_existing_rows" time="0.065" /><testcase classname="tests.test_event_intelligence" name="test_append_only_trigger_still_blocks_update_after_migration" time="0.065" /><testcase classname="tests.test_event_intelligence" name="test_pit_ordering_still_enforced" time="0.060" /><testcase classname="tests.test_event_intelligence" name="test_event_not_visible_before_available_at" time="0.069" /><testcase classname="tests.test_event_intelligence" name="test_causality_levels_are_the_canonical_set" time="0.002" /><testcase classname="tests.test_event_intelligence" name="test_classify_causality_never_returns_certainty_without_confirmed_mechanism" time="0.001" /><testcase classname="tests.test_event_intelligence" name="test_classify_causality_note_always_present" time="0.001" /><testcase classname="tests.test_event_intelligence" name="test_expected_vs_observed_flags_mismatch" time="0.001" /><testcase classname="tests.test_event_intelligence" name="test_expected_vs_observed_flags_match" time="0.001" /><testcase classname="tests.test_event_intelligence" name="test_expected_vs_observed_handles_missing_data_honestly" time="0.001" /><testcase classname="tests.test_event_intelligence" name="test_expected_vs_observed_rejects_invalid_direction" time="0.002" /><testcase classname="tests.test_event_intelligence" name="test_dedupe_clusters_near_duplicate_same_time_headlines" time="0.001" /><testcase classname="tests.test_event_intelligence" name="test_dedupe_does_not_merge_similar_text_far_apart_in_time" time="0.001" /><testcase classname="tests.test_event_intelligence" name="test_dedupe_empty_input" time="0.001" /><testcase classname="tests.test_event_intelligence" name="test_event_evidence_family_shape_matches_other_families" time="0.001" /><testcase classname="tests.test_event_intelligence" name="test_event_evidence_family_is_never_wired_into_decision_gates" time="0.001" /><testcase classname="tests.test_event_intelligence" name="test_event_evidence_family_declares_zero_decision_weight" time="0.002" /><testcase classname="tests.test_event_intelligence" name="test_golden_halving_events_seed_is_idempotent_and_sourced" time="0.109" /><testcase classname="tests.test_event_intelligence" name="test_real_database_has_golden_halving_events" time="0.062"><failure message="assert 0 == 4&#10; +  where 0 = len(Empty DataFrame\nColumns: [event_id, event_time, first_known_at, available_at, source_url, source_name, source_quality,...y_at_time, severity_ex_post, created_at, importance, subcategory, status, expected_direction, causality_note]\nIndex: [])">tests\test_event_intelligence.py:193: in test_real_database_has_golden_halving_events
+    assert len(halvings) == 4
+E   assert 0 == 4
+E    +  where 0 = len(Empty DataFrame\nColumns: [event_id, event_time, first_known_at, available_at, source_url, source_name, source_quality,...y_at_time, severity_ex_post, created_at, importance, subcategory, status, expected_direction, causality_note]\nIndex: [])</failure></testcase><testcase classname="tests.test_event_intelligence" name="test_causality_and_expected_vs_observed_results_are_json_serializable" time="0.001" /><testcase classname="tests.test_extended" name="test_rollup_faults[vantage-DEGRADED_LIVE]" time="0.001" /><testcase classname="tests.test_extended" name="test_rollup_faults[binance_spot-CRITICAL]" time="0.001" /><testcase classname="tests.test_extended" name="test_rollup_faults[binance_futures-DEGRADED_LIVE]" time="0.001" /><testcase classname="tests.test_extended" name="test_rollup_faults[both-CRITICAL]" time="0.001" /><testcase classname="tests.test_extended" name="test_rollup_faults[decision_pipeline-CRITICAL]" time="0.001" /><testcase classname="tests.test_extended" name="test_rollup_faults[prediction_persistence-DEGRADED_LIVE]" time="0.002" /><testcase classname="tests.test_extended" name="test_candidate_stall_precludes_full_live" time="0.001" /><testcase classname="tests.test_extended" name="test_task_crash_visible_while_sibling_runs" time="0.052" /><testcase classname="tests.test_extended" name="test_callback_hang_is_bounded" time="0.218" /><testcase classname="tests.test_extended" name="test_repeated_timeouts_and_reconnect_loop" time="0.314" /><testcase classname="tests.test_extended" name="test_cooldown_and_restart_budget" time="0.033" /><testcase classname="tests.test_extended" name="test_negative_control_remove_idle_watchdog" time="0.215" /><testcase classname="tests.test_extended" name="test_old_new_false_live_control[parent-LIVE]" time="2.179" /><testcase classname="tests.test_extended" name="test_old_new_false_live_control[candidate-CRITICAL]" time="3.714" /><testcase classname="tests.test_extended" name="test_actual_pipeline_recovery_including_prediction_commit" time="20.276" /><testcase classname="tests.test_extended" name="test_socket_to_committed_prediction_recovery" time="1.375" /><testcase classname="tests.test_fusion6" name="test_discovery_is_pit_and_multiple_testing_explicit" time="0.570" /><testcase classname="tests.test_fusion6" name="test_backwards_windows_never_use_future" time="0.470" /><testcase classname="tests.test_fusion6" name="test_regime_conditioning_and_rule_survival" time="0.471" /><testcase classname="tests.test_fusion6" name="test_rejected_registry_and_independence_groups" time="0.481" /><testcase classname="tests.test_fusion6" name="test_fusion_state_uses_domain_routing_not_average" time="1.089" /><testcase classname="tests.test_fusion6" name="test_event_store_is_pit_and_requires_source" time="0.020" /><testcase classname="tests.test_fusion6" name="test_active_pattern_completion_is_not_probability" time="1.527" /><testcase classname="tests.test_fusion6_live" name="test_first_true_forward_snapshot_is_strict_and_append_only" time="0.060" /><testcase classname="tests.test_fusion6_live" name="test_outcome_maturation_never_changes_snapshot" time="0.070" /><testcase classname="tests.test_fusion6_live" name="test_watched_state_transitions_are_separate_rows" time="0.064" /><testcase classname="tests.test_fusion6_live" name="test_telegram_setup_masks_token_and_builds_allowlist" time="0.006" /><testcase classname="tests.test_fusion6_live" name="test_alert_dedup_and_relevant_changes" time="0.027" /><testcase classname="tests.test_fusion6_live" name="test_event_pit_provenance_and_reaction" time="0.079" /><testcase classname="tests.test_fusion6_live" name="test_calendar_and_black_friday_are_deterministic" time="0.033" /><testcase classname="tests.test_fusion6_live" name="test_research_next_is_isolated_from_snapshots" time="0.060" /><testcase classname="tests.test_historical_entry_quality_live" name="test_entry_quality_contract_and_groups" time="0.013"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_historical_entry_quality_live.py:15: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_historical_entry_quality_live" name="test_no_duplicate_support_fib_evidence" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_historical_entry_quality_live.py:15: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_historical_entry_quality_live" name="test_reference_loading_and_hash" time="0.008" /><testcase classname="tests.test_historical_entry_quality_live" name="test_reference_missing_is_nonfatal" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_historical_entry_quality_live.py:15: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_historical_entry_quality_live" name="test_history_comparison_controls_and_mae" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_historical_entry_quality_live.py:15: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_historical_entry_quality_live" name="test_staged_research_fixed_variants" time="0.013"><failure message="TypeError: Cannot compare tz-naive and tz-aware datetime-like objects.">tests\test_historical_entry_quality_live.py:46: in test_staged_research_fixed_variants
+    result=staged_entry_research(frame,episodes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\research\best_entries.py:201: in staged_entry_research
+    date=pd.Timestamp(episode.date);date=date.tz_localize("UTC") if date.tzinfo is None else date;window=frame.loc[date:date+pd.Timedelta(days=90)];end=frame.loc[:date+pd.Timedelta(days=365)]
+                                                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1429: in _getitem_axis
+    return self._get_slice_axis(key, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1461: in _get_slice_axis
+    indexer = labels.slice_indexer(slice_obj.start, slice_obj.stop, slice_obj.step)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\datetimes.py:1072: in slice_indexer
+    return Index.slice_indexer(self, start, end, step)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:6804: in slice_indexer
+    start_slice, end_slice = self.slice_locs(start, end, step=step)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:7062: in slice_locs
+    start_slice = self.get_slice_bound(start, "left")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:6964: in get_slice_bound
+    label = self._maybe_cast_slice_bound(label, side)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\datetimes.py:1033: in _maybe_cast_slice_bound
+    self._data._assert_tzawareness_compat(label)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimes.py:796: in _assert_tzawareness_compat
+    raise TypeError(
+E   TypeError: Cannot compare tz-naive and tz-aware datetime-like objects.</failure></testcase><testcase classname="tests.test_historical_entry_quality_live" name="test_telegram_views_and_production_unchanged" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_historical_entry_quality_live.py:15: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_historical_entry_quality_live" name="test_master_state_contains_forward_fields" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_historical_entry_quality_live.py:15: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_independent" name="test_feed_fault_then_real_event[disconnect-spot]" time="0.059" /><testcase classname="tests.test_independent" name="test_feed_fault_then_real_event[disconnect-futures]" time="0.063" /><testcase classname="tests.test_independent" name="test_feed_fault_then_real_event[connect_hang-spot]" time="0.247" /><testcase classname="tests.test_independent" name="test_feed_fault_then_real_event[connect_hang-futures]" time="0.249" /><testcase classname="tests.test_independent" name="test_feed_fault_then_real_event[silent-spot]" time="0.247" /><testcase classname="tests.test_independent" name="test_feed_fault_then_real_event[silent-futures]" time="0.248" /><testcase classname="tests.test_independent" name="test_bare_callback_timeout_must_retry" time="3.304" /><testcase classname="tests.test_independent" name="test_handshake_is_not_event" time="0.046" /><testcase classname="tests.test_independent" name="test_recovery_requires_prediction_progress" time="0.009" /><testcase classname="tests.test_independent" name="test_candidate_fresh_decision_stale_api" time="0.008" /><testcase classname="tests.test_independent" name="test_prediction_mtime_is_not_write_proof" time="0.011" /><testcase classname="tests.test_independent" name="test_pipeline_stall_triggers_repair" time="0.006" /><testcase classname="tests.test_independent" name="test_alert_dedupe_survives_manager_restart" time="0.011" /><testcase classname="tests.test_independent" name="test_level2_does_not_cancel_session" time="0.027" /><testcase classname="tests.test_indicator_state" name="test_decision_state_v1_is_view_only_and_execution_disabled" time="0.066"><failure message="IndexError: index 0 is out of bounds for axis 0 with size 0">tests\test_indicator_state.py:36: in test_decision_state_v1_is_view_only_and_execution_disabled
+    state, frame = _state()
+                   ^^^^^^^^
+tests\test_indicator_state.py:30: in _state
+    "fusion_discovery": HistoricalPatternDiscoveryEngine().discover(frame),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:26: in discover
+    visible=frame.loc[:as_of] if as_of is not None else frame;features,outcomes=_feature_frame(visible);eras,breaks,_=_era(visible);regimes=outcomes.regime
+                                                                                                                      ^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:20: in _era
+    vol=frame.close.pct_change().rolling(180).std();volume=frame.volume.rolling(180).median();score=(vol.rank(pct=True)+volume.rank(pct=True)).fillna(0);breaks=[frame.index[int(len(frame)*q)] for q in (.25,.5,.75)];return pd.cut(pd.Series(np.arange(len(frame)),index=frame.index),[-1,int(len(frame)*.25),int(len(frame)*.5),int(len(frame)*.75),len(frame)],labels=["STATISTICAL_ERA_1","STATISTICAL_ERA_2","STATISTICAL_ERA_3","STATISTICAL_ERA_4"]).astype(str),breaks,score
+                                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:5401: in __getitem__
+    return getitem(key)
+           ^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimelike.py:393: in __getitem__
+    result = cast(Union[Self, DTScalarOrNaT], super().__getitem__(key))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\_mixins.py:293: in __getitem__
+    result = self._ndarray[key]
+             ^^^^^^^^^^^^^^^^^^
+E   IndexError: index 0 is out of bounds for axis 0 with size 0</failure></testcase><testcase classname="tests.test_indicator_state" name="test_indicator_state_v1_schema_matches_spec_fields" time="0.061"><failure message="IndexError: index 0 is out of bounds for axis 0 with size 0">tests\test_indicator_state.py:46: in test_indicator_state_v1_schema_matches_spec_fields
+    state, frame = _state()
+                   ^^^^^^^^
+tests\test_indicator_state.py:30: in _state
+    "fusion_discovery": HistoricalPatternDiscoveryEngine().discover(frame),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:26: in discover
+    visible=frame.loc[:as_of] if as_of is not None else frame;features,outcomes=_feature_frame(visible);eras,breaks,_=_era(visible);regimes=outcomes.regime
+                                                                                                                      ^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:20: in _era
+    vol=frame.close.pct_change().rolling(180).std();volume=frame.volume.rolling(180).median();score=(vol.rank(pct=True)+volume.rank(pct=True)).fillna(0);breaks=[frame.index[int(len(frame)*q)] for q in (.25,.5,.75)];return pd.cut(pd.Series(np.arange(len(frame)),index=frame.index),[-1,int(len(frame)*.25),int(len(frame)*.5),int(len(frame)*.75),len(frame)],labels=["STATISTICAL_ERA_1","STATISTICAL_ERA_2","STATISTICAL_ERA_3","STATISTICAL_ERA_4"]).astype(str),breaks,score
+                                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:5401: in __getitem__
+    return getitem(key)
+           ^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimelike.py:393: in __getitem__
+    result = cast(Union[Self, DTScalarOrNaT], super().__getitem__(key))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\_mixins.py:293: in __getitem__
+    result = self._ndarray[key]
+             ^^^^^^^^^^^^^^^^^^
+E   IndexError: index 0 is out of bounds for axis 0 with size 0</failure></testcase><testcase classname="tests.test_indicator_state" name="test_rule_registry_reflects_macro7_without_mutating_it" time="0.063"><failure message="IndexError: index 0 is out of bounds for axis 0 with size 0">tests\test_indicator_state.py:55: in test_rule_registry_reflects_macro7_without_mutating_it
+    state, frame = _state()
+                   ^^^^^^^^
+tests\test_indicator_state.py:30: in _state
+    "fusion_discovery": HistoricalPatternDiscoveryEngine().discover(frame),
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:26: in discover
+    visible=frame.loc[:as_of] if as_of is not None else frame;features,outcomes=_feature_frame(visible);eras,breaks,_=_era(visible);regimes=outcomes.regime
+                                                                                                                      ^^^^^^^^^^^^^
+src\bitcoin_cycle_analyzer\fusion6\discovery.py:20: in _era
+    vol=frame.close.pct_change().rolling(180).std();volume=frame.volume.rolling(180).median();score=(vol.rank(pct=True)+volume.rank(pct=True)).fillna(0);breaks=[frame.index[int(len(frame)*q)] for q in (.25,.5,.75)];return pd.cut(pd.Series(np.arange(len(frame)),index=frame.index),[-1,int(len(frame)*.25),int(len(frame)*.5),int(len(frame)*.75),len(frame)],labels=["STATISTICAL_ERA_1","STATISTICAL_ERA_2","STATISTICAL_ERA_3","STATISTICAL_ERA_4"]).astype(str),breaks,score
+                                                                                                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexes\base.py:5401: in __getitem__
+    return getitem(key)
+           ^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\datetimelike.py:393: in __getitem__
+    result = cast(Union[Self, DTScalarOrNaT], super().__getitem__(key))
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\arrays\_mixins.py:293: in __getitem__
+    result = self._ndarray[key]
+             ^^^^^^^^^^^^^^^^^^
+E   IndexError: index 0 is out of bounds for axis 0 with size 0</failure></testcase><testcase classname="tests.test_indicator_state" name="test_pine_mql_capability_matrix_never_marks_execution_ready" time="0.002" /><testcase classname="tests.test_intelligence_22" name="test_macro_release_timestamp_blocks_early_use" time="0.004" /><testcase classname="tests.test_intelligence_22" name="test_etf_available_at_and_missing_days" time="0.006" /><testcase classname="tests.test_intelligence_22" name="test_meanpulse_ingestion_availability_and_decay" time="0.007" /><testcase classname="tests.test_intelligence_22" name="test_provider_outage_inputs_are_stable" time="0.001" /><testcase classname="tests.test_intelligence_22" name="test_evidence_22_and_validation_matrix" time="0.001" /><testcase classname="tests.test_intelligence_22" name="test_availability_freshness" time="0.003" /><testcase classname="tests.test_intelligence_22_final" name="test_macro_store_vintage_selection_and_duplicates" time="0.042" /><testcase classname="tests.test_intelligence_22_final" name="test_news_update_chains_preserve_versions_and_transmission_context_only" time="0.001" /><testcase classname="tests.test_intelligence_22_final" name="test_confluence_missing_groups_not_negative_and_evidence_penalizes_coverage" time="0.001" /><testcase classname="tests.test_intelligence_22_final" name="test_explainability_is_rule_based_and_execution_disabled" time="0.001" /><testcase classname="tests.test_intelligence_25" name="test_historical_zone_pit_never_uses_later_confirmation" time="0.065" /><testcase classname="tests.test_intelligence_25" name="test_zone_replay_does_not_mutate_old_version" time="0.201" /><testcase classname="tests.test_intelligence_25" name="test_zone_clustering_has_dynamic_width_and_independent_touches" time="0.093" /><testcase classname="tests.test_intelligence_25" name="test_zone_strength_failure_and_exhaustion_are_bounded" time="0.082" /><testcase classname="tests.test_intelligence_25" name="test_zone_flip_field_and_reaction_statistics_exist" time="0.089" /><testcase classname="tests.test_intelligence_25" name="test_zone_fib_confluence_is_not_separate_zone" time="0.178" /><testcase classname="tests.test_intelligence_25" name="test_previous_ath_zones_are_detected_algorithmically" time="0.092" /><testcase classname="tests.test_intelligence_25" name="test_peak_to_trough_and_recovery_cycles" time="0.025" /><testcase classname="tests.test_intelligence_25" name="test_drawdown_percentile_velocity_and_time_under_water" time="0.023" /><testcase classname="tests.test_intelligence_25" name="test_recovery_state_is_named_and_recovery_nonnegative" time="0.027" /><testcase classname="tests.test_intelligence_25" name="test_wilder_rsi_reference_monotonic_series" time="0.002" /><testcase classname="tests.test_intelligence_25" name="test_weekly_monthly_and_rsi365_are_research_outputs" time="0.031" /><testcase classname="tests.test_intelligence_25" name="test_4h_is_unavailable_without_real_4h_data" time="0.022" /><testcase classname="tests.test_intelligence_25" name="test_rsi_divergence_schema" time="0.002" /><testcase classname="tests.test_intelligence_25" name="test_bollinger_reference_calculation_matches_population_std" time="0.002" /><testcase classname="tests.test_intelligence_25" name="test_bollinger_bandwidth_and_extreme_state" time="0.024" /><testcase classname="tests.test_intelligence_25" name="test_holiday_dates_compute_fourth_thursday_and_following_friday" time="0.001" /><testcase classname="tests.test_intelligence_25" name="test_signal_book_has_symmetric_outcomes_and_spacing" time="0.282" /><testcase classname="tests.test_intelligence_25" name="test_signal_book_levels_are_separate" time="0.276" /><testcase classname="tests.test_intelligence_25" name="test_tradingview_uses_v6_and_no_fake_rare_signal" time="0.005" /><testcase classname="tests.test_intelligence_25" name="test_tradingview_reference_components_are_present" time="0.002" /><testcase classname="tests.test_intelligence_25" name="test_forward_rare_signal_cutoff_and_separation" time="0.091" /><testcase classname="tests.test_intelligence_25" name="test_war_news_alone_never_becomes_sell" time="0.003" /><testcase classname="tests.test_intelligence_25" name="test_news_reaction_transmission_and_resilience" time="0.003" /><testcase classname="tests.test_intelligence_25" name="test_market_shock_contract" time="0.003" /><testcase classname="tests.test_intelligence_25" name="test_challenger_registry_preserves_frozen_boundary" time="0.002" /><testcase classname="tests.test_intelligence_engine" name="test_cycle_engine_probabilistic_and_causal" time="0.023" /><testcase classname="tests.test_intelligence_engine" name="test_metric_availability_and_freshness" time="0.001" /><testcase classname="tests.test_intelligence_engine" name="test_point_in_time_rejects_future_release" time="0.004" /><testcase classname="tests.test_intelligence_engine" name="test_seasonality_and_heatmap_real_history" time="0.024" /><testcase classname="tests.test_intelligence_engine" name="test_holiday_window_has_no_future_samples" time="0.004" /><testcase classname="tests.test_intelligence_engine" name="test_derivatives_are_release_causal" time="0.010" /><testcase classname="tests.test_intelligence_engine" name="test_etf_flow_and_spot_demand" time="0.003" /><testcase classname="tests.test_intelligence_engine" name="test_unavailable_onchain_is_explicit" time="0.001" /><testcase classname="tests.test_intelligence_engine" name="test_macro_and_calendar_use_release_timestamp" time="0.005" /><testcase classname="tests.test_intelligence_engine" name="test_news_is_available_at_not_event_time" time="0.001" /><testcase classname="tests.test_intelligence_engine" name="test_evidence_and_confluence_do_not_double_count" time="0.001" /><testcase classname="tests.test_intelligence_engine" name="test_ablation_reports_incremental_rank_information" time="0.004" /><testcase classname="tests.test_intelligence_engine" name="test_full_intelligence_gracefully_degrades" time="0.997" /><testcase classname="tests.test_live_status_and_axis" name="test_feed_badge_never_renders_bare_disabled_next_to_btcusd" time="0.005" /><testcase classname="tests.test_live_status_and_axis" name="test_feed_status_labels_are_german_and_distinct_states" time="0.001" /><testcase classname="tests.test_live_status_and_axis" name="test_execution_lock_is_labelled_separately_from_feed_status" time="0.001" /><testcase classname="tests.test_live_status_and_axis" name="test_price_fallback_is_explicit_about_being_a_stale_daily_close" time="0.001" /><testcase classname="tests.test_live_status_and_axis" name="test_news_events_distinguish_empty_from_unavailable" time="0.001" /><testcase classname="tests.test_live_status_and_axis" name="test_yaxis_range_is_clamped_from_visible_price_bounds" time="0.001" /><testcase classname="tests.test_live_status_and_axis" name="test_drawing_price_inputs_have_an_upper_bound" time="0.001" /><testcase classname="tests.test_live_status_and_axis" name="test_touch_action_css_present_and_scoped_not_blanket_disabled" time="0.001" /><testcase classname="tests.test_macro7" name="test_yearly_candles_and_stats" time="0.012" /><testcase classname="tests.test_macro7" name="test_all_history_and_macro_elliott_hierarchy" time="0.580" /><testcase classname="tests.test_macro7" name="test_full_history_count_is_algorithmic_and_has_explanation" time="0.589" /><testcase classname="tests.test_macro7" name="test_pit_elliott_replay_never_uses_future" time="9.934" /><testcase classname="tests.test_macro7" name="test_macro_scenarios_activation_and_invalidation_are_conditional" time="1.014" /><testcase classname="tests.test_macro7" name="test_deep_and_extreme_scenarios_have_no_probability" time="0.995" /><testcase classname="tests.test_macro7" name="test_drawdown_price_ladder" time="1.007" /><testcase classname="tests.test_macro7" name="test_macro_and_swing_zones_have_independent_groups" time="1.021" /><testcase classname="tests.test_macro7" name="test_cycle_overlays_and_halvings" time="0.012" /><testcase classname="tests.test_macro7" name="test_long_swing_entries_are_pit_and_minimum_duration" time="0.415" /><testcase classname="tests.test_macro7" name="test_staged_entries_are_research_only_outcomes" time="0.058" /><testcase classname="tests.test_macro7" name="test_horizon_outputs_and_no_production_impact" time="1.135" /><testcase classname="tests.test_macro7" name="test_macro7_forward_ledger_is_post_freeze_and_append_only" time="0.028" /><testcase classname="tests.test_market_data_21" name="test_point_in_time_excludes_future_release" time="0.005" /><testcase classname="tests.test_market_data_21" name="test_provider_disagreement_reduces_confidence" time="0.001" /><testcase classname="tests.test_market_data_21" name="test_funding_regime_and_oi_changes" time="0.015" /><testcase classname="tests.test_market_data_21" name="test_external_store_enforces_available_at" time="0.025" /><testcase classname="tests.test_market_data_21" name="test_timestamp_normalization_accepts_aware_values" time="0.001" /><testcase classname="tests.test_market_data_21" name="test_episode_clustering_and_entry_execution_disabled" time="0.003" /><testcase classname="tests.test_market_data_21" name="test_news_decay_is_category_specific_and_causal" time="0.003" /><testcase classname="tests.test_market_data_21" name="test_confluence_deduplicates_source_event_and_evidence_uses_oos" time="0.001" /><testcase classname="tests.test_master5_challenger" name="test_challenger_is_separate_and_execution_locked" time="1.035" /><testcase classname="tests.test_master5_challenger" name="test_rare_buy_and_sell_risk_are_separate" time="0.001" /><testcase classname="tests.test_master5_challenger" name="test_zone_lifecycle_contract" time="0.001" /><testcase classname="tests.test_master5_challenger" name="test_historical_book_is_causal_and_frequency_not_forced" time="0.366" /><testcase classname="tests.test_master5_challenger" name="test_shadow_ledger_is_append_only" time="0.032" /><testcase classname="tests.test_master5_challenger" name="test_alert_transition_and_dedup_fingerprint" time="0.001" /><testcase classname="tests.test_master5_challenger" name="test_non_alert_transition_is_silent" time="0.002" /><testcase classname="tests.test_master5_challenger" name="test_frozen_definition_exists_after_freeze" time="0.003" /><testcase classname="tests.test_master_30" name="test_master_state_and_model_hierarchy" time="0.015"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_master_current_decision_separates_actions" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_factor_registry_contract_and_rejected_sell" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_redundancy_groups_fib_and_zones" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_confluence_is_not_universal_score" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_buy_and_strong_buy_hierarchy" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_rejected_or_unconfirmed_sell_is_isolated" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_confirmed_sell_and_strong_sell_require_independent_groups" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_reduce_and_partial_profit_are_not_sell" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_data_quality_gate_blocks_production" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_missing_providers_stay_unavailable" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_derivatives_are_risk_only" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_zone_drawdown_rsi_bollinger_integration" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_model_disagreement_is_explicit" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_master_telegram_commands[/master]" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_master_telegram_commands[/buy]" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_master_telegram_commands[/sell]" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_master_telegram_commands[/levels]" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_master_telegram_commands[/drawdown]" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_candidate_completion_is_labeled_not_probability" time="0.002"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_master_forward_ledger_and_cutoff" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_historical_master_replay_is_research_and_rejected_sell_absent" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_execution_is_disabled_everywhere" time="0.002"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_master_production_alert_and_candidate_silence" time="0.001"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_candidate_change_is_separate_from_production" time="0.002"><error message="failed on setup with &quot;IndexError: single positional indexer is out-of-bounds&quot;">tests\test_master_30.py:17: in current
+    def current():return bitcoin_intelligence.state()[0]
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+scripts\bitcoin_intelligence.py:26: in state
+    divergence=MT5MarketDataProvider.divergence(tick.get("mid"),float(prices.close.iloc[-1]))
+                                                                      ^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1207: in __getitem__
+    return self._getitem_axis(maybe_callable, axis=axis)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1773: in _getitem_axis
+    self._validate_integer(key, axis)
+..\..\..\..\Documents\ChatGPT\Bitcoin\.venv\Lib\site-packages\pandas\core\indexing.py:1706: in _validate_integer
+    raise IndexError("single positional indexer is out-of-bounds")
+E   IndexError: single positional indexer is out-of-bounds</error></testcase><testcase classname="tests.test_master_30" name="test_master_freeze_hash_matches_sources" time="0.002" /><testcase classname="tests.test_mt5_reconnect" name="test_tick_reconnects_after_connection_is_lost" time="0.001" /><testcase classname="tests.test_precision_23" name="test_value_percentile_is_point_in_time" time="0.004" /><testcase classname="tests.test_precision_23" name="test_regime_ensemble_support_stability_transition" time="0.003" /><testcase classname="tests.test_precision_23" name="test_timing_mandatory_conditions_and_data_hold" time="0.001" /><testcase classname="tests.test_precision_23" name="test_horizon_risk_and_capitulation_no_bottom_claim" time="0.004" /><testcase classname="tests.test_precision_23" name="test_uncertainty_no_edge_conflict_and_scenarios" time="0.001" /><testcase classname="tests.test_precision_23" name="test_hysteresis_prevents_flip" time="0.001" /><testcase classname="tests.test_precision_23" name="test_sequence_similarity_uses_independent_episodes" time="0.027" /><testcase classname="tests.test_precision_23" name="test_replay_never_sees_future" time="0.002" /><testcase classname="tests.test_precision_23" name="test_snapshot_versioning_and_as_of" time="0.068" /><testcase classname="tests.test_precision_23" name="test_false_confirmation_and_score_monotonicity" time="0.007" /><testcase classname="tests.test_precision_23" name="test_data_quality_penalty_alert_dedup_and_research" time="0.004" /><testcase classname="tests.test_pro_terminal_ui" name="test_terminal_has_compact_decision_and_live_confirmed_distinction" time="0.001" /><testcase classname="tests.test_pro_terminal_ui" name="test_chart_is_dominant_and_has_required_overlays" time="0.001" /><testcase classname="tests.test_pro_terminal_ui" name="test_raw_debug_is_not_exposed_in_production_terminal" time="0.001" /><testcase classname="tests.test_pro_terminal_ui" name="test_terminal_apptest_renders_without_exception" time="0.958"><failure message="assert 0 == 6&#10; +  where 0 = sum(&lt;generator object test_terminal_apptest_renders_without_exception.&lt;locals&gt;.&lt;genexpr&gt; at 0x0000020467E33920&gt;)">tests\test_pro_terminal_ui.py:32: in test_terminal_apptest_renders_without_exception
+    assert sum(1 for t in at.tabs if t.label in top_level)==6
+E   assert 0 == 6
+E    +  where 0 = sum(&lt;generator object test_terminal_apptest_renders_without_exception.&lt;locals&gt;.&lt;genexpr&gt; at 0x0000020467E33920&gt;)</failure></testcase><testcase classname="tests.test_pro_terminal_ui" name="test_terminal_apptest_renders_without_exception_in_default_simple_mode" time="0.376" /><testcase classname="tests.test_pro_terminal_ui" name="test_terminal_apptest_renders_without_exception_with_mixed_drawing_types" time="0.355" /><testcase classname="tests.test_pro_terminal_ui" name="test_macro7_timeframes_layers_and_plain_language_surfaces" time="0.001" /><testcase classname="tests.test_pro_terminal_ui" name="test_navigation_is_simplified_to_six_top_level_sections" time="0.001" /><testcase classname="tests.test_pro_terminal_ui" name="test_indicator_state_and_rule_registry_are_exported_and_not_executed" time="0.002" /><testcase classname="tests.test_pro_terminal_ui" name="test_layer_presets_and_drawing_tools_present" time="0.001" /><testcase classname="tests.test_pro_terminal_ui" name="test_dormant_conditional_targets_are_labelled_not_predicted" time="0.001" /><testcase classname="tests.test_pro_terminal_ui" name="test_decision_card_is_wired_and_traceable" time="0.001" /><testcase classname="tests.test_pro_terminal_ui" name="test_simple_and_research_modes_exist_and_default_to_simple" time="0.001" /><testcase classname="tests.test_pro_terminal_ui" name="test_decision_zone_and_invalidation_render_unconditionally_on_chart" time="0.000" /><testcase classname="tests.test_pro_terminal_ui" name="test_touch_targets_are_at_least_44px_in_css" time="0.001" /><testcase classname="tests.test_pro_terminal_ui" name="test_glossary_has_no_fabricated_facts_only_static_definitions" time="0.001" /><testcase classname="tests.test_pro_terminal_ui" name="test_ui_state_module_separates_chart_view_state_from_engine_state" time="0.001" /><testcase classname="tests.test_pro_terminal_ui" name="test_events_layer_renders_on_main_chart_and_is_informative_only" time="0.001" /><testcase classname="tests.test_pro_terminal_ui" name="test_simple_mode_uses_the_german_action_story_layer" time="0.001" /><testcase classname="tests.test_pro_terminal_ui" name="test_no_zone_classification_logic_is_reimplemented_in_the_ui" time="0.002" /><testcase classname="tests.test_product_quality" name="test_no_leftover_german_strings_in_primary_ui" time="0.001" /><testcase classname="tests.test_product_quality" name="test_wait_labels_are_german" time="0.002" /><testcase classname="tests.test_product_quality" name="test_next_buy_zone_duplicate_card_was_removed" time="0.001" /><testcase classname="tests.test_product_quality" name="test_decision_detail_card_replaces_the_old_competing_bitcoin_decision_label" time="0.001" /><testcase classname="tests.test_product_quality" name="test_champion_signal_is_explicitly_labelled_as_such" time="0.002" /><testcase classname="tests.test_product_quality" name="test_decision_detail_card_shows_full_story_chain" time="0.001" /><testcase classname="tests.test_product_quality" name="test_decision_detail_uses_the_full_explanation_summary_not_just_a_one_liner" time="0.001" /><testcase classname="tests.test_product_quality" name="test_decision_intelligence_is_computed_exactly_once" time="0.001" /><testcase classname="tests.test_product_quality" name="test_explanation_facts_are_computed_exactly_once" time="0.001" /><testcase classname="tests.test_product_quality" name="test_chart_and_card_read_the_same_di_object" time="0.001" /><testcase classname="tests.test_product_quality" name="test_dec_color_mapping_covers_every_canonical_decision_state" time="0.002" /><testcase classname="tests.test_product_quality" name="test_event_relevance_card_only_shows_high_or_critical_importance" time="0.001" /><testcase classname="tests.test_product_quality" name="test_data_unavailable_is_never_relabelled_as_neutral" time="0.001" /><testcase classname="tests.test_product_quality" name="test_chart_renders_before_the_tab_strip_in_script_order" time="0.001" /><testcase classname="tests.test_product_quality" name="test_default_view_state_is_well_defined_not_implicit" time="0.001" /><testcase classname="tests.test_product_quality" name="test_explanation_facts_do_not_require_ai" time="0.001" /><testcase classname="tests.test_product_quality" name="test_no_unused_zone_low_high_variables_left_behind" time="0.002" /><testcase classname="tests.test_production8" name="test_domain_router_preserves_authority_and_execution_lock" time="0.002" /><testcase classname="tests.test_production8" name="test_state_hash_ignores_render_timestamp_but_detects_decision_change" time="0.001" /><testcase classname="tests.test_production8" name="test_production8_ledger_first_marker_dedup_and_append_only" time="0.034" /><testcase classname="tests.test_production8" name="test_no_order_surface_exists" time="0.001" /><testcase classname="tests.test_production8" name="test_process_lock_prevents_second_watcher_and_releases" time="0.006" /><testcase classname="tests.test_production8" name="test_corrupt_database_degrades_without_overwrite" time="0.006" /><testcase classname="tests.test_production8" name="test_disk_write_failure_has_no_false_success" time="0.020" /><testcase classname="tests.test_production8" name="test_frozen_hash_mismatch_hard_stops_fixture_only" time="0.063" /><testcase classname="tests.test_real_data_layer" name="test_canonical_metadata_and_unique_timestamps" time="0.043" /><testcase classname="tests.test_real_data_layer" name="test_quality_report_detects_without_repairing" time="0.012" /><testcase classname="tests.test_real_data_layer" name="test_weekly_monthly_use_only_completed_source_bars" time="0.031" /><testcase classname="tests.test_real_data_layer" name="test_bitstamp_payload_parsing" time="0.009" /><testcase classname="tests.test_shadow_runtime" name="test_missing_telegram_credentials_forces_dry_run" time="0.005" /><testcase classname="tests.test_shadow_runtime" name="test_execution_enable_attempt_is_hard_blocked" time="0.005" /><testcase classname="tests.test_shadow_runtime" name="test_vps_env_file_is_loaded_without_dotenv" time="0.006" /><testcase classname="tests.test_shadow_runtime" name="test_telegram_client_dry_run_never_calls_network" time="0.001" /><testcase classname="tests.test_shadow_runtime" name="test_persistent_alert_dedup_survives_restart" time="0.089" /><testcase classname="tests.test_shadow_runtime" name="test_alert_schema_contains_delivery_audit_fields" time="0.082" /><testcase classname="tests.test_shadow_runtime" name="test_unauthorized_telegram_chat_is_ignored" time="0.001" /><testcase classname="tests.test_shadow_runtime" name="test_zone_and_invalidation_are_events_not_sell" time="0.001" /><testcase classname="tests.test_shadow_runtime" name="test_all_required_dry_run_message_types_render" time="0.001" /><testcase classname="tests.test_ui_state" name="test_default_chart_view_state_has_all_required_fields" time="0.001" /><testcase classname="tests.test_ui_state" name="test_layer_presets_cover_clean_to_research_depth" time="0.002" /><testcase classname="tests.test_ui_state" name="test_get_chart_view_state_is_idempotent_within_a_session" time="0.001" /><testcase classname="tests.test_ui_state" name="test_query_params_seed_mode_and_preset_on_first_load" time="0.001" /><testcase classname="tests.test_ui_state" name="test_invalid_mode_in_query_params_falls_back_to_simple" time="0.001" /><testcase classname="tests.test_ui_state" name="test_view_modes_are_exactly_simple_and_research" time="0.001" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_ai_disabled_is_deterministic_fallback" time="0.034" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_model_discovery_without_key_is_honest" time="0.033" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_contradiction_and_hallucinated_price_guard" time="0.032" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_raw_responses_output_and_real_model_defaults" time="0.032" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_grounding_keeps_wait_and_dormant_scenarios" time="0.029" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_mt5_read_only_confirmed_candles_and_provenance" time="0.008" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_mt5_disconnect_and_stale_tick_never_confirm_intrabar" time="0.001" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_elliott_is_pit_research_and_support_not_probability" time="0.049" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_cycle_history_has_provenance" time="0.008" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_tick_freshness_and_disagreement_states" time="0.001" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_usage_ledger_cache_and_missing_data_guard" time="0.044" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_api_retry_taxonomy[items0-3-200]" time="0.780" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_api_retry_taxonomy[items1-2-200]" time="0.287" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_api_retry_taxonomy[items2-1-401]" time="0.034" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_api_timeout_is_bounded" time="0.780" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_model_unavailable_and_invalid_response_fall_back" time="0.063" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_daily_cost_limit_blocks_model_but_not_engine" time="0.035" /><testcase classname="tests.test_ux_ai_mt5_elliott" name="test_elliott_replay_is_pit_and_reports_revisions" time="0.081" /><testcase classname="tests.test_waverun_3month_scope" name="test_three_month_scope_and_case_days_are_not_model_proof" time="0.001" /><testcase classname="tests.test_waverun_3month_scope" name="test_final_holdout_is_outside_q1_research_scope" time="0.001" /><testcase classname="tests.test_waverun_3month_scope" name="test_split_projection_has_unique_columns" time="0.001" /><testcase classname="tests.test_waverun_3month_scope" name="test_independent_entries_enforce_horizon_cooldown" time="0.004" /><testcase classname="tests.test_waverun_archive" name="test_archive_roundtrip_retention_and_pins" time="0.037" /><testcase classname="tests.test_waverun_archive" name="test_archive_corruption_prevents_delete[archive]" time="0.020" /><testcase classname="tests.test_waverun_archive" name="test_archive_corruption_prevents_delete[manifest]" time="0.025" /><testcase classname="tests.test_waverun_archive" name="test_archive_restart_salvage_and_queue_bounds" time="0.056" /><testcase classname="tests.test_waverun_b2_degraded_e2e" name="test_spot_drives_pipeline_then_loss_freezes_it_then_recovery_resumes" time="20.248" /><testcase classname="tests.test_waverun_b2_degraded_e2e" name="test_frozen_v5_3_signal_thresholds_are_unchanged" time="0.001" /><testcase classname="tests.test_waverun_b2_health_supervisor" name="test_operating_state_spot_offline_is_critical" time="0.001" /><testcase classname="tests.test_waverun_b2_health_supervisor" name="test_operating_state_futures_only_loss_is_degraded" time="0.001" /><testcase classname="tests.test_waverun_b2_health_supervisor" name="test_operating_state_all_binance_dead_vantage_ok_is_critical" time="0.001" /><testcase classname="tests.test_waverun_b2_health_supervisor" name="test_operating_state_vantage_stale_is_degraded" time="0.001" /><testcase classname="tests.test_waverun_b2_health_supervisor" name="test_spot_dead_but_vantage_futures_alive_is_not_live" time="0.055" /><testcase classname="tests.test_waverun_b2_health_supervisor" name="test_pipeline_watchdog_detects_stall_with_healthy_feeds" time="0.023"><failure message="AssertionError: assert 'DEGRADED_LIVE' in {'FULL_LIVE', 'RECOVERING'}">tests\test_waverun_b2_health_supervisor.py:179: in test_pipeline_watchdog_detects_stall_with_healthy_feeds
+    assert r1["operating_state"] in {"FULL_LIVE", "RECOVERING"}
+E   AssertionError: assert 'DEGRADED_LIVE' in {'FULL_LIVE', 'RECOVERING'}</failure></testcase><testcase classname="tests.test_waverun_b2_health_supervisor" name="test_recovery_requires_real_data_flow" time="0.090"><failure message="assert False&#10; +  where False = any(&lt;generator object test_recovery_requires_real_data_flow.&lt;locals&gt;.&lt;genexpr&gt; at 0x0000020467BC8FB0&gt;)">tests\test_waverun_b2_health_supervisor.py:222: in test_recovery_requires_real_data_flow
+    assert any(a["kind"] == "RECOVERED" for a in alerts)
+E   assert False
+E    +  where False = any(&lt;generator object test_recovery_requires_real_data_flow.&lt;locals&gt;.&lt;genexpr&gt; at 0x0000020467BC8FB0&gt;)</failure></testcase><testcase classname="tests.test_waverun_b2_health_supervisor" name="test_alert_deduplication" time="0.070" /><testcase classname="tests.test_waverun_b2_health_supervisor" name="test_restart_request_and_loop_protection" time="0.352" /><testcase classname="tests.test_waverun_b2_resilience" name="test_recoverable_errors_include_b2_timeouts" time="0.001" /><testcase classname="tests.test_waverun_b2_resilience" name="test_connect_timeout_is_bounded_and_retries" time="1.005" /><testcase classname="tests.test_waverun_b2_resilience" name="test_idle_socket_is_detected_and_recovered" time="1.208" /><testcase classname="tests.test_waverun_b2_resilience" name="test_multiple_connect_failures_survive" time="1.013" /><testcase classname="tests.test_waverun_b2_resilience" name="test_spot_and_futures_recover_independently" time="1.512" /><testcase classname="tests.test_waverun_b2_resilience" name="test_feedhealth_refresh_ages_connected_to_stale_then_offline" time="0.001" /><testcase classname="tests.test_waverun_b2_resilience" name="test_feedhealth_state_transitions_have_timestamps" time="0.001" /><testcase classname="tests.test_waverun_binance_reconnect" name="test_recoverable_errors_cover_all_connection_closed_variants" time="0.001" /><testcase classname="tests.test_waverun_binance_reconnect" name="test_collector_survives_repeated_disconnects[&lt;lambda&gt;0]" time="0.310" /><testcase classname="tests.test_waverun_binance_reconnect" name="test_collector_survives_repeated_disconnects[&lt;lambda&gt;1]" time="0.313" /><testcase classname="tests.test_waverun_binance_reconnect" name="test_collector_survives_repeated_disconnects[&lt;lambda&gt;2]" time="0.311" /><testcase classname="tests.test_waverun_binance_reconnect" name="test_backoff_is_bounded_and_does_not_spin" time="0.002" /><testcase classname="tests.test_waverun_decision" name="test_approved_requires_multiple_groups_cost_edge_and_calibration" time="0.001" /><testcase classname="tests.test_waverun_decision" name="test_contradiction_fails_closed" time="0.001" /><testcase classname="tests.test_waverun_decision" name="test_missing_data_never_becomes_approval" time="0.001" /><testcase classname="tests.test_waverun_live_integration" name="test_binance_trade_and_bookticker_are_normalized" time="0.001" /><testcase classname="tests.test_waverun_live_integration" name="test_orderbook_gap_fails_closed_until_resync" time="0.001" /><testcase classname="tests.test_waverun_live_integration" name="test_feed_health_becomes_stale" time="0.001" /><testcase classname="tests.test_waverun_live_integration" name="test_audio_only_fires_on_transition" time="0.001" /><testcase classname="tests.test_waverun_magnitude" name="test_required_horizons_and_magnitude_ladder_are_fixed" time="0.002" /><testcase classname="tests.test_waverun_magnitude" name="test_first_crossing_uses_causal_path_order" time="0.001" /><testcase classname="tests.test_waverun_magnitude" name="test_magnitude_class_is_absolute_bp_ladder" time="0.001" /><testcase classname="tests.test_waverun_microstructure" name="test_unified_event_keeps_event_and_receive_time_separate" time="0.001" /><testcase classname="tests.test_waverun_microstructure" name="test_microstructure_is_causal_and_computes_flow_book_and_liquidity" time="0.001" /><testcase classname="tests.test_waverun_microstructure" name="test_mt5_tick_history_uses_real_tick_fields_and_audits" time="0.005" /><testcase classname="tests.test_waverun_microstructure" name="test_parquet_store_refuses_empty_frame_without_touching_raw_data" time="0.004" /><testcase classname="tests.test_waverun_precision_research" name="test_cost_aware_targets_separate_move_and_direction" time="0.001" /><testcase classname="tests.test_waverun_precision_research" name="test_matrices_use_train_statistics_and_remove_nonfinite_values" time="0.059" /><testcase classname="tests.test_waverun_precision_research" name="test_ranking_requires_positive_cost_adjusted_ev_and_samples" time="0.001" /><testcase classname="tests.test_waverun_precision_research" name="test_ece_is_zero_for_matching_bins" time="0.001" /><testcase classname="tests.test_waverun_presignal_state" name="test_classify_maps_evidence_to_the_expected_raw_states" time="0.001" /><testcase classname="tests.test_waverun_presignal_state" name="test_data_quality_alone_never_lifts_the_ui_off_ruhig" time="0.001" /><testcase classname="tests.test_waverun_presignal_state" name="test_ruhig_is_stable_under_flickering_noise" time="0.001" /><testcase classname="tests.test_waverun_presignal_state" name="test_two_consecutive_blips_are_still_below_the_upgrade_dwell" time="0.001" /><testcase classname="tests.test_waverun_presignal_state" name="test_full_build_up_sequence_reaches_testsignal" time="0.002" /><testcase classname="tests.test_waverun_presignal_state" name="test_collapse_before_completion_reports_invalidiert" time="0.001" /><testcase classname="tests.test_waverun_presignal_state" name="test_invalidiert_decays_back_to_ruhig_after_the_hold" time="0.001" /><testcase classname="tests.test_waverun_presignal_state" name="test_engine_invalidation_short_circuits_the_build_up" time="0.001" /><testcase classname="tests.test_waverun_presignal_state" name="test_alerts_fire_once_per_transition_only" time="0.003" /><testcase classname="tests.test_waverun_presignal_state" name="test_ruhig_never_produces_an_alert" time="0.001" /><testcase classname="tests.test_waverun_presignal_state" name="test_snapshot_is_stable_between_updates" time="0.001" /><testcase classname="tests.test_waverun_presignal_state" name="test_api_exposes_presignal_and_keeps_proximity" time="0.043" /><testcase classname="tests.test_waverun_presignal_state" name="test_every_state_has_a_german_headline[RUHIG]" time="0.001" /><testcase classname="tests.test_waverun_presignal_state" name="test_every_state_has_a_german_headline[BEOBACHTEN]" time="0.001" /><testcase classname="tests.test_waverun_presignal_state" name="test_every_state_has_a_german_headline[SETUP_ENTSTEHT]" time="0.002" /><testcase classname="tests.test_waverun_presignal_state" name="test_every_state_has_a_german_headline[SIGNAL_NAHE]" time="0.001" /><testcase classname="tests.test_waverun_presignal_state" name="test_every_state_has_a_german_headline[TESTSIGNAL]" time="0.001" /><testcase classname="tests.test_waverun_pressure" name="test_completed_bars_are_causal_and_right_labelled" time="0.015" /><testcase classname="tests.test_waverun_pressure" name="test_macd_slope_acceleration_and_cross_age" time="0.005" /><testcase classname="tests.test_waverun_pressure" name="test_pressure_is_bounded_and_has_derivatives" time="0.022" /><testcase classname="tests.test_waverun_pressure" name="test_absorption_handles_zero_flow" time="0.006" /><testcase classname="tests.test_waverun_pressure" name="test_reversion_needs_displacement_exhaustion_and_confirmation" time="0.022" /><testcase classname="tests.test_waverun_pressure" name="test_directional_engine_preserves_execution_gate_and_origin" time="0.002" /><testcase classname="tests.test_waverun_pressure" name="test_momentum_pressure_state_is_causal_and_keeps_missing_groups_unavailable" time="0.024" /><testcase classname="tests.test_waverun_product" name="test_paper_long_short_and_manual_exit_never_execute" time="0.061" /><testcase classname="tests.test_waverun_product" name="test_mixed_iso_ticks_make_candles" time="0.008" /><testcase classname="tests.test_waverun_product" name="test_hard_execution_invariant_and_hash" time="0.004" /><testcase classname="tests.test_waverun_product" name="test_audio_alerts_are_transition_only_and_off_by_default" time="0.001" /><testcase classname="tests.test_waverun_rebuild" name="test_outcome_delivery_recovers_after_committed_result" time="0.126" /><testcase classname="tests.test_waverun_rebuild" name="test_reachable_signal_contract_and_restart" time="0.203" /><testcase classname="tests.test_waverun_rebuild" name="test_missing_required_blocks_signal[vantage]" time="0.103" /><testcase classname="tests.test_waverun_rebuild" name="test_missing_required_blocks_signal[spot]" time="0.102" /><testcase classname="tests.test_waverun_rebuild" name="test_missing_required_blocks_signal[l2]" time="0.100" /><testcase classname="tests.test_waverun_rebuild" name="test_infrastructure_closes_signal_gate[storage_ready]" time="0.103" /><testcase classname="tests.test_waverun_rebuild" name="test_infrastructure_closes_signal_gate[outcomes_ready]" time="0.117" /><testcase classname="tests.test_waverun_rebuild" name="test_expiry_invalidation_future_and_divergence" time="0.110" /><testcase classname="tests.test_waverun_rebuild" name="test_armed_invalidation" time="0.160" /><testcase classname="tests.test_waverun_rebuild" name="test_executable_outcome_and_restart[LONG]" time="0.401" /><testcase classname="tests.test_waverun_rebuild" name="test_executable_outcome_and_restart[SHORT]" time="0.408" /><testcase classname="tests.test_waverun_rebuild" name="test_missing_path_is_not_loss" time="0.126" /><testcase classname="tests.test_waverun_rebuild" name="test_bad_data_cancel_and_invalid_quote" time="0.136" /><testcase classname="tests.test_waverun_rebuild" name="test_false_warning_and_all_horizons_terminal" time="0.303" /><testcase classname="tests.test_waverun_rebuild" name="test_catchup_transition_registration" time="0.259" /><testcase classname="tests.test_waverun_rebuild" name="test_move_first_missed_and_lead_buckets" time="0.955" /><testcase classname="tests.test_waverun_rebuild" name="test_move_gap_cannot_be_counted_as_missed_move" time="0.145" /><testcase classname="tests.test_waverun_rebuild" name="test_signal_expiry_without_market_and_terminal_outcome" time="0.278" /><testcase classname="tests.test_waverun_rebuild" name="test_recovery_requires_fresh_source_specific_commit" time="0.166" /><testcase classname="tests.test_waverun_rebuild" name="test_normal_full_and_every_required_stage" time="0.063" /><testcase classname="tests.test_waverun_research_dashboard" name="test_research_dashboard_uses_oos_rows_only" time="0.001" /><testcase classname="tests.test_waverun_research_protocol" name="test_holdout_requires_frozen_candidate" time="0.001" /><testcase classname="tests.test_waverun_research_protocol" name="test_candidate_freeze_is_stable_and_execution_disabled" time="0.001" /><testcase classname="tests.test_waverun_research_protocol" name="test_wilson_interval_and_sample_guard" time="0.001" /><testcase classname="tests.test_waverun_research_protocol" name="test_precision_coverage_is_monotonic_in_signal_count" time="0.001" /><testcase classname="tests.test_waverun_research_protocol" name="test_registry_is_append_only_and_counts_variants" time="0.008" /><testcase classname="tests.test_waverun_short_term" name="test_all_horizons_share_one_pipeline_and_execution_is_disabled" time="0.003" /><testcase classname="tests.test_waverun_short_term" name="test_stale_data_fails_closed" time="0.001" /><testcase classname="tests.test_waverun_short_term" name="test_probability_boundaries_and_replay_order" time="0.002" /><testcase classname="tests.test_waverun_short_term" name="test_labels_are_timestamped_and_future_values_are_not_features" time="0.003" /><testcase classname="tests.test_waverun_v1_freeze" name="test_v1_identity_and_holdout_are_fixed" time="0.001" /><testcase classname="tests.test_waverun_v1_freeze" name="test_direct_logistic_probability_is_bounded" time="0.002" /><testcase classname="tests.test_waverun_v1_freeze" name="test_freeze_fingerprint_detects_mutation" time="0.001" /><testcase classname="tests.test_waverun_v2_hard_moves" name="test_hard_target_grid_is_frozen_and_economic" time="0.001" /><testcase classname="tests.test_waverun_v2_hard_moves" name="test_target_must_arrive_before_adverse_barrier" time="0.001" /><testcase classname="tests.test_waverun_v2_hard_moves" name="test_short_barrier_path_is_direction_normalized" time="0.001" /><testcase classname="tests.test_waverun_v2_hard_moves" name="test_move_library_does_not_recount_one_continuous_move" time="0.007" /><testcase classname="tests.test_waverun_v2_strategy" name="test_magnitude_probabilities_are_non_increasing" time="0.001" /><testcase classname="tests.test_waverun_v2_strategy" name="test_prefreeze_gate_requires_every_scientific_condition" time="0.001" /><testcase classname="tests.test_waverun_v2_strategy" name="test_pareto_removes_dominated_configuration" time="0.001" /><testcase classname="tests.test_waverun_v2_strategy" name="test_findings_store_is_append_only" time="0.031" /><testcase classname="tests.test_waverun_v3_archetypes" name="test_causal_vector_uses_only_declared_past_and_t0_offsets" time="0.001" /><testcase classname="tests.test_waverun_v3_archetypes" name="test_trajectory_slope_and_acceleration_are_order_sensitive" time="0.001" /><testcase classname="tests.test_waverun_v3_archetypes" name="test_imputation_is_fit_from_discovery_only" time="0.001" /><testcase classname="tests.test_waverun_v3_archetypes" name="test_required_missing_offsets_are_explicit_not_fabricated" time="0.001" /><testcase classname="tests.test_waverun_v3_archetypes" name="test_parameter_cliff_detection_is_bounded" time="0.001" /><testcase classname="tests.test_waverun_v3_archetypes" name="test_calibration_metrics_are_exact_for_perfect_probabilities" time="0.001" /><testcase classname="tests.test_waverun_v3_archetypes" name="test_experiment_budget_blocks_unbounded_search" time="0.001" /><testcase classname="tests.test_waverun_v4" name="test_v4_ladders_are_bounded" time="0.001" /><testcase classname="tests.test_waverun_v4" name="test_book_features_and_sequence_changes" time="0.002" /><testcase classname="tests.test_waverun_v4" name="test_book_sequence_integrity_blocks_reordering" time="0.001" /><testcase classname="tests.test_waverun_v4" name="test_source_health_and_information_gain" time="0.001" /><testcase classname="tests.test_waverun_v4" name="test_v4_gate_fails_without_new_evidence" time="0.001" /><testcase classname="tests.test_waverun_v5_3_clean_fast_entry_forensics" name="test_trend_efficiency_is_causal_and_deterministic" time="0.001" /><testcase classname="tests.test_waverun_v5_3_clean_fast_entry_forensics" name="test_veto_application_blocks_only_declared_side" time="0.001" /><testcase classname="tests.test_waverun_v5_3_clean_fast_entry_forensics" name="test_expansion_phase_has_fixed_boundaries" time="0.001" /><testcase classname="tests.test_waverun_v5_3_fast_v2_independent_validation" name="test_inventory_excludes_discovery_and_reserved_holdout" time="0.001" /><testcase classname="tests.test_waverun_v5_3_fast_v2_independent_validation" name="test_no_independent_data_is_insufficient_not_failure" time="0.001" /><testcase classname="tests.test_waverun_v5_3_forward" name="test_frozen_signal_and_veto_persistence" time="0.009" /><testcase classname="tests.test_waverun_v5_3_forward" name="test_short_path_uses_bid_to_future_ask" time="0.004" /><testcase classname="tests.test_waverun_v5_contracts" name="test_barrier_grid_is_explicit" time="0.002" /><testcase classname="tests.test_waverun_v5_contracts" name="test_final_holdout_is_locked_until_freeze" time="0.001" /><testcase classname="tests.test_waverun_v5_contracts" name="test_gate_does_not_claim_without_all_evidence" time="0.001" /><testcase classname="tests.test_waverun_vantage_path" name="test_long_uses_ask_entry_and_bid_exit_target_first" time="0.005" /><testcase classname="tests.test_waverun_vantage_path" name="test_short_uses_bid_entry_and_ask_exit_adverse_first" time="0.004" /><testcase classname="tests.test_waverun_web_api" name="test_health_reports_execution_disabled" time="0.032" /><testcase classname="tests.test_waverun_web_api" name="test_state_exposes_real_engine_fields" time="0.034"><failure message="AssertionError: assert 'CRITICAL' == 'DEGRADED'&#10;  &#10;  - DEGRADED&#10;  + CRITICAL">tests\test_waverun_web_api.py:93: in test_state_exposes_real_engine_fields
+    assert payload["connection"] == "DEGRADED"
+E   AssertionError: assert 'CRITICAL' == 'DEGRADED'
+E     
+E     - DEGRADED
+E     + CRITICAL</failure></testcase><testcase classname="tests.test_waverun_web_api" name="test_connection_is_live_when_everything_fresh" time="0.039"><failure message="AssertionError: assert 'CRITICAL' == 'LIVE'&#10;  &#10;  - LIVE&#10;  + CRITICAL">tests\test_waverun_web_api.py:110: in test_connection_is_live_when_everything_fresh
+    assert payload["connection"] == "LIVE"
+E   AssertionError: assert 'CRITICAL' == 'LIVE'
+E     
+E     - LIVE
+E     + CRITICAL</failure></testcase><testcase classname="tests.test_waverun_web_api" name="test_stale_decision_pipeline_is_never_live" time="0.037" /><testcase classname="tests.test_waverun_web_api" name="test_v5_3_separates_discovery_from_live_validation" time="0.038" /><testcase classname="tests.test_waverun_web_api" name="test_proximity_is_never_presented_as_probability" time="0.051" /><testcase classname="tests.test_waverun_web_api" name="test_proximity_is_bounded_and_monotonic_in_state" time="0.001" /><testcase classname="tests.test_waverun_web_api" name="test_checklist_marks_offline_sources_and_blocked_decision" time="0.037" /><testcase classname="tests.test_waverun_web_api" name="test_checklist_statuses_are_from_the_known_set" time="0.037" /><testcase classname="tests.test_waverun_web_api" name="test_assessment_is_german_and_deterministic" time="0.001" /><testcase classname="tests.test_waverun_web_api" name="test_assessment_warns_when_feed_is_not_live" time="0.001" /><testcase classname="tests.test_waverun_web_api" name="test_why_no_signal_flags_contradictions_as_risk" time="0.001" /><testcase classname="tests.test_waverun_web_api" name="test_candles_available_for_every_advertised_timeframe" time="0.090" /><testcase classname="tests.test_waverun_web_api" name="test_unknown_timeframe_is_rejected" time="0.037" /><testcase classname="tests.test_waverun_web_api" name="test_candles_are_sorted_and_deduplicated_across_restarts" time="0.002" /><testcase classname="tests.test_waverun_web_api" name="test_candle_endpoint_never_exposes_an_execution_path" time="0.064" /></testsuite></testsuites>

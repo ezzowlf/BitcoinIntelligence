@@ -116,7 +116,7 @@
     "title": "Restart requests have no code consumer; budgets and alert dedupe are volatile",
     "severity": "HIGH",
     "status": "OPEN_ACCEPTANCE",
-    "progress": "Restart budget and alert dedup persisted; dedup probe PASS; external restart consumer and alert outbox open."
+    "progress": "Durable restart/alert state and external owned-child watchdog implemented; 5 watchdog tests PASS incl real process restart and exclusive owner; full collector restore chain acceptance OPEN."
   },
   {
     "issue_id": "WR-018",
@@ -144,7 +144,7 @@
     "title": "Supervisor and alerts share collector scheduling; logging guarantees too strong",
     "severity": "MEDIUM",
     "status": "OPEN_ACCEPTANCE",
-    "progress": "Raw bounded writer and bounded callback consumers added; supervisor synchronous I/O, alert sink and logging lifecycle still open."
+    "progress": "Supervisor tick moved off collector event loop; lifecycle sink exception isolated; alert sink durability, ledger failure gating and complete chaos validation OPEN."
   },
   {
     "issue_id": "WR-022",

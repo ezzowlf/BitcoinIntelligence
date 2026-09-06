@@ -2,7 +2,7 @@
 
 Updated UTC: 2026-09-06T21:11:29.446312+00:00
 Branch: `codex/waverun-final-rebuild`
-HEAD at last refresh: `6052c28d682cdeac489cf089d3711ced6764b038`. Always run `git rev-parse HEAD` for current HEAD (documentation commits may follow).
+HEAD at last refresh: `98afecbbabca81c85667645f32329badb24fd0e3`. Always run `git rev-parse HEAD` for current HEAD (documentation commits may follow).
 Base: `fd0319e07189ca04108d3b253372271f571d62ed`
 Workspace: `C:\Users\djaez\.codex\worktrees\9b72\Bitcoin`
 Python: `C:\Users\djaez\Documents\ChatGPT\Bitcoin\.venv\Scripts\python.exe`
@@ -38,3 +38,11 @@ $env:MT5_ENABLED='false'
 Next implement external watchdog plus actual component restoration and source freshness integration; add adversarial process-level tests. Then full suite using fresh basetemp/JUnit before further release decisions. Preserve original negative controls under audit/parent and audit/candidate. Full replay inputs: `C:\Users\djaez\Documents\TAKEOFF\Exports\exports\WAVERUN_FULL_TRANSFER_20260906_132904`, especially 04_market_events_full/market_events.jsonl, 05_vantage/vantage_ticks.jsonl, 08_candidates_decisions and 03_databases. All read-only. Full raw27,812,107 rows already entrance-verified. Historical quality NOT REPRODUCIBLE. No winner optimization; frozen V5.3 and closed holdout untouched.
 
 Commit only finished tested source units and reports; keep incomplete source on disk. Update report/matrices/handover after each phase. Never stage broad directories containing runtime/data/secrets. The Git common metadata is outside writable root, so approved git add/commit may need require_escalated. No push or VPS until applicable gates and master authorization steps.
+
+## Latest checkpoint (supersedes older open-work wording above)
+
+External watchdog foundation is now committed as 98afecb, five tests PASS; scripts/waverun_watchdog.py is the intended eventual service entry point. OS lock prevents duplicate owners; only owned child is killed; generation-specific requests and persistent restart budget work. Runtime HealthSupervisor boot-ID wiring and to_thread tick are working-tree changes, not complete accepted recovery.
+
+Full suite first run: 501 PASS / 13 FAIL / 42 ERROR. Most empty-frame errors lacked historical test DBs. Four audited test fixtures now exist locally in ignored database/; provenance and backups in rebuild_artifacts/. Integration rerun: 83 PASS /1 FAIL, component-health reconciliation bug fixed afterward. Full suite second run RUNNING: `rebuild_artifacts/full-02.log`, `full-02.xml`, tool session 86483 if still alive. First action: inspect completion, do not relaunch duplicate tests. Then finish source/ledger/storage gating and recovery chain. All old11 probes passed in last54 focused run; subsequent changes require regression rerun.
+
+Reports and 22/11 matrices persisted and committed at b8779bd; update them after full suite result. Latest known accepted implementation commits: 6052c28 archive foundation, 98afecb process-owner foundation. Most integration/signal/outcome/frontend changes remain intentional uncommitted WIP. Local gate NOT REACHED, VPS untouched, EXECUTION DISABLED.
