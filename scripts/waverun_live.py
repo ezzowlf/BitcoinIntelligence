@@ -438,19 +438,34 @@ class LiveSession:
             finally:self._event_queues[key].task_done()
 
     async def _outcome_scheduler(self,stop):
+        fails=0
         while not stop.is_set():
-            await asyncio.to_thread(self.outcomes.catch_up_registrations)
-            await asyncio.to_thread(self.outcomes.resolve_due,datetime.now(UTC))
-            cursor=await asyncio.to_thread(self.journal.state,'forecast_outcome_cursor',0)
-            events=await asyncio.to_thread(self.journal.rows,'outcome',after=cursor,limit=1000)
-            for event in events:
-                row=event['payload']
-                if row['kind']=='prediction':
-                    await asyncio.to_thread(self.store.apply_resolution,row['observation']['prediction_timestamp'],row['horizon_seconds'],row)
-                await asyncio.to_thread(self._signal_maintenance,row)
-                await asyncio.to_thread(self.journal.save,'forecast_outcome_cursor',event['seq'])
-            await asyncio.to_thread(self._signal_maintenance)
-            await asyncio.sleep(1)
+            try:
+                await asyncio.to_thread(self.outcomes.catch_up_registrations)
+                await asyncio.to_thread(self.outcomes.resolve_due,datetime.now(UTC))
+                cursor=await asyncio.to_thread(self.journal.state,'forecast_outcome_cursor',0)
+                events=await asyncio.to_thread(self.journal.rows,'outcome',after=cursor,limit=1000)
+                for event in events:
+                    row=event['payload']
+                    if row['kind']=='prediction':
+                        await asyncio.to_thread(self.store.apply_resolution,row['observation']['prediction_timestamp'],row['horizon_seconds'],row)
+                    await asyncio.to_thread(self._signal_maintenance,row)
+                    await asyncio.to_thread(self.journal.save,'forecast_outcome_cursor',event['seq'])
+                await asyncio.to_thread(self._signal_maintenance)
+                fails=0
+                await asyncio.sleep(1)
+            except asyncio.CancelledError:
+                raise
+            except Exception as exc:  # noqa: BLE001
+                # A transient SQLite-busy / IO error must not permanently kill the
+                # outcome scheduler (was: task died -> outcome_scheduler marker
+                # frozen -> operating_state stuck off FULL_LIVE).
+                fails+=1
+                import traceback
+                if fails<=5 or fails%600==0:
+                    self.journal.append('incident',identity('outcome-sched',time.time()),datetime.now(UTC),
+                        {'reason':'OUTCOME_SCHEDULER_ERROR','error':type(exc).__name__,'fails':fails,'traceback':traceback.format_exc()[-1200:],'execution':'DISABLED'})
+                await asyncio.sleep(min(10.0,1.0*fails))
 
     def _signal_maintenance(self,row=None):
         with self._process_lock:

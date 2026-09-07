@@ -91,6 +91,7 @@ class RawWriter:
         self.stop_event=threading.Event();self.thread=None
         self.archive_queue=queue.Queue(maxsize=32);self.archive_thread=None
         self.archive_ready=False;self.maintenance=None;self.storage_metrics=None
+        self.supervisor_thread=None;self.restarts=0
 
     @property
     def ready(self):
@@ -99,6 +100,27 @@ class RawWriter:
     def start(self):
         self.archive_thread=threading.Thread(target=self._archive_run,name='waverun-archiver',daemon=True);self.archive_thread.start()
         self.thread=threading.Thread(target=self._run,name='waverun-raw-writer',daemon=True);self.thread.start()
+        self.supervisor_thread=threading.Thread(target=self._supervise,name='waverun-raw-supervisor',daemon=True);self.supervisor_thread.start()
+
+    def _supervise(self):
+        """Last-resort self-heal: if a worker thread ever dies (unhandled), bring
+        it back so storage cannot stay OFFLINE permanently."""
+        while not self.stop_event.is_set():
+            time.sleep(min(60.0,3.0*(1+self.restarts)))  # escalating backoff if a fault is persistent
+            if self.stop_event.is_set():break
+            if self.thread and not self.thread.is_alive():
+                self.restarts+=1
+                if self.restarts<=5 or self.restarts%50==0:
+                    try:self.journal.append('incident',identity('raw-writer-restart',self.restarts),utc(),{'reason':'RAW_WRITER_THREAD_RESTARTED','restarts':self.restarts,'last_error':self.error,'execution':'DISABLED'})
+                    except Exception:pass  # noqa: BLE001
+                self.thread=threading.Thread(target=self._run,name='waverun-raw-writer',daemon=True);self.thread.start()
+            if not self.stop_event.is_set() and self.archive_thread and not self.archive_thread.is_alive():
+                self.restarts+=1
+                self.archive_ready=False
+                if self.restarts<=5 or self.restarts%50==0:
+                    try:self.journal.append('incident',identity('archiver-restart',self.restarts),utc(),{'reason':'ARCHIVER_THREAD_RESTARTED','restarts':self.restarts,'last_error':self.error,'execution':'DISABLED'})
+                    except Exception:pass  # noqa: BLE001
+                self.archive_thread=threading.Thread(target=self._archive_run,name='waverun-archiver',daemon=True);self.archive_thread.start()
 
     def submit(self,source,received_at,payload):
         item={'source':source,'received_at':utc(received_at).timestamp(),'payload':payload,'schema_version':1}
@@ -162,43 +184,58 @@ class RawWriter:
             self.journal.append('incident',identity('archive-restart',path.name),utc(),{'reason':'INTERRUPTED_SEGMENT','discarded_bytes':bad,'original_retained':True})
 
     def _run(self):
-        handle=None;path=None;n=0;started=time.monotonic();last_flush=0
+        handle=None;path=None;n=0;started=time.monotonic();last_flush=0;io_fails=0
         try:
             while not self.stop_event.is_set() or not self.queue.empty():
-                try:item=self.queue.get(timeout=.1)
-                except queue.Empty:item=None
-                if item:
+                try:
+                    try:item=self.queue.get(timeout=.1)
+                    except queue.Empty:item=None
+                    if item:
+                        try:
+                            line=(json.dumps(item,sort_keys=True,separators=(',',':'),default=_json_default)+'\n').encode()
+                        except (TypeError,ValueError,UnicodeError) as exc:
+                            # One un-serialisable frame must never kill the writer
+                            # thread (was: STORAGE_TypeError -> writer_health frozen
+                            # -> storage OFFLINE forever). Count it, log once, carry on.
+                            self.malformed+=1;self.queue.task_done()
+                            if self.malformed<=5 or self.malformed%1000==0:
+                                self.journal.append('incident',identity('raw-malformed',self.malformed),utc(),{'reason':'RAW_FRAME_UNSERIALISABLE','error':type(exc).__name__,'malformed_total':self.malformed,'execution':'DISABLED'})
+                            line=None
+                        if line is not None:
+                            if handle is None:
+                                path=self.root/(utc().strftime('%Y%m%dT%H%M%S')+'_'+uuid.uuid4().hex+'.open');handle=path.open('wb');started=time.monotonic();n=0
+                            handle.write(line);n+=1;self.written+=1;self.queue.task_done()
+                    clock=time.monotonic()
+                    if clock-last_flush>=1:
+                        if handle:handle.flush();os.fsync(handle.fileno())
+                        self.journal.mark('storage',identity('raw-flush',clock),utc())
+                        atomic_json(self.root.parent/'writer_health.json',{'timestamp':utc().isoformat(),'ready':self.ready,'error':self.error,'dropped':self.dropped,'malformed':self.malformed,'execution':'DISABLED'})
+                        last_flush=clock
+                        if io_fails and self.error and self.error.startswith('STORAGE_'):
+                            self.error=None;io_fails=0  # a clean flush cleared the transient IO fault
+                    if handle and (n>=self.segment_records or clock-started>=self.segment_seconds or self.stop_event.is_set() and self.queue.empty()):
+                        handle.flush();os.fsync(handle.fileno());handle.close();handle=None
+                        raw=path.with_suffix('.jsonl');os.replace(path,raw)
+                        try:self.archive_queue.put_nowait(raw)
+                        except queue.Full:self.error='ARCHIVE_QUEUE_FULL'  # complete raw remains recoverable on disk
+                except Exception as exc:  # noqa: BLE001
+                    # A transient disk/IO error (fsync stall, sharing violation,
+                    # SQLite busy) must NOT permanently kill this thread and pin
+                    # storage OFFLINE forever. Surface it in health, drop the
+                    # partial handle, back off, and recover on the next iteration.
+                    io_fails+=1;self.error='STORAGE_'+type(exc).__name__
                     try:
-                        line=(json.dumps(item,sort_keys=True,separators=(',',':'),default=_json_default)+'\n').encode()
-                    except (TypeError,ValueError,UnicodeError) as exc:
-                        # One un-serialisable frame must never kill the writer
-                        # thread (was: STORAGE_TypeError -> writer_health frozen ->
-                        # storage OFFLINE forever). Count it, log once, carry on.
-                        self.malformed+=1;self.queue.task_done()
-                        if self.malformed<=5 or self.malformed%1000==0:
-                            self.journal.append('incident',identity('raw-malformed',self.malformed),utc(),{'reason':'RAW_FRAME_UNSERIALISABLE','error':type(exc).__name__,'malformed_total':self.malformed,'execution':'DISABLED'})
-                        line=None
-                    if line is not None:
-                        if handle is None:
-                            path=self.root/(utc().strftime('%Y%m%dT%H%M%S')+'_'+uuid.uuid4().hex+'.open');handle=path.open('wb');started=time.monotonic();n=0
-                        handle.write(line);n+=1;self.written+=1;self.queue.task_done()
-                clock=time.monotonic()
-                if clock-last_flush>=1:
-                    if handle:handle.flush();os.fsync(handle.fileno())
-                    self.journal.mark('storage',identity('raw-flush',clock),utc())
-                    atomic_json(self.root.parent/'writer_health.json',{'timestamp':utc().isoformat(),'ready':self.ready,'error':self.error,'dropped':self.dropped,'malformed':self.malformed,'execution':'DISABLED'})
-                    last_flush=clock
-                if handle and (n>=self.segment_records or clock-started>=self.segment_seconds or self.stop_event.is_set() and self.queue.empty()):
-                    handle.flush();os.fsync(handle.fileno());handle.close();handle=None
-                    raw=path.with_suffix('.jsonl');os.replace(path,raw)
-                    try:self.archive_queue.put_nowait(raw)
-                    except queue.Full:self.error='ARCHIVE_QUEUE_FULL'  # complete raw remains recoverable on disk
-        except Exception as exc:
-            self.error='STORAGE_'+type(exc).__name__
+                        if handle:handle.close()
+                    except OSError:pass
+                    handle=None
+                    if io_fails<=5 or io_fails%600==0:
+                        try:self.journal.append('incident',identity('raw-io',io_fails),utc(),{'reason':'RAW_WRITER_IO_ERROR','error':type(exc).__name__,'io_fails':io_fails,'execution':'DISABLED'})
+                        except Exception:pass  # noqa: BLE001 - never let logging kill the loop
+                    time.sleep(min(5.0,0.5*io_fails))
         finally:
-            if handle:handle.close()
-            # Leave an honest final heartbeat so the supervisor sees a real
-            # OFFLINE reason instead of a stale file frozen at the last good tick.
+            try:
+                if handle:handle.close()
+            except OSError:pass
             try:atomic_json(self.root.parent/'writer_health.json',{'timestamp':utc().isoformat(),'ready':False,'error':self.error or 'WRITER_THREAD_EXITED','dropped':self.dropped,'malformed':self.malformed,'execution':'DISABLED'})
             except OSError:pass
 

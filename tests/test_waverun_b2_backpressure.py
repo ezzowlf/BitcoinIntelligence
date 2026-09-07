@@ -281,3 +281,82 @@ def test_raw_writer_survives_binary_frame_and_keeps_heartbeating(tmp_path):
 
 def age(ts: str) -> float:
     return (datetime.now(UTC) - datetime.fromisoformat(ts)).total_seconds()
+
+
+def test_raw_writer_survives_transient_fsync_error_and_self_heals(tmp_path, monkeypatch):
+    """A transient disk/IO error (fsync stall, sharing violation, SQLite busy)
+    must not permanently kill the raw-writer thread and pin storage OFFLINE."""
+    import time
+
+    from bitcoin_cycle_analyzer.short_term import archive as archive_mod
+    from bitcoin_cycle_analyzer.short_term.archive import RawWriter
+    from bitcoin_cycle_analyzer.short_term.journal import Journal
+
+    real_fsync = archive_mod.os.fsync
+    state = {"boom": 0}
+
+    def flaky_fsync(fd):
+        if state["boom"] < 3:
+            state["boom"] += 1
+            raise OSError("simulated fsync stall")
+        return real_fsync(fd)
+
+    monkeypatch.setattr(archive_mod.os, "fsync", flaky_fsync)
+    w = RawWriter(tmp_path / "raw", Journal(tmp_path / "j.db"))
+    w.start()
+    try:
+        for i in range(10):
+            w.submit("spot", datetime.now(UTC), '{"e":"trade","i":%d}' % i)
+            time.sleep(0.4)
+        time.sleep(2)
+        assert w.thread.is_alive()                     # thread never died
+        assert state["boom"] == 3                      # the transient errors were hit
+        assert w.written >= 8                           # writes resumed after recovery
+        health = json.loads((tmp_path / "writer_health.json").read_text())
+        assert age(health["timestamp"]) < 5            # heartbeat live again
+        assert health["error"] is None                 # transient fault cleared
+    finally:
+        w.close()
+
+
+def test_raw_writer_supervisor_restarts_a_dead_thread(tmp_path):
+    import time
+
+    from bitcoin_cycle_analyzer.short_term.archive import RawWriter
+    from bitcoin_cycle_analyzer.short_term.journal import Journal
+
+    import threading
+
+    w = RawWriter(tmp_path / "raw", Journal(tmp_path / "j.db"))
+    w.start()
+    try:
+        time.sleep(0.3)
+        first = w.thread
+        # simulate an unhandled death of the writer thread: swap in a thread that
+        # has already finished, without touching stop_event
+        dead = threading.Thread(target=lambda: None)
+        dead.start()
+        dead.join()
+        w.thread = dead
+        deadline = time.time() + 15
+        while time.time() < deadline and (w.thread is dead or not w.thread.is_alive()):
+            time.sleep(0.5)
+        assert w.thread is not dead and w.thread.is_alive()
+        assert w.restarts >= 1
+        # and it actually works again
+        w.submit("spot", datetime.now(UTC), '{"e":"trade"}')
+        time.sleep(1.5)
+        assert w.written >= 1
+    finally:
+        w.close()
+
+
+def test_outcome_scheduler_survives_a_transient_error():
+    """One transient SQLite-busy / IO error must not permanently kill the outcome
+    scheduler task (was: task died -> outcome_scheduler marker frozen)."""
+    import inspect
+
+    src = inspect.getsource(waverun_live.LiveSession._outcome_scheduler)
+    assert "except asyncio.CancelledError:" in src and "raise" in src
+    assert "OUTCOME_SCHEDULER_ERROR" in src
+    assert "await asyncio.sleep(min(" in src   # bounded backoff, keeps looping
