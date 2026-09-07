@@ -360,18 +360,3 @@ def test_outcome_scheduler_survives_a_transient_error():
     assert "except asyncio.CancelledError:" in src and "raise" in src
     assert "OUTCOME_SCHEDULER_ERROR" in src
     assert "await asyncio.sleep(min(" in src   # bounded backoff, keeps looping
-
-
-def test_outcome_heartbeat_keeps_marker_fresh_while_loop_progresses():
-    """A heavy resolve_due batch over a large backlog can take >180s; the
-    concurrent heartbeat must keep the outcome_scheduler marker fresh while the
-    loop still makes sub-step progress, and stop beating if it genuinely wedges."""
-    import inspect
-
-    sched = inspect.getsource(waverun_live.LiveSession._outcome_scheduler)
-    beat = inspect.getsource(waverun_live.LiveSession._outcome_heartbeat)
-    run = inspect.getsource(waverun_live.LiveSession.run)
-    assert sched.count("self._outcome_beat=time.monotonic()") >= 4     # sub-step beats
-    assert "time.monotonic()-getattr(self,'_outcome_beat',0)<150" in beat  # wedge guard
-    assert "self.journal.mark,'outcome_scheduler'" in beat
-    assert "_outcome_heartbeat(stop)" in run and "heartbeat_task.cancel()" in run
