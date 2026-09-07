@@ -222,3 +222,62 @@ def test_consumer_backpressure_component_and_operating_state(tmp_path):
     healthy["consumer_backpressure"] = comp
     state, _ = compute_operating_state(healthy)
     assert state is not OperatingState.FULL_LIVE
+
+
+def test_consumer_backpressure_is_rate_based_not_cumulative(tmp_path):
+    """A startup drop burst that has since stabilised must return to HEALTHY so
+    the operating state can reach FULL_LIVE (was: any historical drop pinned it
+    DEGRADED forever)."""
+    sup, rt = _sup(tmp_path)
+    now = datetime.now(UTC)
+
+    def _write(dropped, severe=False):
+        (rt / "backpressure.json").write_text(json.dumps({
+            "updated_at": datetime.now(UTC).isoformat(), "severe": severe,
+            "queues": {}, "coalesced": {"book": 14196}, "dropped": {"spot": dropped},
+        }))
+
+    _write(0)
+    assert sup.collect()["consumer_backpressure"].state == "HEALTHY"
+    # a fresh burst of new drops -> DEGRADED
+    _write(4192)
+    assert sup.collect()["consumer_backpressure"].state == "DEGRADED"
+    # burst is over: count stays at 4192 across the next polls -> back to HEALTHY
+    _write(4192)
+    assert sup.collect()["consumer_backpressure"].state == "HEALTHY"
+    _write(4192)
+    c = sup.collect()["consumer_backpressure"]
+    assert c.state == "HEALTHY" and "new_drops=0" in (c.detail or "")
+
+
+def test_raw_writer_survives_binary_frame_and_keeps_heartbeating(tmp_path):
+    """websockets delivers a binary frame as bytes; json.dumps(bytes) raised
+    TypeError and permanently killed the raw-writer thread -> writer_health.json
+    froze -> storage OFFLINE forever -> FULL_LIVE unreachable."""
+    import time
+
+    from bitcoin_cycle_analyzer.short_term.archive import RawWriter
+    from bitcoin_cycle_analyzer.short_term.journal import Journal
+
+    w = RawWriter(tmp_path / "raw", Journal(tmp_path / "j.db"))
+    w.start()
+    time.sleep(0.3)
+    w.submit("spot", datetime.now(UTC), '{"e":"trade","p":"1"}')
+    w.submit("spot", datetime.now(UTC), b'{"e":"trade","p":"2"}')   # binary frame
+    w.submit("spot", datetime.now(UTC), '{"e":"trade","p":"3"}')
+    time.sleep(2)
+    try:
+        assert w.thread.is_alive()            # thread NOT killed
+        assert w.written == 3                 # binary frame decoded losslessly and archived
+        assert w.malformed == 0
+        hp = tmp_path / "writer_health.json"
+        assert hp.exists()
+        health = json.loads(hp.read_text())
+        assert age(health["timestamp"]) < 5   # heartbeat is live, not frozen
+        assert health["error"] is None
+    finally:
+        w.close()
+
+
+def age(ts: str) -> float:
+    return (datetime.now(UTC) - datetime.fromisoformat(ts)).total_seconds()

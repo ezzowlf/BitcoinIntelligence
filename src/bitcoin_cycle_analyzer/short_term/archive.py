@@ -14,6 +14,19 @@ from pathlib import Path
 from .journal import atomic_json,identity,utc
 
 
+def _json_default(obj):
+    """Make a raw feed frame JSON-safe without losing it.
+
+    websockets delivers a *binary* frame as ``bytes``; Binance payloads are still
+    UTF-8 JSON text, so decoding is lossless. Anything genuinely non-textual is
+    preserved via ``repr`` rather than crashing the writer thread.
+    """
+    if isinstance(obj,(bytes,bytearray)):
+        try:return obj.decode('utf-8')
+        except UnicodeDecodeError:return obj.decode('utf-8','replace')
+    return repr(obj)
+
+
 def sha(path):
     h=hashlib.sha256()
     with Path(path).open('rb') as f:
@@ -74,7 +87,7 @@ class RawWriter:
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=True)
         self.journal=journal;self.queue=queue.Queue(maxsize=capacity)
         self.segment_records=segment_records;self.segment_seconds=segment_seconds
-        self.error=None;self.dropped=0;self.written=0;self.archived=0
+        self.error=None;self.dropped=0;self.written=0;self.archived=0;self.malformed=0
         self.stop_event=threading.Event();self.thread=None
         self.archive_queue=queue.Queue(maxsize=32);self.archive_thread=None
         self.archive_ready=False;self.maintenance=None;self.storage_metrics=None
@@ -104,15 +117,27 @@ class RawWriter:
     def _archive_run(self):
         last_maintenance=0
         try:
-            self.catch_up();self.archive_ready=True
+            try:self.catch_up()
+            except Exception as exc:  # a single bad pre-existing segment must not block readiness
+                self.journal.append('incident',identity('archive-catchup',time.time()),utc(),{'reason':'ARCHIVE_CATCHUP_ERROR','error':type(exc).__name__,'execution':'DISABLED'})
+            self.archive_ready=True
             while not self.stop_event.is_set() or self.thread and self.thread.is_alive() or not self.archive_queue.empty():
                 try:raw=self.archive_queue.get(timeout=.1)
                 except queue.Empty:raw=None
                 if raw:
-                    try:archive_segment(raw);self.archived+=1
+                    try:
+                        archive_segment(raw);self.archived+=1
+                        if self.error and self.error.startswith('ARCHIVE_'):self.error=None  # recovered
+                    except Exception as exc:  # keep the archiver thread alive; raw .jsonl stays recoverable on disk
+                        # Surface the fault in health (ready -> False) but do not
+                        # kill the thread; a later success clears it.
+                        self.error='ARCHIVE_'+type(exc).__name__
+                        self.journal.append('incident',identity('archive-segment',getattr(raw,'name',str(raw))),utc(),{'reason':'ARCHIVE_SEGMENT_ERROR','error':type(exc).__name__,'segment':getattr(raw,'name',str(raw)),'execution':'DISABLED'})
                     finally:self.archive_queue.task_done()
                 if self.maintenance and time.monotonic()-last_maintenance>=60:
-                    self.storage_metrics=self.maintenance()
+                    try:self.storage_metrics=self.maintenance()
+                    except Exception as exc:
+                        self.journal.append('incident',identity('archive-maint',time.time()),utc(),{'reason':'STORAGE_MAINTENANCE_ERROR','error':type(exc).__name__,'execution':'DISABLED'})
                     last_maintenance=time.monotonic()
         except Exception as exc:self.error='ARCHIVE_'+type(exc).__name__
 
@@ -143,14 +168,25 @@ class RawWriter:
                 try:item=self.queue.get(timeout=.1)
                 except queue.Empty:item=None
                 if item:
-                    if handle is None:
-                        path=self.root/(utc().strftime('%Y%m%dT%H%M%S')+'_'+uuid.uuid4().hex+'.open');handle=path.open('wb');started=time.monotonic();n=0
-                    handle.write((json.dumps(item,sort_keys=True,separators=(',',':'))+'\n').encode());n+=1;self.written+=1;self.queue.task_done()
+                    try:
+                        line=(json.dumps(item,sort_keys=True,separators=(',',':'),default=_json_default)+'\n').encode()
+                    except (TypeError,ValueError,UnicodeError) as exc:
+                        # One un-serialisable frame must never kill the writer
+                        # thread (was: STORAGE_TypeError -> writer_health frozen ->
+                        # storage OFFLINE forever). Count it, log once, carry on.
+                        self.malformed+=1;self.queue.task_done()
+                        if self.malformed<=5 or self.malformed%1000==0:
+                            self.journal.append('incident',identity('raw-malformed',self.malformed),utc(),{'reason':'RAW_FRAME_UNSERIALISABLE','error':type(exc).__name__,'malformed_total':self.malformed,'execution':'DISABLED'})
+                        line=None
+                    if line is not None:
+                        if handle is None:
+                            path=self.root/(utc().strftime('%Y%m%dT%H%M%S')+'_'+uuid.uuid4().hex+'.open');handle=path.open('wb');started=time.monotonic();n=0
+                        handle.write(line);n+=1;self.written+=1;self.queue.task_done()
                 clock=time.monotonic()
                 if clock-last_flush>=1:
                     if handle:handle.flush();os.fsync(handle.fileno())
                     self.journal.mark('storage',identity('raw-flush',clock),utc())
-                    atomic_json(self.root.parent/'writer_health.json',{'timestamp':utc().isoformat(),'ready':self.ready,'error':self.error,'dropped':self.dropped,'execution':'DISABLED'})
+                    atomic_json(self.root.parent/'writer_health.json',{'timestamp':utc().isoformat(),'ready':self.ready,'error':self.error,'dropped':self.dropped,'malformed':self.malformed,'execution':'DISABLED'})
                     last_flush=clock
                 if handle and (n>=self.segment_records or clock-started>=self.segment_seconds or self.stop_event.is_set() and self.queue.empty()):
                     handle.flush();os.fsync(handle.fileno());handle.close();handle=None
@@ -161,6 +197,10 @@ class RawWriter:
             self.error='STORAGE_'+type(exc).__name__
         finally:
             if handle:handle.close()
+            # Leave an honest final heartbeat so the supervisor sees a real
+            # OFFLINE reason instead of a stale file frozen at the last good tick.
+            try:atomic_json(self.root.parent/'writer_health.json',{'timestamp':utc().isoformat(),'ready':False,'error':self.error or 'WRITER_THREAD_EXITED','dropped':self.dropped,'malformed':self.malformed,'execution':'DISABLED'})
+            except OSError:pass
 
     def disk_metrics(self,raw_per_day=None,compressed_per_day=None):
         disk=shutil.disk_usage(self.root);used=disk.used/disk.total

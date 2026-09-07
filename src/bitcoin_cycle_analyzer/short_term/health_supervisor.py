@@ -238,13 +238,20 @@ class HealthSupervisor:
             _bp_age=age_seconds(_bp.get('updated_at'),now)
             _dropped=sum(int(v) for v in (_bp.get('dropped') or {}).values())
             _coalesced=sum(int(v) for v in (_bp.get('coalesced') or {}).values())
+            _prev=getattr(self,'_bp_prev_dropped',None)
+            _new_drops=max(0,_dropped-_prev) if _prev is not None else 0
+            self._bp_prev_dropped=_dropped
             if _bp_age is not None and _bp_age<=30:
-                _bp_state='CRITICAL' if _bp.get('severe') else ('DEGRADED' if _dropped>0 else 'HEALTHY')
+                # Rate, not cumulative: a startup burst that has since stabilised
+                # must not pin this DEGRADED forever and block FULL_LIVE.
+                if _bp.get('severe'):_bp_state='CRITICAL'
+                elif _new_drops>0:_bp_state='DEGRADED'
+                else:_bp_state='HEALTHY'
             else:
                 _bp_state='HEALTHY'
             components['consumer_backpressure']=ComponentHealth(
                 'consumer_backpressure',_bp_state,age_seconds=_bp_age,
-                detail=f"dropped_trades={_dropped} coalesced={_coalesced} severe={bool(_bp.get('severe'))}")
+                detail=f"dropped_trades={_dropped} new_drops={_new_drops} coalesced={_coalesced} severe={bool(_bp.get('severe'))}")
         except (OSError,ValueError):
             components['consumer_backpressure']=ComponentHealth('consumer_backpressure','HEALTHY',detail='no backpressure telemetry yet')
         for key,stage in [('feature_pipeline','features'),('candidate_pipeline','candidates'),('decision_pipeline','decisions'),('prediction_persistence','predictions'),('outcome_scheduler','outcome_scheduler'),('storage','storage')]:
