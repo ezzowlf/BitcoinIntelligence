@@ -437,12 +437,31 @@ class LiveSession:
                 continue  # one poison event/window must not freeze the whole feed
             finally:self._event_queues[key].task_done()
 
+    async def _outcome_heartbeat(self,stop):
+        """Liveness beat for the outcome_scheduler marker. One resolve_due batch
+        over a large PENDING backlog can legitimately take >180s; that is heavy
+        work, not a stall. Beat every 15s while the scheduler loop is still
+        making sub-step progress so the supervisor does not false-flag STALE. If
+        the loop genuinely wedges (no sub-step for 150s) the beat stops and the
+        marker goes stale for real."""
+        while not stop.is_set():
+            try:
+                if time.monotonic()-getattr(self,'_outcome_beat',0)<150:
+                    now=datetime.now(UTC)
+                    await asyncio.to_thread(self.journal.mark,'outcome_scheduler',identity('sched-beat',time.time()),now,committed_at=now)
+            except Exception:  # noqa: BLE001 - a beat failure must not kill anything
+                pass
+            await asyncio.sleep(15)
+
     async def _outcome_scheduler(self,stop):
         fails=0
         while not stop.is_set():
             try:
+                self._outcome_beat=time.monotonic()
                 await asyncio.to_thread(self.outcomes.catch_up_registrations)
+                self._outcome_beat=time.monotonic()
                 await asyncio.to_thread(self.outcomes.resolve_due,datetime.now(UTC))
+                self._outcome_beat=time.monotonic()
                 cursor=await asyncio.to_thread(self.journal.state,'forecast_outcome_cursor',0)
                 events=await asyncio.to_thread(self.journal.rows,'outcome',after=cursor,limit=1000)
                 for event in events:
@@ -451,7 +470,9 @@ class LiveSession:
                         await asyncio.to_thread(self.store.apply_resolution,row['observation']['prediction_timestamp'],row['horizon_seconds'],row)
                     await asyncio.to_thread(self._signal_maintenance,row)
                     await asyncio.to_thread(self.journal.save,'forecast_outcome_cursor',event['seq'])
+                    self._outcome_beat=time.monotonic()
                 await asyncio.to_thread(self._signal_maintenance)
+                self._outcome_beat=time.monotonic()
                 fails=0
                 await asyncio.sleep(1)
             except asyncio.CancelledError:
@@ -479,7 +500,7 @@ class LiveSession:
         recorder = asyncio.create_task(self._vantage_recorder(stop))
         self._callback = self.on_event
         supervisor_task: asyncio.Task | None = None
-        workers=[];outcome_task=None
+        workers=[];outcome_task=None;heartbeat_task=None
         try:
             try:
                 await self._refresh_book()
@@ -497,6 +518,7 @@ class LiveSession:
                 self._event_queues['book']=asyncio.Queue(maxsize=4096)  # replaceable bookTicker lane
                 workers=[asyncio.create_task(self._consume_events(key,stop),name='consume-'+key) for key in self._event_queues]
                 outcome_task=asyncio.create_task(self._outcome_scheduler(stop))
+                heartbeat_task=asyncio.create_task(self._outcome_heartbeat(stop))
                 self._callback=self._dispatch_event
                 # Production path: run the feed as a supervised task and start the
                 # independent health supervisor (Phases 7-10).
@@ -516,7 +538,8 @@ class LiveSession:
             stop.set()
             for task in workers:task.cancel()
             if outcome_task:outcome_task.cancel()
-            await asyncio.gather(*workers,*([outcome_task] if outcome_task else []),return_exceptions=True)
+            if heartbeat_task:heartbeat_task.cancel()
+            await asyncio.gather(*workers,*([outcome_task] if outcome_task else []),*([heartbeat_task] if heartbeat_task else []),return_exceptions=True)
             if self.raw_writer:await asyncio.to_thread(self.raw_writer.close)
             if self._supervisor is not None:
                 self._supervisor.stop()
