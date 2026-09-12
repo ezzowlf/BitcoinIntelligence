@@ -91,7 +91,7 @@ class RawWriter:
         self.stop_event=threading.Event();self.thread=None
         self.archive_queue=queue.Queue(maxsize=32);self.archive_thread=None
         self.archive_ready=False;self.maintenance=None;self.storage_metrics=None
-        self.supervisor_thread=None;self.restarts=0
+        self.supervisor_thread=None;self.restarts=0;self.current_path=None
 
     @property
     def ready(self):
@@ -170,7 +170,14 @@ class RawWriter:
             else:archive_segment(path)
         # Interrupted .open files are preserved. Salvage complete rows only;
         # retain original as forensic evidence and record discarded byte count.
+        # NEVER touch the segment the writer thread is actively appending to -
+        # catch_up() can be re-run by the self-heal supervisor while `_run` is
+        # still alive (only the archiver thread died), and racing os.replace()
+        # against a file the writer still holds open raised PermissionError
+        # ([WinError 32]) in production.
+        active=getattr(self,'current_path',None)
         for path in self.root.glob('*.open'):
+            if active is not None and path==active:continue
             good=[];bad=0
             for line in path.open('rb'):
                 try:json.loads(line);good.append(line if line.endswith(b'\n') else line+b'\n')
@@ -203,7 +210,7 @@ class RawWriter:
                             line=None
                         if line is not None:
                             if handle is None:
-                                path=self.root/(utc().strftime('%Y%m%dT%H%M%S')+'_'+uuid.uuid4().hex+'.open');handle=path.open('wb');started=time.monotonic();n=0
+                                path=self.root/(utc().strftime('%Y%m%dT%H%M%S')+'_'+uuid.uuid4().hex+'.open');handle=path.open('wb');started=time.monotonic();n=0;self.current_path=path
                             handle.write(line);n+=1;self.written+=1;self.queue.task_done()
                     clock=time.monotonic()
                     if clock-last_flush>=1:
@@ -214,7 +221,7 @@ class RawWriter:
                         if io_fails and self.error and self.error.startswith('STORAGE_'):
                             self.error=None;io_fails=0  # a clean flush cleared the transient IO fault
                     if handle and (n>=self.segment_records or clock-started>=self.segment_seconds or self.stop_event.is_set() and self.queue.empty()):
-                        handle.flush();os.fsync(handle.fileno());handle.close();handle=None
+                        handle.flush();os.fsync(handle.fileno());handle.close();handle=None;self.current_path=None
                         raw=path.with_suffix('.jsonl');os.replace(path,raw)
                         try:self.archive_queue.put_nowait(raw)
                         except queue.Full:self.error='ARCHIVE_QUEUE_FULL'  # complete raw remains recoverable on disk
@@ -227,7 +234,7 @@ class RawWriter:
                     try:
                         if handle:handle.close()
                     except OSError:pass
-                    handle=None
+                    handle=None;self.current_path=None
                     if io_fails<=5 or io_fails%600==0:
                         try:self.journal.append('incident',identity('raw-io',io_fails),utc(),{'reason':'RAW_WRITER_IO_ERROR','error':type(exc).__name__,'io_fails':io_fails,'execution':'DISABLED'})
                         except Exception:pass  # noqa: BLE001 - never let logging kill the loop
@@ -236,6 +243,7 @@ class RawWriter:
             try:
                 if handle:handle.close()
             except OSError:pass
+            self.current_path=None
             try:atomic_json(self.root.parent/'writer_health.json',{'timestamp':utc().isoformat(),'ready':False,'error':self.error or 'WRITER_THREAD_EXITED','dropped':self.dropped,'malformed':self.malformed,'execution':'DISABLED'})
             except OSError:pass
 

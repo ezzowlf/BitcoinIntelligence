@@ -48,8 +48,19 @@ class Journal:
 
     @contextmanager
     def connect(self):
-        db=sqlite3.connect(self.path,timeout=1)
-        db.execute('PRAGMA synchronous=FULL')
+        # WAL mode + NORMAL sync is SQLite's own recommended pairing: a commit is
+        # still durable against a process crash (the WAL is replayed), only the
+        # very last transaction can be lost on an OS-level crash/power-loss - an
+        # acceptable trade for a rebuildable progress journal on an
+        # observation-only system. FULL added an fsync per commit that, under the
+        # dozens of concurrent short-lived writers this journal actually has
+        # (per-worker consumers, outcome scheduler, raw writer/archiver, vantage
+        # recorder, health supervisor), was the dominant source of the
+        # "database is locked" OperationalError storms seen in production. A
+        # longer busy-timeout (5s vs 1s) gives SQLite's own retry loop more room
+        # before surfacing that as an error at all.
+        db=sqlite3.connect(self.path,timeout=5)
+        db.execute('PRAGMA synchronous=NORMAL')
         try:
             with db:yield db
         finally:db.close()

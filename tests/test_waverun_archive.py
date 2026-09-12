@@ -56,6 +56,26 @@ def test_slow_compressor_does_not_block_raw_writer(tmp_path,monkeypatch):
         assert writer.archive_queue.qsize()>=1
     finally:release.set();writer.close()
 
+def test_catch_up_never_touches_the_actively_written_segment(tmp_path):
+    """7-day production audit (2026-09-12) root cause of 239 ARCHIVE_CATCHUP_ERROR
+    PermissionError incidents: catch_up() can be re-run by the self-heal
+    supervisor while the writer thread is still alive on its own .open segment.
+    Racing os.replace() against a file the writer still holds open raises
+    PermissionError on Windows. catch_up() must skip whatever RawWriter.current_path
+    points at."""
+    writer=RawWriter(tmp_path/'raw',Journal(tmp_path/'journal.db'))
+    active=writer.root/'20260101T000000_active.open'
+    active.write_bytes(b'{"source":"spot","received_at":1,"payload":"x"}\n')
+    writer.current_path=active  # simulate: the writer thread owns this segment right now
+    stale=writer.root/'20260101T000000_stale.open'
+    stale.write_bytes(b'{"source":"spot","received_at":1,"payload":"x"}\n')
+    writer.catch_up()
+    assert active.exists()  # untouched - still owned by the (simulated) live writer
+    assert not stale.exists()  # genuinely orphaned segment was salvaged as before
+    assert (writer.root/'20260101T000000_stale.interrupted').exists()
+    writer.close()
+
+
 def test_compressor_failure_keeps_complete_raw_and_fails_health(tmp_path,monkeypatch):
     def broken(path):raise OSError('simulated archive failure')
     monkeypatch.setattr('bitcoin_cycle_analyzer.short_term.archive.archive_segment',broken)

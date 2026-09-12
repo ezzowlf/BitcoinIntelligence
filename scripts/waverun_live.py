@@ -141,10 +141,24 @@ class LiveSession:
         return (buy - sell) / (buy + sell) if buy + sell else 0.0
 
     async def _vantage_recorder(self, stop: asyncio.Event) -> None:
+        fails=0
         while not stop.is_set():
-            await asyncio.to_thread(self._record_vantage_tick)
             try:
-                await asyncio.wait_for(stop.wait(), timeout=0.1)
+                await asyncio.to_thread(self._record_vantage_tick)
+                fails=0
+            except asyncio.CancelledError:
+                raise
+            except Exception as exc:  # noqa: BLE001
+                # One transient MT5/journal error must not permanently kill this
+                # task for the rest of the boot (was: unguarded -> task died ->
+                # vantage_ticks.jsonl froze with zero incident/recovery for the
+                # remaining process lifetime).
+                fails+=1
+                if fails<=5 or fails%600==0:
+                    self.journal.append('incident',identity('vantage-recorder',time.time()),datetime.now(UTC),
+                        {'reason':'VANTAGE_RECORDER_ERROR','error':type(exc).__name__,'fails':fails,'execution':'DISABLED'})
+            try:
+                await asyncio.wait_for(stop.wait(), timeout=min(5.0,0.1*(1+fails)))
             except TimeoutError:
                 pass
 

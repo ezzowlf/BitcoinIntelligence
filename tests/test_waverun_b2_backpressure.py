@@ -360,3 +360,49 @@ def test_outcome_scheduler_survives_a_transient_error():
     assert "except asyncio.CancelledError:" in src and "raise" in src
     assert "OUTCOME_SCHEDULER_ERROR" in src
     assert "await asyncio.sleep(min(" in src   # bounded backoff, keeps looping
+
+
+def test_vantage_recorder_survives_a_transient_error():
+    """7-day production audit (2026-09-12) root cause: _vantage_recorder had no
+    try/except around _record_vantage_tick, so a single transient MT5/journal
+    error (SQLite busy, MT5 API hiccup) permanently killed the task for the rest
+    of the collector's lifetime -> vantage_ticks.jsonl froze with zero incident
+    and zero recovery, driving the week-long Vantage DEGRADED/OFFLINE pattern
+    and the resulting auto-repair restart storm."""
+    import inspect
+
+    src = inspect.getsource(waverun_live.LiveSession._vantage_recorder)
+    assert "except asyncio.CancelledError:" in src and "raise" in src
+    assert "VANTAGE_RECORDER_ERROR" in src
+    assert "fails=0" in src  # a clean tick clears the failure streak, keeps looping
+
+
+def test_vantage_recorder_loop_actually_survives_and_keeps_ticking(monkeypatch):
+    """End-to-end: a poisoned tick call must not stop subsequent ticks."""
+    import asyncio as _asyncio
+
+    import tempfile
+    from pathlib import Path as _Path
+
+    ls = waverun_live.LiveSession.__new__(waverun_live.LiveSession)
+    tmp = _Path(tempfile.mkdtemp())
+    ls.journal = Journal(tmp / "j.db")
+
+    calls = {"n": 0}
+
+    def flaky_record():
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise RuntimeError("simulated transient MT5/journal error")
+
+    ls._record_vantage_tick = flaky_record
+
+    async def scenario():
+        stop = _asyncio.Event()
+        task = _asyncio.create_task(ls._vantage_recorder(stop))
+        await _asyncio.sleep(0.5)
+        stop.set()
+        await task  # must not raise -> proves the task survived the first failure
+
+    _asyncio.run(scenario())
+    assert calls["n"] >= 2  # kept calling after the first exception
