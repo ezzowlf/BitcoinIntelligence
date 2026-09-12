@@ -19,6 +19,7 @@ class StoragePolicy:
     high:float=.90
     critical:float=.95
     reserve_bytes:int=5_000_000_000
+    journal_retention_seconds:int=14*86400
 
     def __post_init__(self):
         if not 0<self.notice<self.warning<self.high<self.critical<1:raise ValueError('invalid disk thresholds')
@@ -27,6 +28,16 @@ class StoragePolicy:
 
 class StorageMaintenance:
     EVENT_KINDS=('signal_transition','candidate','decision','move','missed_move','false_warning','incident','feed_lifecycle')
+    # High-volume, low-long-term-value telemetry: per-evaluation feature/decision
+    # snapshots and per-second liveness markers. This is what made journal.db
+    # grow unbounded in production (7-day audit, 2026-09-12). 'incident',
+    # 'signal_transition', 'false_warning', 'move'/'missed_move' and
+    # 'feed_lifecycle' are deliberately excluded - they are the actual audit
+    # trail and stay for the journal_retention_seconds window at minimum via
+    # normal SQLite storage (no separate pin needed, they're low-volume).
+    PRUNABLE_KINDS=('outcome','candidate','decision','features',
+        'stage_feed_spot','stage_feed_futures','stage_feed_l2','stage_storage',
+        'stage_predictions','stage_vantage','stage_outcome_scheduler')
 
     def __init__(self,root,journal,outcomes,policy=None):
         self.root=Path(root);self.journal=journal;self.outcomes=outcomes;self.policy=policy or StoragePolicy()
@@ -52,7 +63,9 @@ class StorageMaintenance:
             return db.execute('SELECT 1 FROM raw_event_pins WHERE start<=? AND end>=? LIMIT 1',(end,start)).fetchone() is not None
 
     def run(self,now=None,limit=32):
-        now=utc(now);pins_ready=self.index_pins();p=self.policy
+        now=utc(now);p=self.policy
+        self.journal.prune(self.PRUNABLE_KINDS,now.timestamp()-p.journal_retention_seconds)
+        pins_ready=self.index_pins()
         disk=shutil.disk_usage(self.root);used=disk.used/disk.total
         tier='CRITICAL' if used>=p.critical else 'HIGH' if used>=p.high else 'WARNING' if used>=p.warning else 'NOTICE' if used>=p.notice else 'OK'
         floor=self.outcomes.pending_floor()

@@ -50,3 +50,32 @@ def test_pending_pin_index_backlog_blocks_retention(tmp_path,monkeypatch):
 
 def test_invalid_storage_budget_rejected():
     with pytest.raises(ValueError):StoragePolicy(high=.99,critical=.95)
+
+
+def test_journal_prune_deletes_only_listed_kinds_before_cutoff(tmp_path):
+    """7-day production audit (2026-09-12) root cause of journal.db growing to
+    8.3GB unbounded: no retention existed for the highest-volume telemetry
+    kinds. prune() must delete only what it's told, only before the cutoff, and
+    never touch kinds not listed (the audit trail)."""
+    j=Journal(tmp_path/'journal.db')
+    old=T;new=T+timedelta(days=30)
+    j.append('candidate','old-1',old,{'x':1})
+    j.append('candidate','new-1',new,{'x':1})
+    j.append('outcome','old-1',old,{'x':1})
+    j.append('incident','old-1',old,{'reason':'KEEP_ME'})  # not in prune list
+    deleted=j.prune(('candidate','outcome'),before_timestamp=old.timestamp()+1)
+    assert deleted==2
+    assert len(j.rows('candidate'))==1 and j.rows('candidate')[0]['id']=='new-1'
+    assert len(j.rows('outcome'))==0
+    assert len(j.rows('incident'))==1  # untouched regardless of age
+
+
+def test_storage_maintenance_prunes_old_telemetry_via_retention_window(tmp_path):
+    root,j,raw,m=setup(tmp_path)
+    old=T
+    j.append('candidate','old-1',old,{'x':1})
+    j.append('incident','old-1',old,{'reason':'KEEP_ME'})
+    m.policy=StoragePolicy(journal_retention_seconds=86400)
+    m.run(T+timedelta(days=30))
+    assert len(j.rows('candidate'))==0   # pruned: past the retention window
+    assert any(r['id']=='old-1' for r in j.rows('incident'))  # audit trail kind, never pruned

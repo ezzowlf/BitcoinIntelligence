@@ -34,6 +34,11 @@ class Journal:
         self.path=Path(path);self.path.parent.mkdir(parents=True,exist_ok=True)
         with self.connect() as db:
             db.execute('PRAGMA journal_mode=WAL')
+            # Only takes effect on a brand-new/empty database file; a no-op on an
+            # existing one. Lets bounded retention (Journal.prune) actually
+            # shrink the file over time via incremental_vacuum instead of a full
+            # VACUUM (which needs ~the whole file's size again in free disk).
+            db.execute('PRAGMA auto_vacuum=INCREMENTAL')
             db.executescript('''
                 CREATE TABLE IF NOT EXISTS events(
                     seq INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL,
@@ -84,6 +89,23 @@ class Journal:
     def state(self,key,default=None):
         with self.connect() as db:r=db.execute('SELECT payload FROM state WHERE key=?',(key,)).fetchone()
         return json.loads(r[0]) if r else default
+
+    def prune(self,kinds,before_timestamp,*,limit=5000,vacuum_pages=64):
+        """Bounded retention delete for the highest-volume telemetry kinds
+        (outcome/candidate/decision/features/stage_*). Never touches 'incident',
+        'signal_transition' or anything not explicitly listed - those stay for
+        audit history. Deletes at most `limit` rows per kind per call so this is
+        safe to run from a periodic maintenance loop without a long transaction.
+        Returns the number of rows deleted. auto_vacuum=INCREMENTAL (set at
+        table creation on a fresh DB) lets a small incremental_vacuum actually
+        shrink the file instead of just freeing internal pages for reuse."""
+        deleted=0
+        with self.connect() as db:
+            for kind in kinds:
+                cur=db.execute('DELETE FROM events WHERE seq IN (SELECT seq FROM events WHERE kind=? AND timestamp<? LIMIT ?)',(kind,before_timestamp,limit))
+                deleted+=cur.rowcount
+            if deleted:db.execute(f'PRAGMA incremental_vacuum({vacuum_pages})')
+        return deleted
 
     def save(self,key,value):
         with self.connect() as db:db.execute('INSERT INTO state VALUES(?,?) ON CONFLICT(key) DO UPDATE SET payload=excluded.payload',(key,json.dumps(value,sort_keys=True,default=str)))
