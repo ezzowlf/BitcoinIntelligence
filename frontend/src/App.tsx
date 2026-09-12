@@ -137,15 +137,31 @@ function LiveView({ state }: { state: LiveState }) {
   );
 }
 
-/** Opt-in banner. The permission prompt only ever runs from this click. */
-function AlertOptIn() {
+/**
+ * Compact alert controls: push-notification permission (opt-in, only ever
+ * requested from this explicit click) and the signal-audio toggle, on one row.
+ */
+function AlertControls({ audio }: { audio: { enabled: boolean; toggle: () => void } }) {
   const { permission, request } = useNotificationPermission();
-  if (permission !== "default") return null;
   return (
-    <div className="alert-optin">
-      <span>Benachrichtigungen bei echten Zustandswechseln aktivieren?</span>
-      <button type="button" onClick={() => void request()}>
-        Aktivieren
+    <div className="alert-controls">
+      <span className="alert-controls-label">ALERTS</span>
+      {permission === "default" ? (
+        <button type="button" onClick={() => void request()} title="Benachrichtigungen bei echten Zustandswechseln aktivieren">
+          Push aktivieren
+        </button>
+      ) : (
+        <span className="alert-controls-state">
+          Push {permission === "granted" ? "AN" : "AUS"}
+        </span>
+      )}
+      <button
+        type="button"
+        aria-pressed={audio.enabled}
+        onClick={audio.toggle}
+        title="Signalton für neue PREWARNING-/LIVE-Übergänge"
+      >
+        Ton {audio.enabled ? "AN" : "AUS"}
       </button>
     </div>
   );
@@ -163,8 +179,7 @@ export default function App() {
       <Header state={state} streamOk={streamOk} />
       <div className="mode-banner">RESEARCH / SHADOW-MODUS · KEIN ECHTER HANDEL · AUSFÜHRUNG DEAKTIVIERT</div>
       {state ? <DegradedBanner state={state} /> : null}
-      <AlertOptIn />
-      <div className="alert-optin"><span>Signalton für neue PREWARNING- und LIVE-Übergänge</span><button type="button" aria-pressed={audio.enabled} onClick={audio.toggle}>{audio.enabled ? "Ton ausschalten" : "Ton aktivieren"}</button></div>
+      <AlertControls audio={audio} />
       <nav className="nav">
         {NAV.map((item) => (
           <button
