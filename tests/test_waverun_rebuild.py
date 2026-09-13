@@ -42,14 +42,39 @@ def features(t,price=77000,**updates):
 def reach(engine):
     return [engine.evaluate(T+timedelta(seconds=s),features(T+timedelta(seconds=s),p)) for s,p in [(0,77000),(1,77000),(5,77000),(6,77002)]]
 
+def reach_short(engine):
+    """Mirror of reach() with every directional feature sign-flipped: falling
+    price, negative spot/futures delta and l2_imbalance/momentum. Proves the
+    full SHORT setup->qualification->signal path is symmetric with LONG,
+    using the identical production SignalEngine.evaluate() code path, on an
+    isolated tmp_path journal - no production data touched."""
+    upd={'spot_delta':-.8,'futures_delta':-.7,'l2_imbalance':-.8,'momentum':-.001}
+    return [engine.evaluate(T+timedelta(seconds=s),features(T+timedelta(seconds=s),p,**upd)) for s,p in [(0,77000),(1,77000),(5,77000),(6,76998)]]
+
 def test_reachable_signal_contract_and_restart(engines):
     journal,outcomes,engine=engines
     transitions=reach(engine)
     assert [r['state_to'] for r in transitions]==['CANDIDATE','PREWARNING','ARMED','LIVE']
     assert len({r['setup_id'] for r in transitions})==1
     assert all(r['execution']=='DISABLED' and r['confidence'] is None and r['synthetic'] for r in transitions)
+    assert all(r['direction']=='LONG' for r in transitions)
     restarted=SignalEngine(journal,outcomes)
     assert restarted.evaluate(T+timedelta(seconds=7),features(T+timedelta(seconds=7),77005)) is None
+    assert len(journal.rows('signal_transition'))==4
+
+def test_reachable_signal_contract_and_restart_short(engines):
+    """SHORT counterpart of test_reachable_signal_contract_and_restart -
+    production-acceptance E2E proof that the SHORT path is not a LONG-only
+    code path (2026-09-13 final acceptance, item 'SHORT Signal E2E')."""
+    journal,outcomes,engine=engines
+    transitions=reach_short(engine)
+    assert [r['state_to'] for r in transitions]==['CANDIDATE','PREWARNING','ARMED','LIVE']
+    assert len({r['setup_id'] for r in transitions})==1
+    assert all(r['execution']=='DISABLED' and r['confidence'] is None and r['synthetic'] for r in transitions)
+    assert all(r['direction']=='SHORT' for r in transitions)
+    assert transitions[-1]['vantage_executable_side']=='BID'
+    restarted=SignalEngine(journal,outcomes)
+    assert restarted.evaluate(T+timedelta(seconds=7),features(T+timedelta(seconds=7),76995,spot_delta=-.8,futures_delta=-.7,l2_imbalance=-.8,momentum=-.001)) is None
     assert len(journal.rows('signal_transition'))==4
 
 @pytest.mark.parametrize('stage',['vantage','spot','l2'])
