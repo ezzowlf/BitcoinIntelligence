@@ -1,6 +1,7 @@
 """Conservative storage tiers: verified copies, permanent event pins, no P0 deletion."""
 from __future__ import annotations
 
+import bisect
 import json
 import shutil
 from dataclasses import dataclass
@@ -62,10 +63,37 @@ class StorageMaintenance:
         with self.journal.connect() as db:
             return db.execute('SELECT 1 FROM raw_event_pins WHERE start<=? AND end>=? LIMIT 1',(end,start)).fetchone() is not None
 
+    def _pin_index(self):
+        """One query loading every pin window, instead of one connect+query per
+        manifest (was O(n) SQLite round-trips per maintenance pass - 2,082
+        connections / 89s for 2,055 manifests in production, longer than the
+        60s maintenance interval itself). Returns pins sorted by start plus a
+        running prefix-max of `end`, so each manifest's overlap check is an
+        O(log n) bisect instead of a DB round-trip. Same overlap semantics as
+        pinned(): a pin matches if pin.start<=query_end AND pin.end>=query_start.
+        """
+        with self.journal.connect() as db:
+            rows=db.execute('SELECT start,end FROM raw_event_pins ORDER BY start').fetchall()
+        starts=[r[0] for r in rows];ends=[r[1] for r in rows]
+        prefix_max=[]
+        running=float('-inf')
+        for e in ends:
+            running=max(running,e);prefix_max.append(running)
+        return starts,prefix_max
+
+    @staticmethod
+    def _pin_overlaps(index,start,end):
+        starts,prefix_max=index
+        if not starts:return False
+        idx=bisect.bisect_right(starts,end)  # candidates: starts[0:idx], all have start<=end
+        if idx==0:return False
+        return prefix_max[idx-1]>=start  # max end among candidates still needs end>=start
+
     def run(self,now=None,limit=32):
         now=utc(now);p=self.policy
         self.journal.prune(self.PRUNABLE_KINDS,now.timestamp()-p.journal_retention_seconds)
         pins_ready=self.index_pins()
+        pin_index=self._pin_index()
         disk=shutil.disk_usage(self.root);used=disk.used/disk.total
         tier='CRITICAL' if used>=p.critical else 'HIGH' if used>=p.high else 'WARNING' if used>=p.warning else 'NOTICE' if used>=p.notice else 'OK'
         floor=self.outcomes.pending_floor()
@@ -75,7 +103,7 @@ class StorageMaintenance:
         for path in self.root.glob('*.manifest.json'):
             m=json.loads(path.read_text());raw_total+=m['raw_bytes'];compressed_total+=m['compressed_bytes']
             start=m['start'] if start is None else min(start,m['start']);end=m['end'] if end is None else max(end,m['end'])
-            pin=self.pinned(m['start'],m['end'])
+            pin=self._pin_overlaps(pin_index,m['start'],m['end'])
             age=now.timestamp()-m['end'];storage_tier='HOT' if age<p.hot_seconds else 'WARM' if age<p.warm_seconds else 'COLD'
             priority='P1' if pin else m.get('priority','P2')
             if priority=='P0':storage_tier='P0_PERMANENT'

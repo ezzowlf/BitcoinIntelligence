@@ -1,4 +1,5 @@
 import json
+import time
 from datetime import UTC,datetime,timedelta
 from types import SimpleNamespace
 
@@ -50,6 +51,89 @@ def test_pending_pin_index_backlog_blocks_retention(tmp_path,monkeypatch):
 
 def test_invalid_storage_budget_rejected():
     with pytest.raises(ValueError):StoragePolicy(high=.99,critical=.95)
+
+
+def test_pin_overlaps_matches_brute_force_reference():
+    """_pin_overlaps (O(log n) bisect over a pre-loaded index) must produce
+    exactly the same result as the original SQL overlap predicate
+    (start<=query_end AND end>=query_start) for every case: no pins, one pin,
+    many overlapping/non-overlapping pins."""
+    import random
+    random.seed(1)
+    pins=[(min(a,b),max(a,b)) for a,b in ((random.uniform(0,1000),random.uniform(0,1000)) for _ in range(80))]
+    idx_sorted=sorted(pins)
+    starts=[s for s,_ in idx_sorted]
+    prefix_max=[];running=float('-inf')
+    for _,e in idx_sorted:
+        running=max(running,e);prefix_max.append(running)
+    index=(starts,prefix_max)
+
+    def brute(qs,qe):
+        return any(s<=qe and e>=qs for s,e in pins)
+
+    assert StorageMaintenance._pin_overlaps(([],[]),0,10) is False  # no pins at all
+    for _ in range(3000):
+        qs=random.uniform(-100,1100);qe=qs+random.uniform(0,200)
+        assert StorageMaintenance._pin_overlaps(index,qs,qe)==brute(qs,qe)
+
+
+def test_storage_maintenance_uses_bounded_db_connections_regardless_of_manifest_count(tmp_path,monkeypatch):
+    """Root cause fixed 2026-09-14: run() used to open one Journal connection
+    per manifest via pinned() (O(n) - 2,082 connections / 89s for 2,055
+    manifests in production, longer than the 60s maintenance interval itself).
+    With N manifests and zero pins, the number of Journal.connect() calls must
+    stay constant (not grow with N) - proving the O(n) SQLite round-trip path
+    is gone. 200 manifests is enough to demonstrate the scaling difference
+    without a slow test."""
+    root=tmp_path/'raw';root.mkdir();journal=Journal(tmp_path/'journal.db')
+    for i in range(200):
+        raw=root/f'seg{i:04d}.jsonl'
+        raw.write_text(json.dumps({'source':'spot','received_at':T.timestamp()+i,'payload':str(i)})+'\n')
+        # Windows pyarrow mmap handle release is occasionally delayed under a
+        # tight loop (pre-existing, documented flake unrelated to this fix -
+        # see test_archive_roundtrip_retention_and_pins history); retry the
+        # rename rather than fail the whole performance test on it.
+        for attempt in range(5):
+            try:
+                archive_segment(raw);break
+            except PermissionError:
+                if attempt==4:raise
+                time.sleep(0.05)
+    maintenance=StorageMaintenance(root,journal,SimpleNamespace(pending_floor=lambda:None))
+
+    calls={'n':0};real_connect=Journal.connect
+    def counting_connect(self):
+        calls['n']+=1;return real_connect(self)
+    monkeypatch.setattr(Journal,'connect',counting_connect)
+
+    maintenance.run(T+timedelta(days=8))
+    # A handful of fixed calls (prune, index_pins x8 kinds, the pin index load,
+    # plus per-deleted-segment retain_segment bookkeeping) - NOT one per manifest.
+    assert calls['n']<30,f"expected a small, N-independent number of DB connections, got {calls['n']} for 200 manifests"
+
+
+def test_storage_maintenance_never_deletes_a_pinned_manifest_among_many(tmp_path):
+    """Correctness under the new bulk pin-index path: with many manifests and
+    exactly one pinned event overlapping one specific segment, only that
+    segment must survive retention - the optimization must not accidentally
+    pin everything or nothing."""
+    root=tmp_path/'raw';root.mkdir();journal=Journal(tmp_path/'journal.db')
+    paths=[]
+    for i in range(30):
+        raw=root/f'seg{i:03d}.jsonl'
+        ts=T+timedelta(seconds=i*3700)  # spread out so each is its own hot/warm window
+        raw.write_text(json.dumps({'source':'spot','received_at':ts.timestamp(),'payload':str(i)})+'\n')
+        archive_segment(raw)
+        paths.append(raw)
+    # Pin exactly one event that overlaps segment #15's [start,end] window.
+    pinned_ts=T+timedelta(seconds=15*3700)
+    journal.append('signal_transition','pin-me',pinned_ts,{'state_to':'PREWARNING'})
+    maintenance=StorageMaintenance(root,journal,SimpleNamespace(pending_floor=lambda:None))
+    maintenance.run(T+timedelta(days=30))
+    assert paths[15].exists(),"the pinned segment's raw file must survive"
+    assert not paths[0].exists() and not paths[29].exists(),"unpinned old segments must still be retained per existing policy"
+    manifest15=json.loads(paths[15].with_suffix('.manifest.json').read_text())
+    assert manifest15['event_window_pinned'] is True and manifest15['effective_priority']=='P1'
 
 
 def test_journal_prune_deletes_only_listed_kinds_before_cutoff(tmp_path):
