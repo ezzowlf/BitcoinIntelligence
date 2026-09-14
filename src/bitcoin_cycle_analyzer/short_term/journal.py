@@ -86,6 +86,24 @@ class Journal:
     def mark(self,stage,cause_id,event_at,*,committed_at=None):
         return self.append('stage_'+stage,identity(stage,cause_id),event_at,{'cause_id':cause_id},stage=stage,cause_id=cause_id,committed_at=committed_at)
 
+    def mark_on(self,db,stage,cause_id,event_at,*,committed_at=None):
+        """Same effect as mark(), but writes through a connection the caller
+        already holds open instead of opening a new one. For a caller running a
+        long transaction on its own connection (e.g. OutcomeEngine.resolve_due
+        processing a large due-observation batch), calling mark() there would
+        open a second writer connection while the first's transaction is still
+        open, contending for the same write lock. Caller is responsible for
+        committing db afterward."""
+        t=utc(event_at).timestamp();wall=utc(committed_at).timestamp()
+        kind='stage_'+stage;id=identity(stage,cause_id)
+        payload=json.dumps({'cause_id':cause_id,'execution':'DISABLED'},sort_keys=True,default=str)
+        cur=db.execute('INSERT OR IGNORE INTO events(kind,id,timestamp,payload) VALUES(?,?,?,?)',(kind,id,t,payload))
+        if cur.rowcount:
+            db.execute('''INSERT INTO progress VALUES(?,?,?,?,?) ON CONFLICT(stage) DO UPDATE SET
+                seq=excluded.seq,event_at=excluded.event_at,committed_at=excluded.committed_at,cause_id=excluded.cause_id''',
+                (stage,cur.lastrowid,t,wall,cause_id))
+        return cur.rowcount==1
+
     def state(self,key,default=None):
         with self.connect() as db:r=db.execute('SELECT payload FROM state WHERE key=?',(key,)).fetchone()
         return json.loads(r[0]) if r else default
@@ -117,6 +135,22 @@ class Journal:
         query+=' ORDER BY seq LIMIT ?';args.append(limit)
         with self.connect() as db:rows=db.execute(query,args).fetchall()
         return [dict(seq=s,id=i,timestamp=t,payload=json.loads(p)) for s,i,t,p in rows]
+
+    @staticmethod
+    def state_at(path,key,default=None):
+        """Read-only, connection-pooling-free lookup of a single `state` row,
+        for a reader process (e.g. the web API) that must never contend with
+        the collector's own writer connection - mirrors progress_at()'s
+        read-only/short-timeout pattern rather than opening a normal
+        read-write connect() like the instance method state() does."""
+        path=Path(path)
+        if not path.exists():return default
+        try:
+            db=sqlite3.connect(path.as_uri()+'?mode=ro',uri=True,timeout=.2)
+            try:row=db.execute('SELECT payload FROM state WHERE key=?',(key,)).fetchone()
+            finally:db.close()
+            return json.loads(row[0]) if row else default
+        except sqlite3.Error:return default
 
     @staticmethod
     def progress_at(path):

@@ -30,6 +30,64 @@ def test_outcome_delivery_recovers_after_committed_result(tmp_path,monkeypatch):
     with recovered.journal.connect() as db:
         assert db.execute('SELECT COUNT(*) FROM outcome_outbox').fetchone()[0]==0
 
+def test_journal_mark_on_matches_mark_using_the_same_connection(tmp_path):
+    """mark_on() must produce byte-for-byte the same events/progress rows as
+    mark() - it only differs in reusing the caller's connection instead of
+    opening a new one, so a caller mid-transaction (OutcomeEngine.resolve_due's
+    heartbeat) never contends with itself for the write lock."""
+    j1=Journal(tmp_path/'via_mark.db');j1.mark('outcome_scheduler','cause-1',T,committed_at=T)
+    j2=Journal(tmp_path/'via_mark_on.db')
+    with j2.connect() as db:
+        j2.mark_on(db,'outcome_scheduler','cause-1',T,committed_at=T)
+    with j1.connect() as db:events1=db.execute('SELECT kind,id,timestamp,payload FROM events').fetchall();progress1=db.execute('SELECT * FROM progress').fetchall()
+    with j2.connect() as db:events2=db.execute('SELECT kind,id,timestamp,payload FROM events').fetchall();progress2=db.execute('SELECT * FROM progress').fetchall()
+    assert events1==events2
+    assert progress1==progress2
+
+
+def test_journal_mark_on_does_not_deadlock_a_second_connection_mid_transaction(tmp_path):
+    """The bug mark_on() exists to avoid: calling mark() (opens a NEW
+    connection) while another connection holds an open write transaction on
+    the same journal.db raised sqlite3.OperationalError('database is locked')
+    once the 5s busy timeout elapsed. mark_on() must succeed using the
+    already-open connection instead."""
+    journal=Journal(tmp_path/'journal.db')
+    with journal.connect() as db:
+        db.execute("INSERT OR IGNORE INTO events(kind,id,timestamp,payload) VALUES('probe','1',0,'{}')")
+        journal.mark_on(db,'outcome_scheduler','cause-mid-tx',T,committed_at=T)  # must not raise
+    assert journal.rows('stage_outcome_scheduler')
+
+
+def test_resolve_due_marks_heartbeat_periodically_during_a_long_batch(tmp_path,monkeypatch):
+    """Root cause fixed 2026-09-14: resolve_due() only wrote the
+    outcome_scheduler progress marker once, after the ENTIRE due-observation
+    batch finished. health_supervisor.py derives outcome_scheduler health
+    purely from that marker's age (OFFLINE past
+    resilience.CONFIG.decision_offline_after=600s) - so a large, legitimate
+    backlog processed in one call could read as OFFLINE for the whole batch
+    even though the scheduler was continuously working. Simulate a slow batch
+    (many due rows, each taking measurable wall time) and assert the marker is
+    updated more than once before the batch completes."""
+    journal=Journal(tmp_path/'journal.db');engine=OutcomeEngine(journal)
+    for i in range(20):
+        engine.register(f'slow-{i}','prediction',T+timedelta(seconds=i),'NONE',horizons=(1,))
+    marks=[]
+    real_mark=journal.mark;real_mark_on=journal.mark_on
+    def counting_mark(stage,*a,**k):
+        if stage=='outcome_scheduler':marks.append(1)
+        return real_mark(stage,*a,**k)
+    def counting_mark_on(db,stage,*a,**k):
+        if stage=='outcome_scheduler':marks.append(1)
+        return real_mark_on(db,stage,*a,**k)
+    monkeypatch.setattr(journal,'mark',counting_mark)
+    monkeypatch.setattr(journal,'mark_on',counting_mark_on)
+    # heartbeat_seconds=0.0 -> the "elapsed since last heartbeat" check is true
+    # before every row, guaranteeing (with 20 due rows) that the marker fires
+    # during the loop and not only once at the very end.
+    engine.resolve_due(T+timedelta(seconds=40),heartbeat_seconds=0.0)
+    assert len(marks)>=2,"expected the heartbeat to fire during the loop, not only once at the end"
+
+
 @pytest.fixture
 def engines(tmp_path):
     journal=Journal(tmp_path/'journal.db');outcomes=OutcomeEngine(journal)

@@ -46,11 +46,33 @@ class OutcomeEngine:
                 if row and t-row[0]<=self.max_gap:_,bid,ask=row
             db.executemany('INSERT OR IGNORE INTO observations(id,kind,t,horizon,direction,bid,ask,invalidation,payload,due_at) VALUES(?,?,?,?,?,?,?,?,?,?)',[(id,kind,t,h,direction,bid,ask,invalidation,json.dumps(payload or {},sort_keys=True,default=str),t+h) for h in horizons])
 
-    def resolve_due(self,now,limit=1000):
-        wall=utc(now).timestamp();resolved=[]
+    def resolve_due(self,now,limit=1000,heartbeat_seconds=2.0):
+        """Root cause fixed 2026-09-14: the outcome_scheduler heartbeat mark was
+        only written once, after the *entire* batch (up to `limit` rows)
+        finished. health_supervisor.py reports outcome_scheduler=OFFLINE purely
+        from that mark's age (resilience.CONFIG.decision_offline_after=600s).
+        A single legitimately large due-observation backlog (e.g. after a
+        restart, or a burst of expiring horizons) processed in one call could
+        therefore make a genuinely alive, working scheduler read as OFFLINE for
+        the whole batch duration. Marking progress periodically *during* the
+        loop (every `heartbeat_seconds` of wall-clock time, not every row -
+        cheap regardless of row count) proves real liveness without changing
+        resolution logic, outcome status semantics, or the final mark."""
+        import time as _time
+        wall=utc(now).timestamp();resolved=[];last_heartbeat=_time.monotonic()
         with self.journal.connect() as db:
             rows=db.execute("SELECT id,kind,t,horizon,direction,bid,ask,invalidation,payload FROM observations WHERE status='PENDING' AND due_at<=? ORDER BY due_at LIMIT ?",(wall-self.grace,limit)).fetchall()
             for id,kind,t,h,direction,bid,ask,stop,payload in rows:
+                if _time.monotonic()-last_heartbeat>=heartbeat_seconds:
+                    # Commit everything resolved so far, then mark the heartbeat
+                    # through the SAME connection (not journal.mark(), which
+                    # would open a second writer connection and contend with
+                    # this transaction's write lock for up to the 5s busy
+                    # timeout - reproduced directly while developing this fix).
+                    db.commit()
+                    self.journal.mark_on(db,'outcome_scheduler',identity('scheduler',wall),now,committed_at=now)
+                    db.commit()
+                    last_heartbeat=_time.monotonic()
                 entry=ask if direction=='LONG' else bid
                 quotes=db.execute('SELECT t,bid,ask FROM quotes WHERE t>=? AND t<=? ORDER BY t',(t,t+h)).fetchall()
                 result={'id':id,'kind':kind,'observation':json.loads(payload),'horizon_seconds':h,'actual_return':None,'mfe':None,'mae':None,'executable_outcome':None,'resolved_at':datetime.fromtimestamp(wall,UTC).isoformat(),'data_completeness':False,'execution':'DISABLED'}

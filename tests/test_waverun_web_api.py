@@ -110,6 +110,55 @@ def test_state_exposes_real_engine_fields(client):
     assert payload["price"]["bid"] == pytest.approx(77599.0)
 
 
+def test_shadow_signal_present_when_engine_never_evaluated(client):
+    """Root cause fixed 2026-09-14: /api/state never populated `shadow_signal`
+    at all, so the frontend's ShadowSignalPanel (which correctly treats an
+    ABSENT field as 'engine unavailable') always showed
+    SIGNALENGINE - KEINE DATEN regardless of how healthy the engine actually
+    was. A fresh journal.db (no active_setup/last_signal_transition state yet)
+    must still produce a present shadow_signal object: engine online
+    (state='OBSERVING'), simply no signal yet (signal=None) - never an absent
+    field."""
+    payload = client.get("/api/state").json()
+    assert "shadow_signal" in payload
+    assert payload["shadow_signal"] is not None
+    assert payload["shadow_signal"]["state"] == "OBSERVING"
+    assert payload["shadow_signal"]["signal"] is None
+    assert payload["shadow_signal"]["paused"] is False
+    assert payload["shadow_signal"]["execution"] == "DISABLED"
+
+
+def test_shadow_signal_exposes_the_latest_persisted_transition(client, root):
+    """SignalEngine persists active_setup/last_signal_transition via
+    journal.save() in the SAME journal.db this API already reads for progress
+    markers - the API must surface exactly that state, not invent its own."""
+    now = datetime.now(UTC)
+    journal = Journal(root / "runtime/waverun/journal.db")
+    active_setup = {
+        "setup_id": "setup-123", "timestamp": now.isoformat(), "state": "PREWARNING",
+        "direction": "LONG", "expires_at": (now + timedelta(seconds=300)).isoformat(),
+        "invalidation": 76500.0,
+    }
+    last_transition = {
+        "setup_id": "setup-123", "timestamp": now.isoformat(), "state_from": "CANDIDATE",
+        "state_to": "PREWARNING", "direction": "LONG", "reasons": ["DIRECTIONAL_FLOW_PERSISTS"],
+        "missing_evidence": [], "conflicts": [], "expected_move_class": 100,
+        "expected_start_window": [now.isoformat(), now.isoformat()], "expected_horizon": 300,
+        "entry_zone": [76800.0, 76817.0], "vantage_executable_side": "ASK",
+        "invalidation": 76500.0, "expires_at": (now + timedelta(seconds=300)).isoformat(),
+        "calibration_status": "UNCALIBRATED", "signal_version": "shadow-flow-l2-v1",
+    }
+    journal.save("active_setup", active_setup)
+    journal.save("last_signal_transition", last_transition)
+    payload = client.get("/api/state").json()
+    shadow = payload["shadow_signal"]
+    assert shadow["state"] == "PREWARNING"
+    assert shadow["signal"]["direction"] == "LONG"
+    assert shadow["signal"]["state_to"] == "PREWARNING"
+    assert shadow["signal"]["setup_id"] == "setup-123"
+    assert shadow["signal"]["entry_zone"] == [76800.0, 76817.0]
+
+
 def test_connection_is_live_when_everything_fresh(client, root):
     """All feeds CONNECTED and a fresh decision pipeline -> global LIVE."""
     status = root / "runtime" / "waverun_v5_3_fast_v2_forward" / "status.json"
@@ -144,6 +193,24 @@ def test_stale_decision_pipeline_is_never_live(client, root):
     assert payload["connection"] in {"DEGRADED", "CRITICAL"}
     assert payload["vantage_connection"] == "LIVE"
     assert payload["health"]["components"]["decision_pipeline"]["state"] in {"STALE", "OFFLINE"}
+
+
+def test_outcome_scheduler_marker_between_stale_and_offline_thresholds_reports_stale(client, root):
+    """Root cause fixed 2026-09-14: web_api.py's independent progress-marker
+    cross-check used a binary HEALTHY/OFFLINE split at decision_stale_after
+    (180s), with no STALE tier - so a scheduler legitimately mid-batch or
+    briefly behind (marker age between 180s and decision_offline_after=600s)
+    was reported OFFLINE here even though health_supervisor.py's own
+    equivalent check (_age_state) correctly classifies the same age as merely
+    STALE. Must now agree: 300s (within the 180-600s band) -> STALE, not
+    OFFLINE."""
+    from bitcoin_cycle_analyzer.short_term.resilience import CONFIG as RES_CONFIG
+    now = datetime.now(UTC)
+    mid_band = now - timedelta(seconds=(RES_CONFIG.decision_stale_after + RES_CONFIG.decision_offline_after) / 2)
+    journal = Journal(root / "runtime/waverun/journal.db")
+    journal.mark("outcome_scheduler", "mid-band", mid_band, committed_at=mid_band)
+    payload = client.get("/api/state").json()
+    assert payload["health"]["components"]["outcome_scheduler"]["state"] == "STALE"
 
 
 def test_v5_3_separates_discovery_from_live_validation(client):

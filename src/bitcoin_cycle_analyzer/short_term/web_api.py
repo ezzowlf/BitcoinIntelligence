@@ -385,6 +385,54 @@ class StateReader:
             stamp = None
         return age_seconds(stamp, now)
 
+    def _shadow_signal(self) -> dict[str, Any]:
+        """Root cause fixed 2026-09-14: the frontend's SignalEngine panel
+        (ShadowSignalPanel.tsx) has always expected a `shadow_signal` field on
+        /api/state, and already correctly distinguishes "no shadow_signal at
+        all" (engine unavailable) from "shadow_signal present but no active
+        signal" (engine online, evaluating, nothing qualified right now) - but
+        this API never populated the field, so every request fell into the
+        first case and showed "KEINE DATEN" regardless of how healthy the
+        engine actually was. SignalEngine (signal_engine.py) persists its
+        state via journal.save('active_setup', ...) / journal.save
+        ('last_signal_transition', ...) in the SAME journal.db this API
+        already reads (see progress_at() above) - Journal.state_at() is the
+        read-only, non-contending equivalent of progress_at() for the `state`
+        table. No signal logic, thresholds or execution path touched: this
+        only exposes state the engine already computes and persists."""
+        journal_path = self.runtime / "waverun/journal.db"
+        active_setup = Journal.state_at(journal_path, "active_setup")
+        last_transition = Journal.state_at(journal_path, "last_signal_transition")
+        state = active_setup["state"] if active_setup else "OBSERVING"
+        signal = None
+        if last_transition:
+            signal = {
+                "setup_id": last_transition.get("setup_id"),
+                "timestamp": last_transition.get("timestamp"),
+                "state_to": last_transition.get("state_to"),
+                "direction": last_transition.get("direction"),
+                "expected_move_class": last_transition.get("expected_move_class"),
+                "expected_start_window": last_transition.get("expected_start_window"),
+                "expected_horizon": last_transition.get("expected_horizon"),
+                "entry_zone": last_transition.get("entry_zone"),
+                "vantage_executable_side": last_transition.get("vantage_executable_side"),
+                "invalidation": last_transition.get("invalidation"),
+                "reasons": last_transition.get("reasons") or [],
+                "missing_evidence": last_transition.get("missing_evidence") or [],
+                "conflicts": last_transition.get("conflicts") or [],
+                "expires_at": last_transition.get("expires_at"),
+                "calibration_status": last_transition.get("calibration_status", "UNCALIBRATED"),
+                "signal_version": last_transition.get("signal_version"),
+            }
+        return {
+            "state": state,
+            "paused": False,
+            "signal": signal,
+            "confidence": None,
+            "mode": "SHADOW",
+            "execution": "DISABLED",
+        }
+
     def _resilience(self, now: datetime, vantage_state: str, spot_state: str, futures_state: str, l2_state: str) -> dict[str, Any]:
         """Prefer the independent supervisor's health.json; fall back to an
         API-side computation so a stale decision pipeline is never shown as LIVE
@@ -432,7 +480,23 @@ class StateReader:
         for key,stage in [('feature_pipeline','features'),('candidate_pipeline','candidates'),('decision_pipeline','decisions'),('prediction_persistence','predictions'),('outcome_scheduler','outcome_scheduler'),('storage','storage')]:
             marker=progress.get(stage)
             age=max(now.timestamp()-marker['committed_at'],now.timestamp()-marker['event_at']) if marker else None
-            state='HEALTHY' if age is not None and 0<=age<=RES_CONFIG.decision_stale_after else 'OFFLINE'
+            # Root cause fixed 2026-09-14: this independent cross-check used a
+            # binary HEALTHY/OFFLINE split at decision_stale_after (180s), with
+            # no STALE tier - so the exact same marker age that
+            # health_supervisor.py's own _age_state()/_pipeline_state() (used
+            # for the primary health.json report) correctly classifies as
+            # merely STALE (180s-600s, degraded but not actually dead) was
+            # reported as OFFLINE here, causing outcome_scheduler to flip
+            # OFFLINE on the Tailscale dashboard while the scheduler was
+            # legitimately still working (e.g. mid-batch, or briefly behind
+            # under load) and the primary report already showed STALE, not
+            # OFFLINE. Mirror the same 3-tier thresholds so the two reports
+            # agree - no threshold value changed, only the missing middle tier
+            # restored to match the canonical implementation.
+            if age is None or age<0:state='OFFLINE'
+            elif age>RES_CONFIG.decision_offline_after:state='OFFLINE'
+            elif age>RES_CONFIG.decision_stale_after:state='STALE'
+            else:state='HEALTHY'
             comps[key]=ComponentHealth(key,state,age_seconds=age).to_dict()
         if not fresh:
             comps['disk']=ComponentHealth('disk','UNKNOWN').to_dict()
@@ -588,9 +652,11 @@ class StateReader:
         )
 
         res = self._resilience(now, vantage_state, spot_state, futures_state, l2_state)
+        shadow_signal = self._shadow_signal()
 
         return {
             "server_time": now.isoformat(),
+            "shadow_signal": shadow_signal,
             # `connection` is the rolled-up operating state, NOT bare vantage
             # freshness. A stale decision pipeline can no longer read as "LIVE".
             "connection": res["overall"],

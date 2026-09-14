@@ -95,6 +95,7 @@ class BinancePublicFeed:
         if min(self.open_timeout,self.connect_timeout,self.idle_timeout,self.callback_timeout,self.reconnect_base_delay,self.max_reconnect_delay) <= 0:
             raise ValueError('feed timeouts and backoff must be positive')
         self._connections = {}
+        self.ledger_error = None
         self.lifecycle_sink = None
         self.raw_sink = None
         streams = [f"{symbol}@trade", f"{symbol}@bookTicker", f"{symbol}@depth@100ms"]
@@ -141,6 +142,14 @@ class BinancePublicFeed:
             except Exception as exc:
                 self.ledger_error='LIFECYCLE_LEDGER_'+type(exc).__name__
                 self.health[market].last_error=self.ledger_error
+            else:
+                # A transient ledger write failure degrades storage health (above)
+                # but must not latch forever: the next successful lifecycle write
+                # is proof the ledger is reachable again, so clear it. This does
+                # not swallow the original failure - it was already surfaced via
+                # last_error/storage=OFFLINE at the time it happened - it only
+                # ends a state that is no longer true.
+                self.ledger_error=None
 
     def request_reconnect(self, market):
         task=self._connections.get(market)

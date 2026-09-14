@@ -44,6 +44,18 @@ class StorageMaintenance:
         self.root=Path(root);self.journal=journal;self.outcomes=outcomes;self.policy=policy or StoragePolicy()
         with journal.connect() as db:
             db.execute('CREATE TABLE IF NOT EXISTS raw_event_pins(id TEXT PRIMARY KEY,start REAL NOT NULL,end REAL NOT NULL,kind TEXT NOT NULL)')
+        # In-memory cache of parsed manifests keyed by path, invalidated by
+        # mtime. Root cause fixed 2026-09-14: run() used to do
+        # json.loads(path.read_text()) for every manifest on every pass
+        # (61.5s steady-state at ~2,000 manifests - longer than the archiver's
+        # own 60s scheduling interval, and growing with archive volume). Once a
+        # manifest's content is known and its mtime hasn't changed since, disk
+        # is never re-read for it - only a cheap stat() confirms nothing moved.
+        # Purely a process-local performance cache: an empty cache (cold start,
+        # restart) falls back to reading everything, identical to the
+        # unoptimized behavior, so crash-safety and restart-safety are
+        # unaffected. Manifests no longer on disk are dropped from the cache.
+        self._manifest_cache={}
 
     def index_pins(self,limit=256):
         caught_up=True
@@ -100,8 +112,17 @@ class StorageMaintenance:
         raw_total=0;compressed_total=0;start=None;end=None
         # Manifests are tiny. Verification/deletion is bounded per pass.
         deleted=0
+        cache=self._manifest_cache;seen=set()
         for path in self.root.glob('*.manifest.json'):
-            m=json.loads(path.read_text());raw_total+=m['raw_bytes'];compressed_total+=m['compressed_bytes']
+            key=str(path);seen.add(key)
+            try:mtime_ns=path.stat().st_mtime_ns
+            except FileNotFoundError:continue  # deleted between glob() and stat()
+            cached=cache.get(key)
+            if cached is not None and cached[0]==mtime_ns:
+                m=cached[1]
+            else:
+                m=json.loads(path.read_text());cache[key]=(mtime_ns,m)
+            raw_total+=m['raw_bytes'];compressed_total+=m['compressed_bytes']
             start=m['start'] if start is None else min(start,m['start']);end=m['end'] if end is None else max(end,m['end'])
             pin=self._pin_overlaps(pin_index,m['start'],m['end'])
             age=now.timestamp()-m['end'];storage_tier='HOT' if age<p.hot_seconds else 'WARM' if age<p.warm_seconds else 'COLD'
@@ -109,9 +130,11 @@ class StorageMaintenance:
             if priority=='P0':storage_tier='P0_PERMANENT'
             if m.get('storage_tier')!=storage_tier or m.get('event_window_pinned')!=pin:
                 m.update(storage_tier=storage_tier,event_window_pinned=pin,effective_priority=priority)
-                atomic_json(path,m)
+                atomic_json(path,m);cache[key]=(path.stat().st_mtime_ns,m)
             if pins_ready and deleted<limit and priority not in {'P0','P1'} and age>=p.hot_seconds and (self.root/m['raw_filename']).exists():
                 if retain_segment(path.with_name(m['filename']),now=now,hot_seconds=p.hot_seconds,pending_floor=floor):deleted+=1
+        for key in list(cache):
+            if key not in seen:del cache[key]  # manifest no longer on disk
         period=end-start if start is not None and end is not None else 0
         raw_day=raw_total/period*86400 if period>0 else None
         compressed_day=compressed_total/period*86400 if period>0 else None

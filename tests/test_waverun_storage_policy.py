@@ -1,6 +1,7 @@
 import json
 import time
 from datetime import UTC,datetime,timedelta
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -152,6 +153,45 @@ def test_journal_prune_deletes_only_listed_kinds_before_cutoff(tmp_path):
     assert len(j.rows('candidate'))==1 and j.rows('candidate')[0]['id']=='new-1'
     assert len(j.rows('outcome'))==0
     assert len(j.rows('incident'))==1  # untouched regardless of age
+
+
+def test_storage_maintenance_manifest_cache_skips_unchanged_files_on_second_pass(tmp_path,monkeypatch):
+    """Root cause fixed 2026-09-14: run() re-parsed every manifest.json from
+    disk on every pass (61.5s steady-state at ~2,000 manifests, growing with
+    archive volume - longer than the archiver's own 60s interval). A second
+    pass with nothing changed must not re-read any manifest content; new or
+    externally-changed files must still be read."""
+    root=tmp_path/'raw';root.mkdir();journal=Journal(tmp_path/'journal.db')
+    for i in range(50):
+        raw=root/f'seg{i:03d}.jsonl'
+        raw.write_text(json.dumps({'source':'spot','received_at':T.timestamp()+i,'payload':str(i)})+'\n')
+        for attempt in range(5):
+            try:archive_segment(raw);break
+            except PermissionError:
+                if attempt==4:raise
+                time.sleep(0.05)
+    maintenance=StorageMaintenance(root,journal,SimpleNamespace(pending_floor=lambda:None))
+    maintenance.run(T)  # first pass: cold cache, must read everything and settle tiers
+
+    reads={'n':0};real_read_text=Path.read_text
+    def counting_read_text(self,*a,**k):
+        if self.suffix=='.json':reads['n']+=1
+        return real_read_text(self,*a,**k)
+    monkeypatch.setattr(Path,'read_text',counting_read_text)
+
+    maintenance.run(T)  # second pass, same "now": nothing changed on disk
+    assert reads['n']==0,f"expected zero manifest re-reads on an unchanged second pass, got {reads['n']}"
+
+    # A genuinely new manifest must still be picked up.
+    raw=root/'seg999.jsonl'
+    raw.write_text(json.dumps({'source':'spot','received_at':T.timestamp()+999,'payload':'999'})+'\n')
+    for attempt in range(5):
+        try:archive_segment(raw);break
+        except PermissionError:
+            if attempt==4:raise
+            time.sleep(0.05)
+    maintenance.run(T)
+    assert reads['n']>=1,"a newly-created manifest must be read at least once"
 
 
 def test_storage_maintenance_prunes_old_telemetry_via_retention_window(tmp_path):
