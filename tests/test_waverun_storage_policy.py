@@ -124,7 +124,16 @@ def test_storage_maintenance_never_deletes_a_pinned_manifest_among_many(tmp_path
         raw=root/f'seg{i:03d}.jsonl'
         ts=T+timedelta(seconds=i*3700)  # spread out so each is its own hot/warm window
         raw.write_text(json.dumps({'source':'spot','received_at':ts.timestamp(),'payload':str(i)})+'\n')
-        archive_segment(raw)
+        # Windows pyarrow mmap handle release is occasionally delayed under a
+        # tight archive_segment() loop (pre-existing, documented flake - see
+        # test_storage_maintenance_uses_bounded_db_connections... above);
+        # retry the rename rather than fail this correctness test on it.
+        for attempt in range(5):
+            try:
+                archive_segment(raw);break
+            except PermissionError:
+                if attempt==4:raise
+                time.sleep(0.05)
         paths.append(raw)
     # Pin exactly one event that overlaps segment #15's [start,end] window.
     pinned_ts=T+timedelta(seconds=15*3700)
