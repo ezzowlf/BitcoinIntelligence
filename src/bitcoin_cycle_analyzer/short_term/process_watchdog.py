@@ -18,6 +18,7 @@ class ProcessWatchdog:
         self.budget=budget;self.window=window;self.grace=grace;self.health_timeout=health_timeout
         self.journal=Journal(self.runtime/'watchdog.db')
         self.child=None;self.boot_id=None;self.started=None;self.blocked=False
+        self._last_status=None
         self._owner_file=None
 
     def _claim_owner(self):
@@ -55,6 +56,12 @@ class ProcessWatchdog:
         env=dict(os.environ,WAVERUN_BOOT_ID=self.boot_id,WAVERUN_EXECUTION='DISABLED')
         self.child=self.spawn(env)
         atomic_json(self.runtime/'collector_process.json',{'boot_id':self.boot_id,'pid':self.child.pid,'started_at':now,'execution':'DISABLED'})
+        # A prior bounded failure must not keep presenting the new generation as
+        # requiring manual intervention.  It is only healthy after the normal
+        # grace/health validation below, but it is already a distinct STARTING
+        # generation rather than the failed predecessor.
+        atomic_json(self.runtime/'watchdog_status.json',{'state':'STARTING','boot_id':self.boot_id,'timestamp':utc().isoformat(),'execution':'DISABLED'})
+        self._last_status='STARTING'
         return True
 
     def stop(self):
@@ -78,6 +85,7 @@ class ProcessWatchdog:
             if request_id and request_id!=self.journal.state('handled_request'):
                 reason='CONTROLLED_RESTART_REQUEST'
                 self.journal.save('handled_request',request_id)
+        valid=False
         if not reason and now-self.started>=self.grace:
             try:
                 health=json.loads((self.runtime/'health.json').read_text())
@@ -88,5 +96,11 @@ class ProcessWatchdog:
         if reason:
             self.journal.append('restart',identity(self.boot_id,reason),utc(),{'reason':reason,'boot_id':self.boot_id})
             self.stop()
+            # Diagnostic capture is observational.  A leftover capture flag
+            # must not turn the first recoverable fault into an outage; normal
+            # durable restart budgets remain the sole restart circuit breaker.
             return 'RESTARTED' if self._launch(now) else 'MANUAL_INTERVENTION_REQUIRED'
+        if valid and self._last_status!='RUNNING':
+            atomic_json(self.runtime/'watchdog_status.json',{'state':'RUNNING','boot_id':self.boot_id,'timestamp':utc().isoformat(),'execution':'DISABLED'})
+            self._last_status='RUNNING'
         return 'RUNNING'

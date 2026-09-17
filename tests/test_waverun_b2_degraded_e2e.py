@@ -92,7 +92,10 @@ def test_spot_drives_pipeline_then_loss_freezes_it_then_recovery_resumes(session
     # --- 1. spot present: the decision pipeline produces records -------------
     asyncio.run(_feed_spot(s, 40, t0=datetime(2026, 1, 1, tzinfo=UTC)))
     c1, d1, l1 = _count(cand), _count(dec), _count(lat)
-    assert c1 >= 5 and d1 >= 5 and l1 >= 5
+    # Storage-gate heartbeat (waverun_live.py _JSONL_HEARTBEAT_S): routine BLOCKED/WATCH
+    # seconds now write at most once per heartbeat window instead of every tick, so a
+    # sub-second test run sees the first heartbeat write, not one row per tick.
+    assert c1 >= 1 and d1 >= 1 and l1 >= 1
     assert (rt / "latest.json").exists()
     import sqlite3
     preds1 = sqlite3.connect(tmp / "database" / "waverun_predictions.db").execute(

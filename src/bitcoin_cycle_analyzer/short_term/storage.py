@@ -25,10 +25,19 @@ class ForecastStore:
                 if name not in columns:db.execute(f'ALTER TABLE predictions ADD COLUMN {name} {definition}')
 
     def append(self, forecast: Forecast) -> str:
-        payload = json.dumps(forecast.to_dict(), ensure_ascii=False, sort_keys=True)
+        return self.append_many((forecast,))[0]
+
+    def append_many(self, forecasts) -> list[str]:
+        """Persist one evaluation's forecasts in a single transaction."""
+        forecasts=tuple(forecasts)
+        if not forecasts:
+            return []
+        rows=[(forecast.timestamp.isoformat(), forecast.horizon_seconds,
+               json.dumps(forecast.to_dict(), ensure_ascii=False, sort_keys=True))
+              for forecast in forecasts]
         with sqlite3.connect(self.path) as db:
-            db.execute("INSERT OR IGNORE INTO predictions(timestamp,horizon_seconds,payload) VALUES (?,?,?)", (forecast.timestamp.isoformat(), forecast.horizon_seconds, payload))
-        return forecast.timestamp.isoformat()
+            db.executemany("INSERT OR IGNORE INTO predictions(timestamp,horizon_seconds,payload) VALUES (?,?,?)", rows)
+        return [row[0] for row in rows]
 
     def record_outcome(self, timestamp: str, horizon_seconds: int, actual_return: float, mfe: float | None = None, mae: float | None = None, outcome_at: str | None = None) -> None:
         with sqlite3.connect(self.path) as db:
@@ -40,5 +49,8 @@ class ForecastStore:
             return [dict(row) for row in db.execute("SELECT * FROM predictions WHERE resolution_status='PENDING' ORDER BY timestamp")]
 
     def apply_resolution(self,timestamp,horizon,result):
+        self.apply_resolutions([(timestamp,horizon,result)])
+
+    def apply_resolutions(self,rows):
         with sqlite3.connect(self.path) as db:
-            db.execute('UPDATE predictions SET actual_return=?,mfe=?,mae=?,outcome_at=?,resolution_status=?,data_completeness=?,executable_outcome=? WHERE timestamp=? AND horizon_seconds=?',(result.get('actual_return'),result.get('mfe'),result.get('mae'),result['resolved_at'],result['status'],int(result['data_completeness']),result.get('executable_outcome'),timestamp,horizon))
+            db.executemany('UPDATE predictions SET actual_return=?,mfe=?,mae=?,outcome_at=?,resolution_status=?,data_completeness=?,executable_outcome=? WHERE timestamp=? AND horizon_seconds=?',[(result.get('actual_return'),result.get('mfe'),result.get('mae'),result['resolved_at'],result['status'],int(result['data_completeness']),result.get('executable_outcome'),timestamp,horizon) for timestamp,horizon,result in rows])

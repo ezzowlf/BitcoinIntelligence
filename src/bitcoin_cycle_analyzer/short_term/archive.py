@@ -82,8 +82,31 @@ def retain_segment(path,*,now,hot_seconds,pending_floor=None,pinned=False):
     return True
 
 
+def expire_archive(path,*,now,warm_seconds,pending_floor=None,pinned=False,dry_run=False):
+    """Fully remove a WARM-aged compressed archive that no event ever pinned.
+
+    Raw ticks are not the end product (storage gate <=100MB/24h): once a
+    60s segment is old enough that nothing pinned it to a real signal's
+    event window, the compressed archive itself - not just the already
+    -deleted raw .jsonl - is redundant and must not be kept forever. Never
+    touches P0/P1 (pinned) or a segment covering a still-pending outcome.
+    dry_run=True reports what WOULD be removed without touching disk.
+    """
+    path=Path(path)
+    manifest_path=path.with_suffix('.manifest.json')
+    if not manifest_path.exists():return False
+    manifest=verify_archive(path)
+    if manifest.get('priority')=='P0' or pinned:return False
+    if utc(now).timestamp()-manifest['end']<warm_seconds:return False
+    if pending_floor is not None and manifest['end']>=pending_floor:return False
+    if dry_run:return True
+    path.unlink(missing_ok=True)
+    manifest_path.unlink(missing_ok=True)
+    return True
+
+
 class RawWriter:
-    def __init__(self,root,journal,*,capacity=8192,segment_records=50000,segment_seconds=60):
+    def __init__(self,root,journal,*,capacity=131072,segment_records=50000,segment_seconds=60):
         self.root=Path(root);self.root.mkdir(parents=True,exist_ok=True)
         self.journal=journal;self.queue=queue.Queue(maxsize=capacity)
         self.segment_records=segment_records;self.segment_seconds=segment_seconds
@@ -215,8 +238,11 @@ class RawWriter:
                     clock=time.monotonic()
                     if clock-last_flush>=1:
                         if handle:handle.flush();os.fsync(handle.fileno())
-                        self.journal.mark('storage',identity('raw-flush',clock),utc())
+                        # Keep the independently consumed health heartbeat ahead
+                        # of optional journal telemetry.  SQLite contention must
+                        # never make a healthy raw writer appear frozen.
                         atomic_json(self.root.parent/'writer_health.json',{'timestamp':utc().isoformat(),'ready':self.ready,'error':self.error,'dropped':self.dropped,'malformed':self.malformed,'execution':'DISABLED'})
+                        self.journal.mark('storage',identity('raw-flush',clock),utc())
                         last_flush=clock
                         if io_fails and self.error and self.error.startswith('STORAGE_'):
                             self.error=None;io_fails=0  # a clean flush cleared the transient IO fault

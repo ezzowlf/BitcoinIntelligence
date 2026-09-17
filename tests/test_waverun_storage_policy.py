@@ -20,12 +20,30 @@ def setup(tmp_path):
     archive_segment(raw)
     return root,journal,raw,StorageMaintenance(root,journal,SimpleNamespace(pending_floor=lambda:None))
 
-def test_verified_hot_warm_cold_and_archive_retention(tmp_path):
+def test_verified_hot_tier_retains_raw_and_archive(tmp_path):
     root,j,raw,m=setup(tmp_path)
-    result=m.run(T+timedelta(days=8))
-    assert result['redundant_raw_removed']==1 and not raw.exists()
+    result=m.run(T+timedelta(hours=12))
+    assert result['redundant_raw_removed']==0 and raw.exists()
     manifest=verify_archive(raw.with_suffix('.parquet'))
-    assert manifest['storage_tier']=='COLD' and manifest['records']==10
+    assert manifest['storage_tier']=='HOT' and manifest['records']==10
+
+def test_unpinned_archive_fully_expires_past_warm_seconds(tmp_path):
+    # Storage gate <=100MB/24h: an unpinned WARM-aged archive is market noise
+    # nothing ever tied to a real signal - both the raw .jsonl AND the
+    # compressed .parquet+manifest must be reclaimed, not kept forever.
+    root,j,raw,m=setup(tmp_path)
+    result=m.run(T+timedelta(days=2))
+    assert result['redundant_raw_removed']==1 and not raw.exists()
+    assert result['raw_archives_deleted']==1
+    assert not raw.with_suffix('.parquet').exists()
+    assert not raw.with_suffix('.manifest.json').exists()
+
+def test_expire_archives_dry_run_reports_without_deleting(tmp_path):
+    root,j,raw,_=setup(tmp_path)
+    m=StorageMaintenance(root,j,SimpleNamespace(pending_floor=lambda:None),expire_archives_dry_run=True)
+    result=m.run(T+timedelta(days=2))
+    assert result['raw_archives_expirable_dry_run']==1 and result['raw_archives_deleted']==0
+    assert raw.with_suffix('.parquet').exists() and raw.with_suffix('.manifest.json').exists()
 
 @pytest.mark.parametrize('protected',['P0','event','pending'])
 def test_priority_and_open_outcome_preserve_required_raw(tmp_path,protected):

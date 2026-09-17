@@ -101,6 +101,11 @@ def completed_bars(frame: pd.DataFrame, seconds: int, *, asof: pd.Timestamp | No
         if asof.tzinfo is None:
             raise ValueError("asof must be timezone-aware")
         bars = bars.loc[bars.index <= asof]
+    return decorate_bars(bars)
+
+
+def decorate_bars(bars: pd.DataFrame) -> pd.DataFrame:
+    """Shared derived columns for batch and incremental OHLCV bars."""
     width = (bars.high - bars.low).replace(0, np.nan)
     bars["body_ratio"] = (bars.close - bars.open) / width
     bars["upper_wick_ratio"] = (bars.high - bars[["open", "close"]].max(axis=1)) / width

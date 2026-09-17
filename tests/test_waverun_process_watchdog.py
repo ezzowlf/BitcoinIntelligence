@@ -68,3 +68,14 @@ def test_real_child_is_restarted_and_old_child_reaped(tmp_path):
         assert w.step()=='RESTARTED'
         assert old.poll() is not None and w.child.pid!=old.pid
     finally:w.close()
+
+
+def test_diagnostic_flag_does_not_disable_normal_recovery(tmp_path):
+    w=watcher(tmp_path)
+    try:
+        (tmp_path/'diagnostic-once.json').write_text('{}')
+        assert w.step(100)=='STARTED'
+        w.child.exit=1
+        assert w.step(101)=='RESTARTED'
+        assert not w.blocked
+    finally:w.close()

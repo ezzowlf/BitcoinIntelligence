@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import json
 import math
-from datetime import UTC,datetime
+import sqlite3
+from bisect import bisect_left,bisect_right
+from datetime import UTC,datetime,timedelta
 
 from .journal import Journal,identity,utc
 
@@ -38,13 +40,27 @@ class OutcomeEngine:
         with self.journal.connect() as db:db.execute('INSERT OR IGNORE INTO quotes VALUES(?,?,?)',(t,bid,ask))
 
     def register(self,id,kind,timestamp,direction,*,bid=None,ask=None,invalidation=None,horizons=HORIZONS,payload=None):
-        t=utc(timestamp).timestamp()
-        if direction not in {'LONG','SHORT','NONE'}:raise ValueError('invalid direction')
+        self.register_many(((id,kind,timestamp,direction,bid,ask,invalidation,horizons,payload),))
+
+    def register_many(self, registrations):
+        """Register related observations through one bounded journal commit."""
+        registrations=tuple(registrations)
+        if not registrations:
+            return
+        rows=[]
+        for id,kind,timestamp,direction,bid,ask,invalidation,horizons,payload in registrations:
+            t=utc(timestamp).timestamp()
+            if direction not in {'LONG','SHORT','NONE'}:raise ValueError('invalid direction')
+            rows.append((id,kind,t,direction,bid,ask,invalidation,tuple(horizons),payload))
         with self.journal.connect() as db:
-            if bid is None or ask is None:
-                row=db.execute('SELECT t,bid,ask FROM quotes WHERE t<=? ORDER BY t DESC LIMIT 1',(t,)).fetchone()
-                if row and t-row[0]<=self.max_gap:_,bid,ask=row
-            db.executemany('INSERT OR IGNORE INTO observations(id,kind,t,horizon,direction,bid,ask,invalidation,payload,due_at) VALUES(?,?,?,?,?,?,?,?,?,?)',[(id,kind,t,h,direction,bid,ask,invalidation,json.dumps(payload or {},sort_keys=True,default=str),t+h) for h in horizons])
+            pending=[]
+            for id,kind,t,direction,bid,ask,invalidation,horizons,payload in rows:
+                if bid is None or ask is None:
+                    quote=db.execute('SELECT t,bid,ask FROM quotes WHERE t<=? ORDER BY t DESC LIMIT 1',(t,)).fetchone()
+                    if quote and t-quote[0]<=self.max_gap:_,bid,ask=quote
+                encoded=json.dumps(payload or {},sort_keys=True,default=str)
+                pending.extend((id,kind,t,h,direction,bid,ask,invalidation,encoded,t+h) for h in horizons)
+            db.executemany('INSERT OR IGNORE INTO observations(id,kind,t,horizon,direction,bid,ask,invalidation,payload,due_at) VALUES(?,?,?,?,?,?,?,?,?,?)',pending)
 
     def resolve_due(self,now,limit=1000,heartbeat_seconds=2.0):
         """Root cause fixed 2026-09-14: the outcome_scheduler heartbeat mark was
@@ -60,61 +76,102 @@ class OutcomeEngine:
         resolution logic, outcome status semantics, or the final mark."""
         import time as _time
         wall=utc(now).timestamp();resolved=[];last_heartbeat=_time.monotonic()
+        started=last_heartbeat
+        # Read the bounded input set first and release the journal lock before
+        # evaluating it.  SQLite permits one writer, and holding Journal's
+        # in-process writer gate while calculating a large overdue batch made
+        # every feed consumer wait behind outcome resolution.  That was the
+        # direct cause of the apparently "stale" decision pipeline.
         with self.journal.connect() as db:
             rows=db.execute("SELECT id,kind,t,horizon,direction,bid,ask,invalidation,payload FROM observations WHERE status='PENDING' AND due_at<=? ORDER BY due_at LIMIT ?",(wall-self.grace,limit)).fetchall()
-            for id,kind,t,h,direction,bid,ask,stop,payload in rows:
-                if _time.monotonic()-last_heartbeat>=heartbeat_seconds:
-                    # Commit everything resolved so far, then mark the heartbeat
-                    # through the SAME connection (not journal.mark(), which
-                    # would open a second writer connection and contend with
-                    # this transaction's write lock for up to the 5s busy
-                    # timeout - reproduced directly while developing this fix).
-                    db.commit()
-                    self.journal.mark_on(db,'outcome_scheduler',identity('scheduler',wall),now,committed_at=now)
-                    db.commit()
-                    last_heartbeat=_time.monotonic()
-                entry=ask if direction=='LONG' else bid
-                quotes=db.execute('SELECT t,bid,ask FROM quotes WHERE t>=? AND t<=? ORDER BY t',(t,t+h)).fetchall()
-                result={'id':id,'kind':kind,'observation':json.loads(payload),'horizon_seconds':h,'actual_return':None,'mfe':None,'mae':None,'executable_outcome':None,'resolved_at':datetime.fromtimestamp(wall,UTC).isoformat(),'data_completeness':False,'execution':'DISABLED'}
-                if direction=='NONE':status='CANCELLED'
-                elif entry is None or not math.isfinite(entry) or entry<=0:status='INVALID_DATA'
-                elif not quotes:status='INSUFFICIENT_FUTURE_DATA'
+            paths=None;path_times=[]
+            if rows:
+                first=min(row[2] for row in rows);last=max(row[2]+row[3] for row in rows)
+                if last-first<=7200:
+                    paths=db.execute('SELECT t,bid,ask FROM quotes WHERE t>=? AND t<=? ORDER BY t',(first,last)).fetchall()
+                    path_times=[row[0] for row in paths]
+        pending_writes=[]
+
+        def commit_results():
+            if not pending_writes:return
+            batch=tuple(pending_writes)
+            pending_writes.clear()
+            # Keep the only write transaction bounded to the three atomic
+            # result-state-outbox updates.  The records were calculated from a
+            # stable snapshot above; INSERT OR IGNORE keeps restart delivery
+            # idempotent if another recovery path completed one meanwhile.
+            with self.journal.connect() as db:
+                db.executemany('INSERT OR IGNORE INTO observation_outcomes VALUES(?,?,?,?,?)',
+                    [(i,h,s,wall,p) for i,h,s,p in batch])
+                db.executemany('UPDATE observations SET status=? WHERE id=? AND horizon=?',
+                    [(s,i,h) for i,h,s,p in batch])
+                db.executemany('INSERT OR IGNORE INTO outcome_outbox VALUES(?,?,?)',
+                    [(i,h,p) for i,h,s,p in batch])
+
+        for id,kind,t,h,direction,bid,ask,stop,payload in rows:
+            if len(pending_writes)>=25:commit_results()
+            if _time.monotonic()-last_heartbeat>=heartbeat_seconds:
+                commit_results()
+                heartbeat=utc(now)+timedelta(seconds=_time.monotonic()-started)
+                self.journal.mark('outcome_scheduler',identity('scheduler',wall,len(resolved)),heartbeat,committed_at=heartbeat)
+                last_heartbeat=_time.monotonic()
+            entry=ask if direction=='LONG' else bid
+            # These terminal states never inspect quotes. Avoid reading a
+            # potentially hour-long path whose result would be discarded.
+            quotes=[]
+            if direction!='NONE' and entry is not None and math.isfinite(entry) and entry>0:
+                if paths is not None:
+                    quotes=paths[bisect_left(path_times,t):bisect_right(path_times,t+h)]
                 else:
-                    gaps=[quotes[0][0]-t,t+h-quotes[-1][0]]+[b[0]-a[0] for a,b in zip(quotes,quotes[1:])]
-                    complete=max(gaps)<=self.max_gap
-                    status='RESOLVED' if complete else 'INSUFFICIENT_FUTURE_DATA'
-                    result['max_gap_seconds']=max(gaps)
-                    if complete:
-                        sign=1 if direction=='LONG' else -1
-                        exits=[q[1] if direction=='LONG' else q[2] for q in quotes]
-                        pnl=[sign*(p-entry) for p in exits]
-                        stop_i=next((i for i,p in enumerate(exits) if stop is not None and (p<=stop if direction=='LONG' else p>=stop)),None)
-                        targets={}
-                        for target in TARGETS:
-                            hit=next((i for i,p in enumerate(pnl) if p>=target),None)
-                            targets[str(target)]={'hit':hit is not None,'time_seconds':quotes[hit][0]-t if hit is not None else None,'before_invalidation':hit is not None and (stop_i is None or hit<stop_i)}
-                        result.update(actual_return=pnl[-1]/entry,mfe=max(pnl)/entry,mae=min(pnl)/entry,mfe_usd=max(pnl),mae_usd=min(pnl),executable_outcome=pnl[-1],entry=entry,entry_side='ASK' if direction=='LONG' else 'BID',exit_side='BID' if direction=='LONG' else 'ASK',endpoint_time=quotes[-1][0],direction_correct=pnl[-1]>0,targets=targets,invalidation_hit=stop_i is not None,data_completeness=True)
-                result['status']=status
-                db.execute('INSERT OR IGNORE INTO observation_outcomes VALUES(?,?,?,?,?)',(id,h,status,wall,json.dumps(result,sort_keys=True)))
-                db.execute('UPDATE observations SET status=? WHERE id=? AND horizon=?',(status,id,h))
-                db.execute('INSERT OR IGNORE INTO outcome_outbox VALUES(?,?,?)',(id,h,json.dumps(result,sort_keys=True)))
-                resolved.append(result)
+                    # A read-only connection is intentionally not routed
+                    # through Journal.connect(): this uncommon wide batch must
+                    # not block the feed writers while it is evaluated.
+                    read_db=sqlite3.connect(self.journal.path.as_uri()+'?mode=ro',uri=True,timeout=.2)
+                    try:quotes=read_db.execute('SELECT t,bid,ask FROM quotes WHERE t>=? AND t<=? ORDER BY t',(t,t+h)).fetchall()
+                    finally:read_db.close()
+            result={'id':id,'kind':kind,'observation':json.loads(payload),'horizon_seconds':h,'actual_return':None,'mfe':None,'mae':None,'executable_outcome':None,'resolved_at':datetime.fromtimestamp(wall,UTC).isoformat(),'data_completeness':False,'execution':'DISABLED'}
+            if direction=='NONE':status='CANCELLED'
+            elif entry is None or not math.isfinite(entry) or entry<=0:status='INVALID_DATA'
+            elif not quotes:status='INSUFFICIENT_FUTURE_DATA'
+            else:
+                gaps=[quotes[0][0]-t,t+h-quotes[-1][0]]+[b[0]-a[0] for a,b in zip(quotes,quotes[1:])]
+                complete=max(gaps)<=self.max_gap
+                status='RESOLVED' if complete else 'INSUFFICIENT_FUTURE_DATA'
+                result['max_gap_seconds']=max(gaps)
+                if complete:
+                    sign=1 if direction=='LONG' else -1
+                    exits=[q[1] if direction=='LONG' else q[2] for q in quotes]
+                    pnl=[sign*(p-entry) for p in exits]
+                    stop_i=next((i for i,p in enumerate(exits) if stop is not None and (p<=stop if direction=='LONG' else p>=stop)),None)
+                    targets={}
+                    for target in TARGETS:
+                        hit=next((i for i,p in enumerate(pnl) if p>=target),None)
+                        targets[str(target)]={'hit':hit is not None,'time_seconds':quotes[hit][0]-t if hit is not None else None,'before_invalidation':hit is not None and (stop_i is None or hit<stop_i)}
+                    result.update(actual_return=pnl[-1]/entry,mfe=max(pnl)/entry,mae=min(pnl)/entry,mfe_usd=max(pnl),mae_usd=min(pnl),executable_outcome=pnl[-1],entry=entry,entry_side='ASK' if direction=='LONG' else 'BID',exit_side='BID' if direction=='LONG' else 'ASK',endpoint_time=quotes[-1][0],direction_correct=pnl[-1]>0,targets=targets,invalidation_hit=stop_i is not None,data_completeness=True)
+            result['status']=status
+            pending_writes.append((id,h,status,json.dumps(result,sort_keys=True)))
+            resolved.append(result)
+        commit_results()
         # Both result and terminal observation state have committed before progress.
         self.flush_outbox()
-        self.journal.mark('outcome_scheduler',identity('scheduler',wall),now,committed_at=now)
+        heartbeat=utc(now)+timedelta(seconds=_time.monotonic()-started)
+        self.journal.mark('outcome_scheduler',identity('scheduler',wall,'complete'),heartbeat,committed_at=heartbeat)
         return resolved
 
     def flush_outbox(self,limit=1000):
         """At-least-once delivery, idempotent event IDs, acknowledgment after commit."""
         with self.journal.connect() as db:
             pending=db.execute('SELECT id,horizon,payload FROM outcome_outbox ORDER BY rowid LIMIT ?',(limit,)).fetchall()
-        for id,h,payload in pending:
-            row=json.loads(payload);now=row['resolved_at']
-            self.journal.append('outcome',identity(id,h),now,row,stage='outcomes')
-            if row['kind']=='PREWARNING' and row['horizon_seconds']==300 and row['status']=='RESOLVED' and not row['targets']['100']['hit']:
-                self.journal.append('false_warning',row['id'],now,row)
+        # Commit each bounded group atomically: results and acknowledgments
+        # either both persist or both roll back. IDs remain idempotent.
+        for offset in range(0,len(pending),100):
             with self.journal.connect() as db:
-                db.execute('DELETE FROM outcome_outbox WHERE id=? AND horizon=?',(id,h))
+                for id,h,payload in pending[offset:offset+100]:
+                    row=json.loads(payload);now=row['resolved_at']
+                    self.journal.append('outcome',identity(id,h),now,row,stage='outcomes',connection=db)
+                    if row['kind']=='PREWARNING' and row['horizon_seconds']==300 and row['status']=='RESOLVED' and not row['targets']['100']['hit']:
+                        self.journal.append('false_warning',row['id'],now,row,connection=db)
+                    db.execute('DELETE FROM outcome_outbox WHERE id=? AND horizon=?',(id,h))
 
     def pending_floor(self):
         with self.journal.connect() as db:return db.execute("SELECT MIN(t) FROM observations WHERE status='PENDING'").fetchone()[0]

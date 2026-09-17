@@ -136,6 +136,8 @@ def test_socket_to_committed_prediction_recovery(tmp_path,monkeypatch):
         try:await task
         except asyncio.CancelledError:pass
         assert before and after and after>before
+        # Storage-gate heartbeat (waverun_live.py _JSONL_HEARTBEAT_S) throttles routine
+        # BLOCKED/WATCH rows to one per heartbeat window instead of one per tick.
         for name in ('pre_gate_candidates','decision_records','latency_records'):
-            assert sum(1 for _ in (rt/(name+'.jsonl')).open())>=4
+            assert sum(1 for _ in (rt/(name+'.jsonl')).open())>=1
     asyncio.run(run())

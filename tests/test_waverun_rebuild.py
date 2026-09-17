@@ -86,6 +86,9 @@ def test_resolve_due_marks_heartbeat_periodically_during_a_long_batch(tmp_path,m
     # during the loop and not only once at the very end.
     engine.resolve_due(T+timedelta(seconds=40),heartbeat_seconds=0.0)
     assert len(marks)>=2,"expected the heartbeat to fire during the loop, not only once at the end"
+    durable=journal.rows('stage_outcome_scheduler')
+    assert len(durable)>=20, 'heartbeat calls must create distinct durable progress'
+    assert durable[-1]['timestamp']>durable[0]['timestamp']
 
 
 @pytest.fixture

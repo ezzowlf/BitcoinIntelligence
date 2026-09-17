@@ -2,6 +2,14 @@ import numpy as np
 import pandas as pd
 import pytest
 
+@pytest.fixture(autouse=True)
+def isolate_collector_forward_runtime(tmp_path, monkeypatch):
+    # LiveSession's legacy forward collector uses module ROOT rather than its
+    # output argument. Tests must never write fixture ticks into production.
+    import sys
+    module=sys.modules.get('waverun_live')
+    if module is not None:monkeypatch.setattr(module,'ROOT',tmp_path)
+
 @pytest.fixture
 def ohlcv():
     rng = np.random.default_rng(42)
