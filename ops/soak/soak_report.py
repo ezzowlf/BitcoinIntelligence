@@ -17,6 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SAMPLES = ROOT / 'ops' / 'soak' / 'samples.jsonl'
 RECONNECTS = ROOT / 'ops' / 'soak' / 'reconnect_events.jsonl'
+LANES_ORDER = ('book', 'futures', 'spot', 'l2')
 
 
 def _ts(row):
@@ -131,6 +132,49 @@ def main() -> int:
     print(f'coalesced replaceable book events: {coalesced_total} (by design, not loss)')
     gates['no_drops'] = drops_total == 0
     gates['queue_recovery'] = queue_ok
+
+    # ---- burst / capacity gate (1Hz monitor, not the 10-min sampler) ------
+    bursts = ROOT / 'ops' / 'soak' / 'burst_summaries.jsonl'
+    if bursts.exists():
+        runs = [json.loads(line) for line in bursts.read_text(encoding='utf-8').splitlines() if line.strip()]
+        runs = [r for r in runs if r.get('start', '') >= first['timestamp']]
+        if runs:
+            print(f'\n-- BURST / CAPACITY (1Hz over {len(runs)} monitor runs) --')
+            print(f'{"lane":<8}{"prod peak/s":>12}{"cons peak/s":>12}{"q max":>8}{"q util%":>9}'
+                  f'{"age max":>9}{"cons@backlog":>14}{"cons@idle":>11}')
+            collapse_ok = True
+            for lane in LANES_ORDER:
+                pp = max((r['peak_producer_per_s'].get(lane) or 0) for r in runs)
+                pc = max((r['peak_consumer_per_s'].get(lane) or 0) for r in runs)
+                qm = max((r['peak_queue'].get(lane) or 0) for r in runs)
+                qu = max((r['peak_queue_util_pct'].get(lane) or 0) for r in runs)
+                am = max((r['peak_event_age_s'].get(lane) or 0) for r in runs)
+                bl = [r['consumer_backlogged_median'].get(lane) for r in runs
+                      if r.get('consumer_backlogged_median', {}).get(lane)]
+                idl = [r['consumer_idle_median'].get(lane) for r in runs
+                       if r.get('consumer_idle_median', {}).get(lane)]
+                bl_med = sorted(bl)[len(bl) // 2] if bl else None
+                idl_med = sorted(idl)[len(idl) // 2] if idl else None
+                # Collapse signature: throughput markedly LOWER while backlogged.
+                if bl_med is not None and idl_med is not None and bl_med < idl_med * 0.5:
+                    collapse_ok = False
+                print(f'{lane:<8}{pp:>12.1f}{pc:>12.1f}{qm:>8}{qu:>9.1f}{am:>9.2f}'
+                      f'{(f"{bl_med:.1f}" if bl_med else "-"):>14}{(f"{idl_med:.1f}" if idl_med else "-"):>11}')
+            required_drops = sum(r.get('required_drops_delta') or 0 for r in runs)
+            coalesced = sum(r.get('coalesced_delta') or 0 for r in runs)
+            severe = sum(r.get('severe_samples') or 0 for r in runs)
+            critical = sum(r.get('critical_samples') or 0 for r in runs)
+            longest = max((r.get('longest_backpressure_seconds') or 0) for r in runs)
+            episodes = sum(r.get('episodes') or 0 for r in runs)
+            print(f'\ncausally-required drops (spot+futures) : {required_drops}   <- gate: 0')
+            print(f'coalesced replaceable book events      : {coalesced} (by design, not loss)')
+            print(f'severe=True samples                    : {severe}')
+            print(f'CRITICAL samples                       : {critical}')
+            print(f'backpressure episodes / longest        : {episodes} / {longest:.1f}s')
+            print(f'congestion collapse (backlog->slower)  : {"NOT OBSERVED" if collapse_ok else "OBSERVED"}')
+            gates['required_drops_zero'] = required_drops == 0
+            gates['no_congestion_collapse'] = collapse_ok
+            gates['no_critical_state'] = critical == 0
 
     # ---- resources --------------------------------------------------------
     print(f'\n-- RESOURCES --')
