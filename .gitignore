@@ -32,3 +32,6 @@ ops/*.jsonl
 ops/soak/
 ops/storage_gate_samples.jsonl
 codex_final_run.txt
+logs/
+rollback_*/
+testwork_*/
