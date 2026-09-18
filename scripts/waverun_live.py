@@ -70,6 +70,7 @@ class LiveSession:
         self._last_candidate_heartbeat = 0.0
         self._last_decision_heartbeat = 0.0
         self._last_latency_heartbeat = 0.0
+        self._last_journal_heartbeat = 0.0
         self.trade_buffer = deque(maxlen=200_000)
         self.rolling_bars = RollingTradeBars(maxlen=self.trade_buffer.maxlen)
         self.flow_buffer = {"spot": deque(maxlen=100_000), "futures": deque(maxlen=100_000)}
@@ -114,6 +115,7 @@ class LiveSession:
 
     _ROTATED_KEEP=8  # bounded backlog per stem; rotated files duplicate what journal.db (14-day prune) already retains durably
     _JSONL_HEARTBEAT_S=10.0  # max staleness health_supervisor's _last_jsonl_timestamp can see on a routine (non-candidate) second
+    _JOURNAL_HEARTBEAT_S=60.0  # one full routine evaluation is committed per minute; liveness marks still fire every second
     _rotated_since_start:set = set()  # only files THIS process rotated are ever auto-deleted - never a pre-existing backlog
 
     @staticmethod
@@ -431,41 +433,71 @@ class LiveSession:
         # it into this same transaction removes one whole cycle per second;
         # nothing reads the features row back before this point in the function.
         #
-        # Result-oriented persistence (2026-09-17, storage gate <=100MB/24h):
-        # BLOCKED/WATCH is the routine, non-actionable outcome of fast_decision()
-        # on almost every evaluated second (no qualifying edge). The stage_*
-        # progress mark below - the collector's per-second liveness heartbeat
-        # that feature_pipeline/candidate_pipeline/decision_pipeline health
-        # depends on - still fires every second unchanged. Only the full
-        # feature/signal-setup/decision payload, which duplicates the live
-        # in-memory state without ever being read back for anything routine,
-        # is skipped; a minimal marker keeps the row/audit trail identifiable.
-        # ARMED/APPROVED - an actual candidate - always gets the full payload,
-        # same as before. Nothing here changes fast_decision(), SignalEngine,
-        # thresholds or outcome computation.
-        self.journal.append_many((
-            {'kind':'features','id':cause,'timestamp':received,
-             'payload':compact if relevant else {'cause_id':cause,'decision':decision.decision,'state':decision.state},
-             'stage':'features','cause_id':cause},
-            {'kind':'candidate','id':cause,'timestamp':received,
-             'payload':{'legacy_direction':decision.direction,'signal_setup':signal_snapshot} if relevant else {'legacy_direction':decision.direction},
-             'stage':'candidates','cause_id':cause},
-            {'kind':'decision','id':cause,'timestamp':received,
-             'payload':{'legacy':decision.to_record(),'signal':transition,'version':'shadow-flow-l2-v1'} if relevant else {'legacy':{'decision':decision.decision,'state':decision.state,'direction':decision.direction},'version':'shadow-flow-l2-v1'},
-             'stage':'decisions','cause_id':cause},
-            {'kind':'stage_predictions','id':identity('predictions',cause),'timestamp':received,
-             'payload':{'cause_id':cause},'stage':'predictions','cause_id':cause},
-        ))
-        self.store.append_many(forecasts)
-        forecast_registrations=[
-            (identity('prediction',forecast.timestamp.isoformat(),forecast.horizon_seconds),
-             'prediction',forecast.timestamp,
-             'LONG' if forecast.p_up>=forecast.p_down else 'SHORT',None,None,None,
-             (forecast.horizon_seconds,),{'prediction_timestamp':forecast.timestamp.isoformat()})
-            for forecast in forecasts
-        ]
-        forecast_registrations.append((cause,'candidate',received,decision.direction,None,None,None,HORIZONS,None))
-        self.outcomes.register_many(forecast_registrations)
+        # Result-oriented persistence (storage gate <=100MB/24h): BLOCKED/WATCH is
+        # the routine, non-actionable outcome of fast_decision() on almost every
+        # evaluated second (no qualifying edge). Writing a features/candidate/
+        # decision row per second was ~344k permanent rows/day that only ever
+        # existed to be pruned again later; the live in-memory state they
+        # duplicate is never read back for a routine second.
+        #
+        # What still happens EVERY second, unchanged: the feature/candidate/
+        # decision/prediction liveness marks, which is what feature_pipeline/
+        # candidate_pipeline/decision_pipeline health and recovery detection
+        # actually read (progress table, via progress_at()). A periodic
+        # heartbeat still commits one full routine evaluation per
+        # _JOURNAL_HEARTBEAT_S so routine behaviour stays inspectable and
+        # unsuccessful/negative context is not silently erased.
+        #
+        # An actual candidate (ARMED/APPROVED, i.e. `relevant`) always commits
+        # the complete payload immediately, exactly as before. Nothing here
+        # changes fast_decision(), SignalEngine, thresholds, or how outcomes are
+        # computed - only which routine intermediates become permanent rows.
+        journal_heartbeat_due = now_mono - self._last_journal_heartbeat >= self._JOURNAL_HEARTBEAT_S
+        with self.journal.connect() as db:
+            if relevant or journal_heartbeat_due:
+                self._last_journal_heartbeat = now_mono
+                for entry in (
+                    {'kind':'features','id':cause,'timestamp':received,
+                     'payload':compact if relevant else {'cause_id':cause,'decision':decision.decision,'state':decision.state},
+                     'stage':'features','cause_id':cause},
+                    {'kind':'candidate','id':cause,'timestamp':received,
+                     'payload':{'legacy_direction':decision.direction,'signal_setup':signal_snapshot} if relevant else {'legacy_direction':decision.direction},
+                     'stage':'candidates','cause_id':cause},
+                    {'kind':'decision','id':cause,'timestamp':received,
+                     'payload':{'legacy':decision.to_record(),'signal':transition,'version':'shadow-flow-l2-v1'} if relevant else {'legacy':{'decision':decision.decision,'state':decision.state,'direction':decision.direction},'version':'shadow-flow-l2-v1'},
+                     'stage':'decisions','cause_id':cause},
+                ):
+                    self.journal.append(connection=db,**entry)
+            else:
+                for stage in ('features','candidates','decisions'):
+                    self.journal.mark_on(db,stage,cause,received)
+            self.journal.mark_on(db,'predictions',cause,received)
+        # Outcome observations were the single largest persistent producer: 6
+        # per-horizon forecast registrations plus one 9-horizon candidate
+        # registration every evaluated second = 15 observations/s, each
+        # resolving into a permanent `outcome` row (~1.3M rows/day, over half of
+        # the 11GB journal.db). A routine BLOCKED/WATCH second has no signal
+        # whose result anyone acts on, so its forecast set is sampled on the
+        # same heartbeat rather than tracked exhaustively.
+        #
+        # This is a sampling decision, NOT a survivorship filter: the sample is
+        # periodic and taken before the result is known, so routine seconds that
+        # would have gone on to be wrong are represented exactly as often as
+        # ones that would have gone on to be right. Every `relevant` decision -
+        # every real candidate, including the ones that fail - is still
+        # registered in full across all horizons, and false_warning/missed_move
+        # remain untouched, so signal quality stays honestly measurable.
+        if relevant or journal_heartbeat_due:
+            self.store.append_many(forecasts)
+            forecast_registrations=[
+                (identity('prediction',forecast.timestamp.isoformat(),forecast.horizon_seconds),
+                 'prediction',forecast.timestamp,
+                 'LONG' if forecast.p_up>=forecast.p_down else 'SHORT',None,None,None,
+                 (forecast.horizon_seconds,),{'prediction_timestamp':forecast.timestamp.isoformat()})
+                for forecast in forecasts
+            ]
+            forecast_registrations.append((cause,'candidate',received,decision.direction,None,None,None,HORIZONS,None))
+            self.outcomes.register_many(forecast_registrations)
         snapshot = ForecastSnapshot.from_forecasts(forecasts, "LIVE", self.feed.status(), payload["price"], tick.age_seconds(received))
         self.output.write_text(json.dumps(snapshot.to_dict(), indent=2, ensure_ascii=False), encoding="utf-8")
 

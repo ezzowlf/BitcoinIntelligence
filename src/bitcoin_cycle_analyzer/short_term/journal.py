@@ -30,14 +30,22 @@ def atomic_json(path, payload):
     temp=path.with_name(path.name+f'.{os.getpid()}.{uuid.uuid4().hex}.tmp')
     with temp.open('w',encoding='utf8') as f:
         json.dump(payload,f,sort_keys=True,default=str);f.flush();os.fsync(f.fileno())
-    for attempt in range(6):
-        try:
-            os.replace(temp,path)
-            break
-        except PermissionError as exc:
-            if getattr(exc,'winerror',None) not in (5,32,33) or attempt==5:
-                raise
-            time.sleep(.01*(attempt+1))
+    # A failed replace must not leave its temp behind: these are written once a
+    # second per state file, and on Windows the retry loop does give up under a
+    # sustained sharing violation. 2,473 orphaned *.tmp files had accumulated in
+    # runtime/waverun before this cleanup existed (production audit 2026-09-18).
+    try:
+        for attempt in range(6):
+            try:
+                os.replace(temp,path)
+                return
+            except PermissionError as exc:
+                if getattr(exc,'winerror',None) not in (5,32,33) or attempt==5:
+                    raise
+                time.sleep(.01*(attempt+1))
+    finally:
+        try:temp.unlink(missing_ok=True)
+        except OSError:pass  # best-effort; never mask the original failure
 
 
 class Journal:
@@ -116,9 +124,14 @@ class Journal:
         with (self.connect() if connection is None else nullcontext(connection)) as db:
             cur=db.execute('INSERT OR IGNORE INTO events(kind,id,timestamp,payload) VALUES(?,?,?,?)',(kind,id,t,json.dumps(value,sort_keys=True,default=str)))
             if cur.rowcount and stage:
-                db.execute('''INSERT INTO progress VALUES(?,?,?,?,?) ON CONFLICT(stage) DO UPDATE SET
-                    seq=excluded.seq,event_at=excluded.event_at,committed_at=excluded.committed_at,cause_id=excluded.cause_id''',
-                    (stage,cur.lastrowid,t,wall,cause_id or id))
+                # seq is a per-stage monotonic counter, not an events rowid: the
+                # same stage is advanced both here and by mark_on() (which writes
+                # no events row at all), and mixing rowid-based with incremented
+                # values could move seq backwards - which HealthSupervisor reads
+                # as "recovery never progressed".
+                db.execute('''INSERT INTO progress VALUES(?,1,?,?,?) ON CONFLICT(stage) DO UPDATE SET
+                    seq=progress.seq+1,event_at=excluded.event_at,committed_at=excluded.committed_at,cause_id=excluded.cause_id''',
+                    (stage,t,wall,cause_id or id))
             for key,value in (state_updates or {}).items():
                 db.execute('INSERT INTO state VALUES(?,?) ON CONFLICT(key) DO UPDATE SET payload=excluded.payload',(key,json.dumps(value,sort_keys=True,default=str)))
             return cur.rowcount==1
@@ -139,8 +152,20 @@ class Journal:
                 inserted.append(self.append(connection=db, **entry))
         return inserted
 
+    # Liveness marks are a per-second heartbeat (feed_spot/feed_futures/feed_l2/
+    # vantage/storage/predictions/outcome_scheduler). They used to write a
+    # permanent `stage_*` events row purely to obtain a sequence number, then
+    # rely on retention to delete it again - ~520k rows/day of pure waste and a
+    # top-3 contributor to the 11GB journal.db (production audit 2026-09-18).
+    # Nothing ever read those rows back: health, recovery and the API all read
+    # the `progress` table via progress_at(). The sequence now comes from
+    # progress itself, so a mark costs one upsert against a 12-row table and
+    # leaves nothing to prune. Duplicate suppression (re-marking a stage for the
+    # same cause_id is a no-op returning False) is preserved by the WHERE
+    # clause, so the idempotent-replay contract is unchanged.
     def mark(self,stage,cause_id,event_at,*,committed_at=None):
-        return self.append('stage_'+stage,identity(stage,cause_id),event_at,{'cause_id':cause_id},stage=stage,cause_id=cause_id,committed_at=committed_at)
+        with self.connect() as db:
+            return self.mark_on(db,stage,cause_id,event_at,committed_at=committed_at)
 
     def mark_on(self,db,stage,cause_id,event_at,*,committed_at=None):
         """Same effect as mark(), but writes through a connection the caller
@@ -151,13 +176,9 @@ class Journal:
         open, contending for the same write lock. Caller is responsible for
         committing db afterward."""
         t=utc(event_at).timestamp();wall=utc(committed_at).timestamp()
-        kind='stage_'+stage;id=identity(stage,cause_id)
-        payload=json.dumps({'cause_id':cause_id,'execution':'DISABLED'},sort_keys=True,default=str)
-        cur=db.execute('INSERT OR IGNORE INTO events(kind,id,timestamp,payload) VALUES(?,?,?,?)',(kind,id,t,payload))
-        if cur.rowcount:
-            db.execute('''INSERT INTO progress VALUES(?,?,?,?,?) ON CONFLICT(stage) DO UPDATE SET
-                seq=excluded.seq,event_at=excluded.event_at,committed_at=excluded.committed_at,cause_id=excluded.cause_id''',
-                (stage,cur.lastrowid,t,wall,cause_id))
+        cur=db.execute('''INSERT INTO progress VALUES(?,1,?,?,?) ON CONFLICT(stage) DO UPDATE SET
+            seq=progress.seq+1,event_at=excluded.event_at,committed_at=excluded.committed_at,cause_id=excluded.cause_id
+            WHERE progress.cause_id<>excluded.cause_id''',(stage,t,wall,cause_id))
         return cur.rowcount==1
 
     def state(self,key,default=None):

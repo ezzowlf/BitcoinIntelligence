@@ -55,7 +55,9 @@ def test_journal_mark_on_does_not_deadlock_a_second_connection_mid_transaction(t
     with journal.connect() as db:
         db.execute("INSERT OR IGNORE INTO events(kind,id,timestamp,payload) VALUES('probe','1',0,'{}')")
         journal.mark_on(db,'outcome_scheduler','cause-mid-tx',T,committed_at=T)  # must not raise
-    assert journal.rows('stage_outcome_scheduler')
+    # Liveness marks are progress-table upserts and deliberately write no
+    # permanent stage_* events row (see Journal.mark_on).
+    assert Journal.progress_at(journal.path)['outcome_scheduler']['cause_id']=='cause-mid-tx'
 
 
 def test_resolve_due_marks_heartbeat_periodically_during_a_long_batch(tmp_path,monkeypatch):
@@ -86,9 +88,11 @@ def test_resolve_due_marks_heartbeat_periodically_during_a_long_batch(tmp_path,m
     # during the loop and not only once at the very end.
     engine.resolve_due(T+timedelta(seconds=40),heartbeat_seconds=0.0)
     assert len(marks)>=2,"expected the heartbeat to fire during the loop, not only once at the end"
-    durable=journal.rows('stage_outcome_scheduler')
-    assert len(durable)>=20, 'heartbeat calls must create distinct durable progress'
-    assert durable[-1]['timestamp']>durable[0]['timestamp']
+    # The marker health_supervisor actually reads is the progress row; each
+    # heartbeat advances its seq and timestamp (no stage_* events rows exist).
+    marker=Journal.progress_at(journal.path)['outcome_scheduler']
+    assert marker['seq']>=20, 'heartbeat calls must create distinct durable progress'
+    assert marker['event_at']>T.timestamp()
 
 
 @pytest.fixture

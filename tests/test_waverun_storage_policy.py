@@ -17,7 +17,15 @@ def setup(tmp_path):
     journal=Journal(tmp_path/'journal.db')
     raw=root/'test.jsonl'
     raw.write_text(''.join(json.dumps({'source':'spot','received_at':T.timestamp()+s,'payload':str(s)})+'\n' for s in range(10)))
-    archive_segment(raw)
+    # Windows pyarrow mmap handle release is occasionally delayed, making the
+    # archive rename fail spuriously (pre-existing flake - the retry pattern
+    # already used by the bulk-manifest tests below).
+    for attempt in range(5):
+        try:
+            archive_segment(raw);break
+        except PermissionError:
+            if attempt==4:raise
+            time.sleep(0.05)
     return root,journal,raw,StorageMaintenance(root,journal,SimpleNamespace(pending_floor=lambda:None))
 
 def test_verified_hot_tier_retains_raw_and_archive(tmp_path):
@@ -230,3 +238,76 @@ def test_storage_maintenance_prunes_old_telemetry_via_retention_window(tmp_path)
     m.run(T+timedelta(days=30))
     assert len(j.rows('candidate'))==0   # pruned: past the retention window
     assert any(r['id']=='old-1' for r in j.rows('incident'))  # audit trail kind, never pruned
+
+
+def test_stage_marks_do_not_create_permanent_event_rows(tmp_path):
+    # Regression: stage_* rows were ~520k/day of pure waste - nothing ever read
+    # them back (health/recovery/API all read the progress table).
+    j=Journal(tmp_path/'journal.db')
+    for i in range(50):
+        assert j.mark('feed_spot','cause-%d'%i,T+timedelta(seconds=i)) is True
+    with j.connect() as db:
+        assert db.execute("SELECT count(*) FROM events WHERE kind LIKE 'stage_%'").fetchone()[0]==0
+    marker=Journal.progress_at(tmp_path/'journal.db')['feed_spot']
+    assert marker['seq']==50 and marker['cause_id']=='cause-49'
+
+def test_stage_mark_is_idempotent_for_the_same_cause(tmp_path):
+    j=Journal(tmp_path/'journal.db')
+    assert j.mark('vantage','same',T) is True
+    assert j.mark('vantage','same',T) is False  # duplicate suppressed, seq unchanged
+    assert Journal.progress_at(tmp_path/'journal.db')['vantage']['seq']==1
+
+def test_progress_seq_is_monotonic_across_both_write_paths(tmp_path):
+    # append(stage=...) and mark_on() both advance the same stage; mixing
+    # rowid-based with incremented sequences could move seq backwards, which
+    # HealthSupervisor reads as "recovery never progressed".
+    j=Journal(tmp_path/'journal.db')
+    seqs=[]
+    for i in range(20):
+        if i%2:j.mark('features','c%d'%i,T+timedelta(seconds=i))
+        else:j.append('features','e%d'%i,T+timedelta(seconds=i),{'x':i},stage='features',cause_id='c%d'%i)
+        seqs.append(Journal.progress_at(tmp_path/'journal.db')['features']['seq'])
+    assert seqs==sorted(seqs) and len(set(seqs))==len(seqs)
+
+def _with_outcomes(tmp_path):
+    from bitcoin_cycle_analyzer.short_term.outcome_engine import OutcomeEngine
+    root,j,raw,_=setup(tmp_path)
+    return root,j,raw,StorageMaintenance(root,j,OutcomeEngine(j))
+
+def test_quotes_and_pins_are_pruned_but_open_outcomes_protected(tmp_path):
+    root,j,raw,m=_with_outcomes(tmp_path)
+    old=T.timestamp()-30*86400
+    with j.connect() as db:
+        db.execute('INSERT INTO quotes VALUES(?,?,?)',(old,100.0,101.0))
+        db.execute('INSERT INTO quotes VALUES(?,?,?)',(T.timestamp(),100.0,101.0))
+        db.execute('INSERT INTO raw_event_pins VALUES(?,?,?,?)',('stale',old-600,old+1800,'signal_transition'))
+    m.prune_side_tables(T+timedelta(days=10))
+    with j.connect() as db:
+        assert db.execute('SELECT count(*) FROM quotes WHERE t=?',(old,)).fetchone()[0]==0
+        assert db.execute("SELECT count(*) FROM raw_event_pins WHERE id='stale'").fetchone()[0]==0
+
+def test_quote_prune_never_crosses_an_open_observation(tmp_path):
+    root,j,raw,m=_with_outcomes(tmp_path)
+    old=T.timestamp()-30*86400
+    with j.connect() as db:db.execute('INSERT INTO quotes VALUES(?,?,?)',(old,100.0,101.0))
+    m.outcomes.pending_floor=lambda:old-1  # an outcome still needs that quote
+    m.prune_side_tables(T+timedelta(days=10))
+    with j.connect() as db:
+        assert db.execute('SELECT count(*) FROM quotes WHERE t=?',(old,)).fetchone()[0]==1
+
+def test_atomic_json_leaves_no_temp_file_when_replace_fails(tmp_path,monkeypatch):
+    # Regression: 2,473 orphaned *.tmp files had accumulated in runtime/waverun
+    # because a permanently failing os.replace() returned without cleanup.
+    import os as _os
+    from types import SimpleNamespace
+    from bitcoin_cycle_analyzer.short_term import journal as journal_mod
+    def always_busy(src,dst):
+        err=PermissionError('busy');err.winerror=32;raise err
+    # Patch only the journal module's own `os` reference - replacing the real
+    # os.replace breaks pytest's tmp_path machinery itself.
+    monkeypatch.setattr(journal_mod,'os',SimpleNamespace(replace=always_busy,fsync=_os.fsync,getpid=_os.getpid))
+    monkeypatch.setattr(journal_mod.time,'sleep',lambda s:None)
+    target=tmp_path/'state.json'
+    with pytest.raises(PermissionError):
+        atomic_json(target,{'a':1})
+    assert list(tmp_path.glob('*.tmp'))==[]

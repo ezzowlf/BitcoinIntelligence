@@ -28,6 +28,10 @@ class StoragePolicy:
     critical:float=.95
     reserve_bytes:int=5_000_000_000
     journal_retention_seconds:int=14*86400
+    # Quotes only have to outlive the longest outcome horizon (3600s) plus the
+    # resolution grace; 2 days is generous and still bounded. Never applied
+    # ahead of an open observation - see prune_side_tables().
+    quote_retention_seconds:int=2*86400
 
     def __post_init__(self):
         if not 0<self.notice<self.warning<self.high<self.critical<1:raise ValueError('invalid disk thresholds')
@@ -93,6 +97,39 @@ class StorageMaintenance:
             if rows:self.journal.save('pin_cursor_'+kind,rows[-1]['seq'])
         return caught_up
 
+    def prune_side_tables(self,now=None,limit=20000):
+        """Bound the two tables nothing else ever deleted from.
+
+        `quotes` grows one row per Vantage tick forever and `raw_event_pins` one
+        row per pinned event forever; on the 7-day production audit they held
+        235k and 423k rows with no retention path at all. Quotes are only needed
+        until every observation that could read them has resolved, so the cutoff
+        never crosses an open outcome's floor. A pin only protects raw segments,
+        so once no raw can still exist for its window it protects nothing.
+        """
+        now=utc(now);p=self.policy
+        quote_cutoff=now.timestamp()-p.quote_retention_seconds
+        floor=self.outcomes.pending_floor()
+        if floor is not None:quote_cutoff=min(quote_cutoff,floor)
+        pin_cutoff=now.timestamp()-p.warm_seconds
+        observation_cutoff=now.timestamp()-p.journal_retention_seconds
+        with self.journal.connect() as db:
+            # The quote/observation tables belong to OutcomeEngine, which may not
+            # have initialised them yet on a brand-new database.
+            present={r[0] for r in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+            if 'quotes' in present:
+                db.execute('DELETE FROM quotes WHERE t IN (SELECT t FROM quotes WHERE t<? LIMIT ?)',(quote_cutoff,limit))
+            db.execute('DELETE FROM raw_event_pins WHERE id IN (SELECT id FROM raw_event_pins WHERE end<? LIMIT ?)',(pin_cutoff,limit))
+            # Settled observations and their results follow the same retention
+            # window as the journal telemetry they belong to. PENDING is never
+            # touched - an unresolved outcome must survive any retention pass.
+            if 'observations' in present:
+                db.execute('''DELETE FROM observations WHERE (id,horizon) IN (
+                    SELECT id,horizon FROM observations WHERE status<>'PENDING' AND t<? LIMIT ?)''',(observation_cutoff,limit))
+            if 'observation_outcomes' in present:
+                db.execute('''DELETE FROM observation_outcomes WHERE (id,horizon) IN (
+                    SELECT id,horizon FROM observation_outcomes WHERE resolved_at<? LIMIT ?)''',(observation_cutoff,limit))
+
     def pinned(self,start,end):
         with self.journal.connect() as db:
             return db.execute('SELECT 1 FROM raw_event_pins WHERE start<=? AND end>=? LIMIT 1',(end,start)).fetchone() is not None
@@ -126,6 +163,7 @@ class StorageMaintenance:
     def run(self,now=None,limit=32):
         now=utc(now);p=self.policy
         self.journal.prune(self.PRUNABLE_KINDS,now.timestamp()-p.journal_retention_seconds)
+        self.prune_side_tables(now)
         pins_ready=self.index_pins()
         pin_index=self._pin_index()
         disk=shutil.disk_usage(self.root);used=disk.used/disk.total

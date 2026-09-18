@@ -94,6 +94,9 @@ def test_actual_pipeline_recovery_including_prediction_commit(tmp_path):
     rt=tmp_path/'runtime'/'waverun';rt.mkdir(parents=True);(tmp_path/'database').mkdir()
     db=tmp_path/'database'/'waverun_predictions.db'
     s=waverun_live.LiveSession(output=rt/'latest.json',database=db,symbol='btcusdt',mt5_values={'MT5_ENABLED':'false'})
+    # This test asserts the full per-evaluation commit path; the storage-gate
+    # heartbeats would otherwise collapse a sub-second run into one write.
+    s._JSONL_HEARTBEAT_S=0.0;s._JOURNAL_HEARTBEAT_S=0.0
     s.mt5.tick=lambda:{'status':'AVAILABLE','bid':77000.,'ask':77010.,'timestamp':datetime.now(UTC).isoformat(),'time_msc':int(datetime.now(UTC).timestamp()*1000)}
     def counts():
         with sqlite3.connect(db) as con:n=con.execute('select count(*) from predictions').fetchone()[0]
@@ -115,6 +118,7 @@ def test_socket_to_committed_prediction_recovery(tmp_path,monkeypatch):
     rt=tmp_path/'runtime'/'waverun';rt.mkdir(parents=True);(tmp_path/'database').mkdir()
     db=tmp_path/'database'/'waverun_predictions.db'
     s=waverun_live.LiveSession(output=rt/'latest.json',database=db,symbol='btcusdt',mt5_values={'MT5_ENABLED':'false'})
+    s._JSONL_HEARTBEAT_S=0.0;s._JOURNAL_HEARTBEAT_S=0.0  # assert the per-evaluation commit path itself
     fake=_FakeWebsockets();fake.recv_plan['spot']=lambda n:'hang' if fake.attempts['spot']==1 and n>3 else 'frame'
     monkeypatch.setitem(sys.modules,'websockets',fake)
     def count():
@@ -136,8 +140,6 @@ def test_socket_to_committed_prediction_recovery(tmp_path,monkeypatch):
         try:await task
         except asyncio.CancelledError:pass
         assert before and after and after>before
-        # Storage-gate heartbeat (waverun_live.py _JSONL_HEARTBEAT_S) throttles routine
-        # BLOCKED/WATCH rows to one per heartbeat window instead of one per tick.
         for name in ('pre_gate_candidates','decision_records','latency_records'):
-            assert sum(1 for _ in (rt/(name+'.jsonl')).open())>=1
+            assert sum(1 for _ in (rt/(name+'.jsonl')).open())>=4
     asyncio.run(run())
