@@ -149,7 +149,7 @@ def test_collector_observable_and_failure_invalidates_causal_quote(tmp_path,monk
     provider=IsolatedMT5Provider({'MT5_ENABLED':'true'},timeout=6,backend_factory=partial(Backend,marker=str(marker)))
     session=waverun_live.LiveSession.__new__(waverun_live.LiveSession)
     session.mt5=provider;session._mt5_lock=threading.RLock();session._data_lock=threading.RLock()
-    session._last_vantage_wall=None;session._vantage_samples=deque(maxlen=8192)
+    session._last_vantage_wall=None;session._vantage_samples=waverun_live.TimeSeries(8192)
     health=HealthSupervisor(tmp_path,BinancePublicFeed('btcusdt',include_futures=True),session._vantage_age)
     try:
         session._record_vantage_tick()
@@ -160,7 +160,7 @@ def test_collector_observable_and_failure_invalidates_causal_quote(tmp_path,monk
             assert health._age_state(session._vantage_age(),30,60) not in {'LIVE','HEALTHY'}
         wait(provider,reason='MT5_CALL_TIMEOUT')
         session._record_vantage_tick()
-        assert session._vantage_samples[-1][1]['status']=='UNAVAILABLE'
+        assert list(session._vantage_samples)[-1]['status']=='UNAVAILABLE'
         assert session._last_vantage_wall is None
     finally:provider.close()
 

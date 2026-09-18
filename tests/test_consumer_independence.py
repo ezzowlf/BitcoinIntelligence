@@ -6,7 +6,7 @@ import threading
 from pathlib import Path
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from waverun_live import LiveSession
+from waverun_live import LiveSession,TimeSeries
 from bitcoin_cycle_analyzer.short_term.causal_features import CausalFeatures
 from bitcoin_cycle_analyzer.short_term.events import MarketEvent,EventType
 from bitcoin_cycle_analyzer.short_term.orderbook import OrderBookState
@@ -17,8 +17,8 @@ def test_futures_book_and_depth_progress_while_spot_is_busy():
     session._spot_lock=threading.Lock()
     session._process_lock=threading.RLock()
     session._data_lock=threading.RLock()
-    session._book_samples=deque(maxlen=8192)
-    session._depth_samples=deque(maxlen=8192)
+    session._book_samples=TimeSeries(8192)
+    session._depth_samples=TimeSeries(8192)
     session.causal_features=CausalFeatures()
     session.flow_buffer={'spot':deque(),'futures':deque()}
     session.book=OrderBookState()

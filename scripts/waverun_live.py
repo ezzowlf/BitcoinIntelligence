@@ -8,6 +8,7 @@ import time
 import threading
 import uuid
 import copy
+from bisect import bisect_right
 from collections import deque
 from dataclasses import asdict
 from datetime import UTC, datetime
@@ -54,6 +55,67 @@ from bitcoin_cycle_analyzer.waverun_decision import (
 )
 
 
+class TimeSeries:
+    """Arrival-ordered samples with an O(log n) "newest at or before t" lookup.
+
+    Root cause this replaces (production soak 2026-09-18, congestion collapse):
+    the book/depth/vantage sample buffers were deques scanned linearly under the
+    global _data_lock - `next(row for row in reversed(buf) if key(row)<=t)`.
+    While the consumer keeps up, t is the newest timestamp and the scan stops on
+    the first element, so the cost is invisible. The moment the consumer falls
+    behind, t is an OLD event timestamp while the buffer holds RECENT samples,
+    so the scan walks almost the whole 8192-entry buffer - for every event, with
+    the lock held.
+
+    That is positive feedback: being behind makes each event orders of magnitude
+    more expensive, which puts it further behind. Measured under a genuine
+    market surge (82/s -> 1250/s): consumer throughput COLLAPSED from ~150/s to
+    18/s and never recovered, 1.35M causally-required events were shed and the
+    collector went CRITICAL.
+
+    Each buffer has a single producer appending in arrival order, so the keys are
+    monotonic and bisect selects exactly the element the linear scan did. The
+    bounded backward walk keeps that true if a rare out-of-order append happens,
+    and also serves the secondary predicate the vantage lookup needs.
+    """
+
+    __slots__ = ('_keys', '_rows', '_maxlen')
+
+    def __init__(self, maxlen=8192):
+        self._keys = []
+        self._rows = []
+        self._maxlen = maxlen
+
+    def append(self, key, row):
+        self._keys.append(key)
+        self._rows.append(row)
+        if len(self._keys) > self._maxlen:
+            drop = len(self._keys) - self._maxlen
+            del self._keys[:drop]
+            del self._rows[:drop]
+
+    def at(self, t, where=None, scan=64):
+        """Newest row with key <= t, optionally also satisfying `where`."""
+        index = bisect_right(self._keys, t) - 1
+        steps = 0
+        while index >= 0 and steps < scan:
+            if self._keys[index] <= t and (where is None or where(self._rows[index])):
+                return self._rows[index]
+            index -= 1
+            steps += 1
+        return None
+
+    def clear(self):
+        self._keys.clear()
+        self._rows.clear()
+
+    def __len__(self):
+        return len(self._keys)
+
+    def __iter__(self):
+        return iter(self._rows)
+
+
 class LiveSession:
     def __init__(self, output: Path, database: Path, symbol: str, mt5_values: dict[str, str] | None = None):
         self.output, self.engine, self.store = output, ShortTermEngine(), ForecastStore(database)
@@ -95,9 +157,9 @@ class LiveSession:
         self._process_lock=threading.RLock()
         self._data_lock=threading.RLock()
         self._spot_lock=threading.Lock()
-        self._book_samples=deque(maxlen=8192)
-        self._depth_samples=deque(maxlen=8192)
-        self._vantage_samples=deque(maxlen=8192)
+        self._book_samples=TimeSeries(8192)
+        self._depth_samples=TimeSeries(8192)
+        self._vantage_samples=TimeSeries(8192)
         self._mt5_lock=threading.RLock()
         self._event_queues={}
         self._worker_error=None
@@ -157,14 +219,14 @@ class LiveSession:
                 # the moment the failure was observed, never retroactively.
                 now=datetime.now(UTC)
                 with self._data_lock:
-                    self._vantage_samples.append((now,{'status':'UNAVAILABLE','timestamp':now,'reason':tick.get('reason')}))
+                    self._vantage_samples.append(now,{'status':'UNAVAILABLE','timestamp':now,'reason':tick.get('reason')})
             return
         time_msc = int(tick["time_msc"])
         if self._last_vantage_time_msc is not None and time_msc <= self._last_vantage_time_msc:
             return
         self._last_vantage_time_msc = time_msc
         with self._data_lock:
-            self._vantage_samples.append((datetime.now(UTC),dict(tick)))
+            self._vantage_samples.append(datetime.now(UTC),dict(tick))
         record = {
             "time_msc": time_msc, "timestamp": pd.Timestamp(tick["timestamp"]).tz_convert("UTC").isoformat(),
             "bid": tick["bid"], "ask": tick["ask"], "last": tick.get("last", 0.0),
@@ -267,7 +329,7 @@ class LiveSession:
     def _apply_depth(self,event):
         with self._data_lock:
             result=self.book.apply(event)
-            self._depth_samples.append((event.received_timestamp,self.book.imbalance(),self.book.synchronized))
+            self._depth_samples.append(event.received_timestamp,(event.received_timestamp,self.book.imbalance(),self.book.synchronized))
             return result
 
     def _evaluate_event(self,event):
@@ -275,7 +337,7 @@ class LiveSession:
         if event.event_type == EventType.BOOK_TICKER:
             with self._data_lock:
                 self.last_book = event
-                self._book_samples.append(event)
+                self._book_samples.append(event.received_timestamp,event)
             return
         if event.event_type != EventType.TRADE:
             return
@@ -303,14 +365,15 @@ class LiveSession:
             return
         self.last_evaluation_second = evaluation_second
         with self._data_lock:
-            last_book=next((row for row in reversed(self._book_samples) if row.received_timestamp<=event.received_timestamp),None)
+            last_book=self._book_samples.at(event.received_timestamp)
             bid = last_book.payload['bid'] if last_book else None
             ask = last_book.payload['ask'] if last_book else None
-            depth=next((row for row in reversed(self._depth_samples) if row[0]<=event.received_timestamp),None)
+            depth=self._depth_samples.at(event.received_timestamp)
             book_imbalance = depth[1] if depth else None
             book_synchronized = depth[2] if depth else False
-            quote=next((dict(row) for available,row in reversed(self._vantage_samples)
-                        if available<=event.received_timestamp and pd.Timestamp(row['timestamp'])<=event.received_timestamp),{'status':'UNAVAILABLE'})
+            vantage=self._vantage_samples.at(event.received_timestamp,
+                where=lambda row: pd.Timestamp(row['timestamp'])<=event.received_timestamp)
+            quote=dict(vantage) if vantage else {'status':'UNAVAILABLE'}
         exchange_timestamp = event.exchange_timestamp or received
         tick = MarketTick(payload["price"], exchange_timestamp, received, datetime.now(UTC), event.exchange, payload["quantity"], payload["quantity"] if not payload["buyer_is_maker"] else 0.0, payload["quantity"] if payload["buyer_is_maker"] else 0.0, bid, ask, book_imbalance)
         forecasts = self.engine.process(tick, "LIVE", received)
