@@ -12,6 +12,16 @@ from bitcoin_cycle_analyzer.short_term.storage_policy import StorageMaintenance,
 
 T=datetime(2026,1,1,tzinfo=UTC)
 
+@pytest.fixture(autouse=True)
+def _release_parquet_handles():
+    """pyarrow can keep a Windows file handle on a parquet it read until the
+    objects are collected, which makes pytest's tmp_path teardown fail with a
+    sharing violation. Collect before teardown so the files are unlinkable."""
+    yield
+    import gc
+    gc.collect()
+
+
 def setup(tmp_path):
     root=tmp_path/'raw';root.mkdir()
     journal=Journal(tmp_path/'journal.db')

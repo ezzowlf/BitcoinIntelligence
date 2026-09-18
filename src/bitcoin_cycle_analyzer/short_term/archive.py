@@ -48,7 +48,7 @@ def archive_segment(raw,*,compression='zstd'):
     table=pa.table({'source':sources,'received_at':times,'raw':rows})
     pq.write_table(table,temp,compression=compression,compression_level=9 if compression=='zstd' else None,row_group_size=8192)
     with temp.open('r+b') as f:os.fsync(f.fileno())
-    recovered=pq.read_table(temp).column('raw').to_pylist()
+    recovered=pq.read_table(temp,memory_map=False).column('raw').to_pylist()
     digest=hashlib.sha256(b''.join(rows)).hexdigest()
     if len(recovered)!=len(rows) or hashlib.sha256(b''.join(recovered)).hexdigest()!=digest:raise ValueError('archive round-trip mismatch')
     os.replace(temp,target)
@@ -61,7 +61,10 @@ def verify_archive(path):
     import pyarrow.parquet as pq
     path=Path(path);manifest=json.loads(path.with_suffix('.manifest.json').read_text())
     if manifest['verification']!='VERIFIED_ARCHIVE' or sha(path)!=manifest['checksum']:raise ValueError('archive checksum mismatch')
-    table=pq.read_table(path)
+    # memory_map=False: a mapped parquet keeps a Windows file handle alive
+    # after the read, so a later unlink of the very file just verified
+    # (expire_archive) fails with a sharing violation.
+    table=pq.read_table(path,memory_map=False)
     rows=table.column('raw').to_pylist();times=table.column('received_at').to_pylist()
     if len(rows)!=manifest['records'] or hashlib.sha256(b''.join(rows)).hexdigest()!=manifest['raw_checksum']:raise ValueError('archive record mismatch')
     if min(times)!=manifest['start'] or max(times)!=manifest['end'] or str(table.schema)!=manifest['schema']:raise ValueError('archive manifest mismatch')
