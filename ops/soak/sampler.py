@@ -154,23 +154,57 @@ def _pipeline_metrics():
 
 
 def _signal_counts():
-    """Signal/outcome production, so the soak shows whether the product worked."""
+    """Signal/outcome production plus the regression counters the 24h soak has
+    to prove. All cumulative, so a problem occurring BETWEEN two ten-minute
+    samples is still visible as a step in the counter."""
     try:
         import sqlite3 as _sqlite3
-        db = _sqlite3.connect(f"file:{RUNTIME / 'journal.db'}?mode=ro", uri=True, timeout=3)
+        db = _sqlite3.connect(f"file:{RUNTIME / 'journal.db'}?mode=ro", uri=True, timeout=5)
         db.execute("PRAGMA query_only=1")
         try:
             counts = {k: c for k, c in db.execute(
                 "SELECT kind,COUNT(*) FROM events WHERE kind IN "
-                "('signal_transition','outcome','false_warning','missed_move','move') GROUP BY kind")}
-            counts["live_signals"] = db.execute(
+                "('signal_transition','outcome','false_warning','missed_move','move','incident') GROUP BY kind")}
+            # Signal funnel by state, and by direction.
+            counts["by_state"] = {s: c for s, c in db.execute(
+                "SELECT json_extract(payload,'$.state_to'),COUNT(*) FROM events "
+                "WHERE kind='signal_transition' GROUP BY 1")}
+            counts["by_direction"] = {d: c for d, c in db.execute(
+                "SELECT json_extract(payload,'$.direction'),COUNT(*) FROM events "
+                "WHERE kind='signal_transition' GROUP BY 1")}
+            counts["rejection_reasons"] = {r: c for r, c in db.execute(
+                "SELECT json_extract(payload,'$.reasons'),COUNT(*) FROM events "
+                "WHERE kind='signal_transition' AND json_extract(payload,'$.state_to') "
+                "IN ('CANCELLED','REJECTED','EXPIRED') GROUP BY 1")}
+            # Regression counters for the three fixes (must stay flat).
+            counts["outcomes_evidence_failures"] = db.execute(
                 "SELECT COUNT(*) FROM events WHERE kind='signal_transition' "
-                "AND json_extract(payload,'$.state_to')='LIVE'").fetchone()[0]
+                "AND json_extract(payload,'$.missing_evidence') LIKE '%outcomes%'").fetchone()[0]
+            counts["invalid_data_outcomes"] = db.execute(
+                "SELECT COUNT(*) FROM events WHERE kind='outcome' "
+                "AND json_extract(payload,'$.status')='INVALID_DATA'").fetchone()[0]
+            counts["null_entry_observations"] = db.execute(
+                "SELECT COUNT(*) FROM observations WHERE bid IS NULL OR ask IS NULL").fetchone()[0]
+            counts["observations_total"] = db.execute("SELECT COUNT(*) FROM observations").fetchone()[0]
+            # Raw-pin regrowth guard: candidate/decision must never reappear.
+            counts["raw_event_pins"] = {k: c for k, c in db.execute(
+                "SELECT kind,COUNT(*) FROM raw_event_pins GROUP BY kind")}
+            # Liveness gauge whose staleness cancels in-flight setups.
+            row = db.execute("SELECT committed_at FROM progress WHERE stage='outcome_scheduler'").fetchone()
+            counts["outcome_scheduler_age_s"] = round(time.time() - row[0], 2) if row else None
+            counts["quotes_rows"] = db.execute("SELECT COUNT(*) FROM quotes").fetchone()[0]
             return counts
         finally:
             db.close()
     except Exception:  # noqa: BLE001
         return {}
+
+
+def _vantage_state():
+    """Vantage/MT5 bridge: restart-loop guard and quote freshness."""
+    mt5 = _read_json(RUNTIME / "mt5_health.json") or {}
+    return {k: mt5.get(k) for k in
+            ("status", "reason", "age_seconds", "starts", "failures", "timeouts", "worker_pid")}
 
 
 def _persistent_mb():
@@ -221,6 +255,7 @@ def sample():
         "api_usage": _process_usage(api_pid),
         "pipeline": _pipeline_metrics(),
         "signals": _signal_counts(),
+        "vantage": _vantage_state(),
         "persistent_mb": _persistent_mb(),
         "execution": "DISABLED",
     }
