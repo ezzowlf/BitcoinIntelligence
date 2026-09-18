@@ -24,3 +24,11 @@ audit/
 rebuild_artifacts/
 *.db-wal
 *.db-shm
+
+# measurement/diagnostic artifacts (regenerated, never source)
+ops/*.log
+ops/*.xml
+ops/*.jsonl
+ops/soak/
+ops/storage_gate_samples.jsonl
+codex_final_run.txt
