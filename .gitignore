@@ -29,7 +29,10 @@ rebuild_artifacts/
 ops/*.log
 ops/*.xml
 ops/*.jsonl
-ops/soak/
+ops/soak/*.json
+ops/soak/*.jsonl
+!ops/soak/*.py
+!ops/soak/*.ps1
 ops/storage_gate_samples.jsonl
 codex_final_run.txt
 logs/
