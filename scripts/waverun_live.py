@@ -504,6 +504,23 @@ class LiveSession:
         # every real candidate, including the ones that fail - is still
         # registered in full across all horizons, and false_warning/missed_move
         # remain untouched, so signal quality stays honestly measurable.
+        # Hand the observation the exact quote this evaluation decided on,
+        # instead of letting register_many() re-derive it from the `quotes`
+        # table. That lookup raced the Vantage recorder thread, which commits
+        # the same quote asynchronously: measured 2026-09-18, 17 of 183
+        # NULL-entry observations had a quote within max_gap by the time the
+        # row was inspected, so the entry price was lost to write ordering
+        # rather than to a real gap, and the observation resolved
+        # INVALID_DATA. Passing it through is also causally tighter - the
+        # outcome is now priced on the quote the signal was evaluated
+        # against, not on whatever the table holds later.
+        #
+        # Freshness is unchanged: only a quote inside the same max_gap the DB
+        # path would have accepted is passed, so a stale quote still yields
+        # None and the observation still fails closed.
+        entry_bid=entry_ask=None
+        if mt5_quote.get('status')=='AVAILABLE' and quote_age is not None and 0<=quote_age<=self.outcomes.max_gap:
+            entry_bid,entry_ask=mt5_quote.get('bid'),mt5_quote.get('ask')
         outcome_sample_due = now_mono - self._last_outcome_sample >= self._OUTCOME_SAMPLE_S
         if relevant or outcome_sample_due:
             self._last_outcome_sample = now_mono
@@ -511,11 +528,11 @@ class LiveSession:
             forecast_registrations=[
                 (identity('prediction',forecast.timestamp.isoformat(),forecast.horizon_seconds),
                  'prediction',forecast.timestamp,
-                 'LONG' if forecast.p_up>=forecast.p_down else 'SHORT',None,None,None,
+                 'LONG' if forecast.p_up>=forecast.p_down else 'SHORT',entry_bid,entry_ask,None,
                  (forecast.horizon_seconds,),{'prediction_timestamp':forecast.timestamp.isoformat()})
                 for forecast in forecasts
             ]
-            forecast_registrations.append((cause,'candidate',received,decision.direction,None,None,None,HORIZONS,None))
+            forecast_registrations.append((cause,'candidate',received,decision.direction,entry_bid,entry_ask,None,HORIZONS,None))
             self.outcomes.register_many(forecast_registrations)
         snapshot = ForecastSnapshot.from_forecasts(forecasts, "LIVE", self.feed.status(), payload["price"], tick.age_seconds(received))
         self.output.write_text(json.dumps(snapshot.to_dict(), indent=2, ensure_ascii=False), encoding="utf-8")
@@ -641,11 +658,35 @@ class LiveSession:
                 continue  # one poison event/window must not freeze the whole feed
             finally:self._event_queues[key].task_done()
 
+    def _mark_outcome_progress(self):
+        """Record that the outcome scheduler completed a step of work."""
+        now=datetime.now(UTC)
+        self.journal.mark('outcome_scheduler',identity('scheduler-step',now.timestamp()),now,committed_at=now)
+
     async def _outcome_scheduler(self,stop):
         fails=0
         while not stop.is_set():
             try:
+                # The outcome_scheduler marker is only written at the END of
+                # resolve_due(), so its age measured the WHOLE loop, not
+                # whether the scheduler was working. A bounded-but-slow
+                # housekeeping pass (a 1000-row outcome batch applied to the
+                # predictions DB, or SQLite writer contention) could push the
+                # marker past the 10s outcomes_ready window while the
+                # scheduler was healthy and making progress - and because
+                # SignalEngine treats `outcomes` as required evidence, that
+                # cancelled every in-flight setup. Measured in production
+                # 2026-09-18: 3 of 13 ARMED setups died with
+                # missing=['outcomes'] while bid/ask were present and every
+                # feed was HEALTHY.
+                #
+                # Marking after each completed step reports forward progress
+                # instead of loop duration. A step that genuinely hangs still
+                # produces no mark, so a truly stalled scheduler is still
+                # detected - this is the same heartbeat fix already applied
+                # inside resolve_due(), extended to the rest of the loop.
                 await asyncio.to_thread(self.outcomes.catch_up_registrations)
+                self._mark_outcome_progress()
                 # A post-outage backlog must not monopolize SQLite's sole
                 # writer long enough to stall live market consumers.  Each
                 # pass is deliberately bounded; the loop immediately resumes
@@ -655,7 +696,9 @@ class LiveSession:
                 events=await asyncio.to_thread(self.journal.rows,'outcome',after=cursor,limit=1000)
                 if events:
                     await asyncio.to_thread(self._apply_outcome_events,events)
+                    self._mark_outcome_progress()
                 await asyncio.to_thread(self._signal_maintenance)
+                self._mark_outcome_progress()
                 fails=0
                 await asyncio.sleep(1)
             except asyncio.CancelledError:

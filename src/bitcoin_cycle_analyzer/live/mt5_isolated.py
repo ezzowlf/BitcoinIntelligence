@@ -39,6 +39,7 @@ class IsolatedMT5Provider:
     Symbol discovery/ranking in MT5MarketDataProvider remains unchanged.
     """
     max_tick_age = 3.0  # seconds a quote may lag before it counts as stale (not as a fault)
+    collect_timeout = 0.08  # bounded wait for an in-flight response, so a quote costs one poll, not two
 
     def __init__(self, values=None, *, timeout=10.0, retry_seconds=5.0,
                  backend_factory=None, context=None):
@@ -126,7 +127,15 @@ class IsolatedMT5Provider:
                 return self._fail('MT5_CALL_TIMEOUT')
             if not self.process.is_alive():
                 return self._fail('MT5_WORKER_EXITED')
-            if not self.pipe.poll():
+            # Wait briefly for the in-flight response instead of giving up
+            # immediately. Returning straight away meant a quote always cost
+            # two recorder iterations - send on one, collect on the next - so
+            # the caller's poll interval was added to every quote's observed
+            # age (measured 2026-09-18: the collector never saw a tick fresher
+            # than exactly its own 100ms loop sleep). This runs on a worker
+            # thread, never the event loop, and the spawn/hang deadline below
+            # is unchanged, so a wedged terminal is still detected.
+            if not self.pipe.poll(self.collect_timeout):
                 return {'status': 'UNAVAILABLE', 'reason': 'MT5_POLL_PENDING'}
             tick = self.pipe.recv()
             self.deadline = None
