@@ -501,8 +501,15 @@ class LiveSession:
         snapshot = ForecastSnapshot.from_forecasts(forecasts, "LIVE", self.feed.status(), payload["price"], tick.age_seconds(received))
         self.output.write_text(json.dumps(snapshot.to_dict(), indent=2, ensure_ascii=False), encoding="utf-8")
 
+    # A merely stale quote reports its true age so HealthSupervisor grades it
+    # with its own feed_stale_after/feed_offline_after thresholds, instead of
+    # jumping straight to OFFLINE after one quiet second on the CFD book. Any
+    # other non-current reason is a real fault and stays unmeasurable (None ->
+    # OFFLINE), so a broken bridge can never look merely stale.
+    _VANTAGE_AGE_REASONS = {'MT5_CURRENT_TICK','MT5_STALE_TICK'}
+
     def _vantage_age(self) -> float | None:
-        if getattr(self.mt5,'reason','MT5_CURRENT_TICK')!='MT5_CURRENT_TICK':return None
+        if getattr(self.mt5,'reason','MT5_CURRENT_TICK') not in self._VANTAGE_AGE_REASONS:return None
         return _res_age_seconds(self._last_vantage_wall)
 
     async def _recreate_feed_task(self) -> None:

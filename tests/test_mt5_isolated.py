@@ -26,9 +26,12 @@ class Backend:
         return [SimpleNamespace(name='BTCUSD',description='Bitcoin USD',visible=True)]
     def symbol_select(self,*args):return True
     def symbol_info_tick(self,*args):
-        t=time.time()-(100 if self.mode=='stale' else 0)
-        if self.mode=='future':t+=100
-        if self.mode=='invalid':return SimpleNamespace(bid=102,ask=101,time=int(t),time_msc=int(t*1000))
+        # Honour the marker file here too, so a test can switch quote freshness
+        # mid-flight (the worker only reads symbols_get once, at startup).
+        mode=Path(self.marker).read_text() if self.marker else self.mode
+        t=time.time()-(100 if mode=='stale' else 0)
+        if mode=='future':t+=100
+        if mode=='invalid':return SimpleNamespace(bid=102,ask=101,time=int(t),time_msc=int(t*1000))
         return SimpleNamespace(bid=100,ask=101,time=int(t),time_msc=int(t*1000))
     def copy_rates_from_pos(self,*args):return [1]
     def terminal_info(self):return SimpleNamespace(connected=self.mode!='disconnected')
@@ -62,8 +65,8 @@ def test_normal_and_slow_preserve_symbol_selection(mode):
 
 @pytest.mark.parametrize('mode,reason',[
     ('unreachable','INITIALIZE_FAILED'),('disconnected','MT5_SESSION_UNAVAILABLE'),
-    ('logged_out','MT5_SESSION_UNAVAILABLE'),('stale','MT5_INVALID_OR_STALE_TICK'),
-    ('future','MT5_INVALID_OR_STALE_TICK'),('invalid','INVALID_OR_UNINITIALIZED_TICK')])
+    ('logged_out','MT5_SESSION_UNAVAILABLE'),
+    ('future','MT5_INVALID_TICK'),('invalid','INVALID_OR_UNINITIALIZED_TICK')])
 def test_no_phantom_live(mode,reason):
     provider=IsolatedMT5Provider({'MT5_ENABLED':'true'},backend_factory=partial(Backend,mode))
     try:
@@ -197,3 +200,41 @@ if __name__ == '__main__':
     finally:
         if owner.poll() is None:owner.kill();owner.wait(timeout=5)
         if handle:kernel.CloseHandle(handle)
+
+
+def test_stale_quote_is_reported_but_never_restarts_the_worker():
+    """Regression (production 2026-09-18): a well-formed quote older than
+    max_tick_age was treated as a worker fault, so the bridge was terminated -
+    which guaranteed the next quote was stale too. `starts` climbed ~6/minute
+    and vantage flapped OFFLINE while valid current bid/ask were arriving.
+
+    Staleness must be reported (never phantom-LIVE) while the worker stays up.
+    """
+    provider=IsolatedMT5Provider({'MT5_ENABLED':'true'},backend_factory=partial(Backend,'stale'))
+    try:
+        tick=wait(provider,reason='MT5_STALE_TICK')
+        assert tick['status']=='UNAVAILABLE'          # never phantom-live
+        assert tick['age_seconds']>provider.max_tick_age
+        starts_after_first=provider.starts
+        for _ in range(20):
+            assert provider.tick()['status']=='UNAVAILABLE'
+        assert provider.starts==starts_after_first, 'a stale quote must not respawn the bridge'
+        assert provider.process is not None, 'the worker must stay alive through staleness'
+        assert provider.failures==0, 'staleness is not a failure'
+        assert provider.health()['status']=='DEGRADED'
+    finally:provider.close()
+
+
+def test_stale_then_fresh_recovers_without_a_restart(tmp_path):
+    """The point of keeping the worker alive: when the book prints again the
+    quote recovers immediately, with no respawn in between."""
+    marker=tmp_path/'mode';marker.write_text('stale')
+    provider=IsolatedMT5Provider({'MT5_ENABLED':'true'},backend_factory=partial(Backend,marker=str(marker)))
+    try:
+        wait(provider,reason='MT5_STALE_TICK')
+        starts=provider.starts
+        marker.write_text('normal')
+        assert wait(provider,status='AVAILABLE')['status']=='AVAILABLE'
+        assert provider.starts==starts, 'recovery must not need a respawn'
+        assert provider.health()['status']=='HEALTHY'
+    finally:provider.close()

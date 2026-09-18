@@ -38,6 +38,8 @@ class IsolatedMT5Provider:
     kill blocks recovery, so a second native caller can never be created.
     Symbol discovery/ranking in MT5MarketDataProvider remains unchanged.
     """
+    max_tick_age = 3.0  # seconds a quote may lag before it counts as stale (not as a fault)
+
     def __init__(self, values=None, *, timeout=10.0, retry_seconds=5.0,
                  backend_factory=None, context=None):
         self.values = dict(os.environ) if values is None else dict(values)
@@ -133,8 +135,24 @@ class IsolatedMT5Provider:
             stamp = tick['timestamp']
             age = (datetime.now(UTC)-stamp).total_seconds()
             bid, ask = float(tick['bid']), float(tick['ask'])
-            if not (math.isfinite(bid) and math.isfinite(ask) and 0 < bid <= ask and 0 <= age <= 3):
-                return self._fail('MT5_INVALID_OR_STALE_TICK')
+            # A malformed or future-dated quote means the bridge/terminal or the
+            # clock is genuinely wrong - that is a fault worth restarting for.
+            if not (math.isfinite(bid) and math.isfinite(ask) and 0 < bid <= ask and age >= 0):
+                return self._fail('MT5_INVALID_TICK')
+            # A well-formed quote that is merely OLD is not a fault: Vantage's
+            # CFD book legitimately goes seconds without a new print in quiet
+            # hours. Treating that as a worker failure retired the bridge, which
+            # guaranteed the next quote was stale too - an endless restart loop
+            # (observed 2026-09-18: `starts` climbing ~6/minute with valid,
+            # current bid/ask arriving only once per respawn). Report staleness
+            # and keep the worker alive so the next print can actually arrive.
+            # last_tick_at deliberately stays at the real last print, so health()
+            # and _vantage_age() degrade on true age and no stale quote can
+            # reach a signal.
+            if age > self.max_tick_age:
+                self.reason = 'MT5_STALE_TICK'
+                self.last_tick_at = stamp
+                return {'status': 'UNAVAILABLE', 'reason': self.reason, 'age_seconds': age}
             self.reason = 'MT5_CURRENT_TICK'
             self.last_tick_at = stamp
             self.failures = 0
