@@ -1,0 +1,2 @@
+{"call": "initialize", "phase": "start", "time": 1789470082.1828218}
+{"probe": "TIMEOUT", "deadline_seconds": 12, "owned_probe_killed": true}

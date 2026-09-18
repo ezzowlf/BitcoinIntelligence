@@ -101,8 +101,14 @@ class OutcomeEngine:
             # stable snapshot above; INSERT OR IGNORE keeps restart delivery
             # idempotent if another recovery path completed one meanwhile.
             with self.journal.connect() as db:
+                # The resolution ledger keeps (id,horizon,status,resolved_at) for
+                # idempotent restart delivery. It deliberately does NOT keep the
+                # payload: that same JSON is already written to outcome_outbox
+                # below and then to the durable `outcome` journal event, and
+                # nothing ever reads it back from here - a third permanent copy
+                # cost ~18MB/day of the storage gate for nothing.
                 db.executemany('INSERT OR IGNORE INTO observation_outcomes VALUES(?,?,?,?,?)',
-                    [(i,h,s,wall,p) for i,h,s,p in batch])
+                    [(i,h,s,wall,'{}') for i,h,s,p in batch])
                 db.executemany('UPDATE observations SET status=? WHERE id=? AND horizon=?',
                     [(s,i,h) for i,h,s,p in batch])
                 db.executemany('INSERT OR IGNORE INTO outcome_outbox VALUES(?,?,?)',

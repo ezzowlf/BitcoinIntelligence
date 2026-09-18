@@ -1,0 +1,8 @@
+{"monotonic": 1789692599.7374551, "sizes": {"database": 8261632, "diagnostics": 448229, "exports": 0, "logs": 2301, "raw": 0, "runtime": 2496528}, "timestamp": "2026-09-18T00:49:59.737455+00:00", "total": 11208690}
+{"monotonic": 1789692667.8860781, "sizes": {"database": 8261632, "diagnostics": 448229, "exports": 0, "logs": 2301, "raw": 0, "runtime": 2536119}, "timestamp": "2026-09-18T00:51:07.886078+00:00", "total": 11248281}
+{"monotonic": 1789692728.3691325, "sizes": {"database": 8261632, "diagnostics": 448864, "exports": 0, "logs": 2301, "raw": 0, "runtime": 2575365}, "timestamp": "2026-09-18T00:52:08.369132+00:00", "total": 11288162}
+{"monotonic": 1789692788.8995056, "sizes": {"database": 8261632, "diagnostics": 448864, "exports": 0, "logs": 2301, "raw": 0, "runtime": 2613504}, "timestamp": "2026-09-18T00:53:08.899505+00:00", "total": 11326301}
+{"monotonic": 1789692849.3812864, "sizes": {"database": 8261632, "diagnostics": 448864, "exports": 0, "logs": 2823, "raw": 0, "runtime": 2733282}, "timestamp": "2026-09-18T00:54:09.381286+00:00", "total": 11446601}
+{"monotonic": 1789692909.8253257, "sizes": {"database": 8269824, "diagnostics": 448864, "exports": 0, "logs": 3633, "raw": 0, "runtime": 2731718}, "timestamp": "2026-09-18T00:55:09.825325+00:00", "total": 11454039}
+{"monotonic": 1789692970.2507815, "sizes": {"database": 8273920, "diagnostics": 448864, "exports": 0, "logs": 3728, "raw": 0, "runtime": 2786289}, "timestamp": "2026-09-18T00:56:10.250781+00:00", "total": 11512801}
+{"monotonic": 1789692981.0210962, "sizes": {"database": 8273920, "diagnostics": 448864, "exports": 0, "logs": 3728, "raw": 0, "runtime": 2826980}, "timestamp": "2026-09-18T00:56:21.021096+00:00", "total": 11553492}

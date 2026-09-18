@@ -1,0 +1,78 @@
+﻿{
+    "soak_start_utc":  "2026-08-31T22:00:00Z",
+    "note":  "Services live ~21:57Z; B-1 live test completed ~22:06Z; sampler registered ~22:31Z",
+    "first_sample":  {
+                         "t":  "2026-08-31T22:30:22.7897832Z",
+                         "svc":  {
+                                     "collector":  "Running",
+                                     "api":  "Running",
+                                     "web":  "Running",
+                                     "collector_start":  "Auto",
+                                     "api_start":  "Auto",
+                                     "web_start":  "Auto"
+                                 },
+                         "proc":  {
+                                      "collector_pid":  6056,
+                                      "api_pid":  8148,
+                                      "web_pid":  9072,
+                                      "collector_rss_mb":  111.3,
+                                      "api_rss_mb":  104,
+                                      "collector_threads":  8,
+                                      "api_threads":  5,
+                                      "collector_handles":  433,
+                                      "collector_cpu_s":  329.9,
+                                      "collector_instances":  1
+                                  },
+                         "host":  {
+                                      "ram_free_mb":  2514,
+                                      "ram_total_mb":  8186,
+                                      "cpu_pct":  50,
+                                      "disk_free_gb":  75.96
+                                  },
+                         "net":  {
+                                     "collector_conns":  4,
+                                     "binance_spot":  true,
+                                     "binance_futures":  true
+                                 },
+                         "feeds":  {
+                                       "spot_state":  "CONNECTED",
+                                       "spot_reconnects":  0,
+                                       "spot_last_event":  "2026-08-31T22:30:25.158289+00:00",
+                                       "fut_state":  "CONNECTED",
+                                       "fut_reconnects":  0,
+                                       "fut_last_event":  "2026-08-31T22:30:25.094301+00:00",
+                                       "price":  null,
+                                       "setup_state":  "NEUTRAL",
+                                       "execution":  "DISABLED"
+                                   },
+                         "engine":  null,
+                         "files":  {
+                                       "market_events":  195264,
+                                       "pre_gate_candidates":  1729,
+                                       "decision_records":  1729,
+                                       "vantage_ticks":  1847,
+                                       "log_bytes":  4212,
+                                       "db_bytes":  11452416
+                                   },
+                         "api":  {
+                                     "health":  200,
+                                     "ts_health":  200,
+                                     "web":  200
+                                 },
+                         "isolation":  {
+                                           "bitcoinelliot_mtime":  "2026-08-14T12:33:45.7672263+02:00",
+                                           "bitcoinelliot_8502_listen":  true,
+                                           "tailscale_443_route":  "http://127.0.0.1:8502"
+                                       }
+                     },
+    "commit":  "fd0319e07189ca04108d3b253372271f571d62ed",
+    "branch":  "takeoff-release",
+    "ports":  {
+                  "api":  8877,
+                  "web":  8878,
+                  "tailscale_https":  8443
+              },
+    "bitcoinelliot_mtime_baseline":  "2026-08-14T12:33:45.7672263+02:00",
+    "tests_full_suite":  "480 passed / 2 failed (test_master_30 stale golden values, not in live path)",
+    "targeted_tests":  "39/39 passed"
+}

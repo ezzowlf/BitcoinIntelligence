@@ -71,6 +71,7 @@ class LiveSession:
         self._last_decision_heartbeat = 0.0
         self._last_latency_heartbeat = 0.0
         self._last_journal_heartbeat = 0.0
+        self._last_outcome_sample = 0.0
         self.trade_buffer = deque(maxlen=200_000)
         self.rolling_bars = RollingTradeBars(maxlen=self.trade_buffer.maxlen)
         self.flow_buffer = {"spot": deque(maxlen=100_000), "futures": deque(maxlen=100_000)}
@@ -116,6 +117,12 @@ class LiveSession:
     _ROTATED_KEEP=8  # bounded backlog per stem; rotated files duplicate what journal.db (14-day prune) already retains durably
     _JSONL_HEARTBEAT_S=10.0  # max staleness health_supervisor's _last_jsonl_timestamp can see on a routine (non-candidate) second
     _JOURNAL_HEARTBEAT_S=60.0  # one full routine evaluation is committed per minute; liveness marks still fire every second
+    # Each routine sample registers 15 observations (6 forecast horizons + a
+    # 9-horizon candidate), every one of which becomes a permanent `outcome`
+    # row - measured as the single largest journal.db contributor. One sample
+    # per 5 minutes still yields 288 calibration sets/day, which is ample for
+    # honest forecast calibration, and every real candidate is exempt.
+    _OUTCOME_SAMPLE_S=300.0
     _rotated_since_start:set = set()  # only files THIS process rotated are ever auto-deleted - never a pre-existing backlog
 
     @staticmethod
@@ -412,7 +419,17 @@ class LiveSession:
             self._append(self.candidate_path, candidate_record)
             self._last_candidate_heartbeat = now_mono
         if relevant or now_mono - self._last_decision_heartbeat >= self._JSONL_HEARTBEAT_S:
-            self._append(self.decision_path, decision_record)
+            # decision_records.jsonl has exactly one routine consumer: the
+            # supervisor's liveness timestamp. Its full record duplicates the
+            # journal `decision` row (causal_input carries every signal), and
+            # measured 24MB/day of the storage budget on heartbeat rows alone -
+            # a quarter of the entire gate for something nothing reads back. A
+            # real candidate still writes the complete record.
+            self._append(self.decision_path, decision_record if relevant else {
+                "timestamp": received, "final_decision": decision.decision,
+                "state": decision.state, "direction_bias": decision.direction,
+                "heartbeat": True, "execution": "DISABLED",
+            })
             self._last_decision_heartbeat = now_mono
         persisted_ns = time.perf_counter_ns()
         if relevant or now_mono - self._last_latency_heartbeat >= self._JSONL_HEARTBEAT_S:
@@ -487,7 +504,9 @@ class LiveSession:
         # every real candidate, including the ones that fail - is still
         # registered in full across all horizons, and false_warning/missed_move
         # remain untouched, so signal quality stays honestly measurable.
-        if relevant or journal_heartbeat_due:
+        outcome_sample_due = now_mono - self._last_outcome_sample >= self._OUTCOME_SAMPLE_S
+        if relevant or outcome_sample_due:
+            self._last_outcome_sample = now_mono
             self.store.append_many(forecasts)
             forecast_registrations=[
                 (identity('prediction',forecast.timestamp.isoformat(),forecast.horizon_seconds),
