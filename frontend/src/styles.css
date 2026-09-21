@@ -321,6 +321,60 @@ body {
 .tone-bad { color: var(--bad); }
 .tone-idle { color: var(--dim); }
 
+/* ------------------------------------------------- quote / conflict / evidence */
+
+.quote-block { margin: 0 0 12px; }
+.quote-title, .evidence-title, .conflict-title {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 6px;
+}
+
+.conflict {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(229, 162, 60, 0.08);
+  border: 1px solid rgba(229, 162, 60, 0.28);
+}
+.conflict-text { margin: 0 0 8px; font-size: 12px; color: var(--warn); }
+/* One flow per row on a phone: "+0.150 - Kaufdruck" must never wrap mid-value. */
+.conflict .facts { grid-template-columns: minmax(0, 1fr); gap: 8px 12px; }
+
+/* Evaluation-time evidence and current health, side by side on a wide screen
+   and stacked on a phone - never merged into one verdict. */
+.evidence {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.evidence-list { list-style: none; margin: 0; padding: 0; }
+.evidence-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 0;
+  min-width: 0;
+}
+.evidence-name { font-size: 12px; color: var(--text); min-width: 0; }
+.evidence-ok {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ok);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* ----------------------------------------------------------------- key/value */
 
 .kv { margin: 0; display: flex; flex-direction: column; gap: 8px; }
@@ -486,6 +540,8 @@ body {
   /* Alert, signal and chart stay full width; supporting cards pair up. */
   .main > .alert, .main > .signal, .main > .card-flush { grid-column: 1 / -1; }
   .facts { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .evidence { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .conflict .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .chart-host { height: 440px; }
   .verdict { font-size: 36px; }
 }

@@ -31,8 +31,13 @@ const EVIDENCE_TEXT: Record<string, string> = {
   executable_quote: "Handelbarer Kurs",
 };
 
+// The engine's conflict rule compares signed ORDER-FLOW imbalance
+// ((buy-sell)/(buy+sell)) on spot vs futures and fires when the two have
+// opposite signs. It never compares prices, so the wording must not suggest a
+// price divergence.
 const CONFLICT_TEXT: Record<string, string> = {
-  SPOT_FUTURES_DIVERGENCE: "Spot und Futures laufen auseinander",
+  SPOT_FUTURES_DIVERGENCE:
+    "Orderflow-Konflikt: Spot und Futures zeigen gegenläufigen Kauf-/Verkaufsdruck.",
 };
 
 /** Component keys as they appear in health.components. */
@@ -164,4 +169,55 @@ export function horizon(seconds: number | null | undefined): string {
   if (seconds === null || seconds === undefined || !Number.isFinite(seconds)) return "—";
   if (seconds < 60) return `${Math.round(seconds)} s`;
   return `${Math.round(seconds / 60)} min`;
+}
+
+/**
+ * The engine's own evaluation-time vocabulary, kept deliberately separate from
+ * the live-health wording above: a transition records HEALTHY / UNAVAILABLE at
+ * the instant it was evaluated, which is not the same statement as a feed being
+ * LIVE right now.
+ */
+const EVIDENCE_STATE_TEXT: Record<string, string> = {
+  HEALTHY: "HEALTHY",
+  UNAVAILABLE: "UNAVAILABLE",
+};
+
+export const evidenceStateText = (state: string | undefined | null): string =>
+  EVIDENCE_STATE_TEXT[(state ?? "").toUpperCase()] ?? (state ?? "—");
+
+export function evidenceTone(state: string | undefined | null): Tone {
+  const value = (state ?? "").toUpperCase();
+  if (value === "HEALTHY") return "ok";
+  if (value === "UNAVAILABLE") return "bad";
+  return "idle";
+}
+
+/** Engine keys as they appear in a transition's feed_health, in setup order. */
+export const EVIDENCE_SOURCES = ["spot", "futures", "l2", "vantage"] as const;
+
+/**
+ * The Vantage freshness requirement the engine applies, for display only.
+ * Mirrors waverun_live.py (`0 <= quote_age <= 3`). Shown so the user can see
+ * what "not fresh enough" means; nothing here is used in any decision.
+ */
+export const VANTAGE_MAX_QUOTE_AGE_S = 3;
+
+/** Signed order-flow imbalance -> direction word. Range is [-1, +1]. */
+export function flowPressureText(delta: number | null | undefined): string {
+  if (delta === null || delta === undefined || !Number.isFinite(delta)) return "—";
+  if (delta > 0) return "Kaufdruck";
+  if (delta < 0) return "Verkaufsdruck";
+  return "neutral";
+}
+
+/** Order-flow delta formatted with an explicit sign, e.g. "+0.238". */
+export function flowValue(delta: number | null | undefined): string {
+  if (delta === null || delta === undefined || !Number.isFinite(delta)) return "—";
+  return `${delta >= 0 ? "+" : ""}${delta.toFixed(3)}`;
+}
+
+/** Seconds with a German decimal comma, e.g. "3,000 s". */
+export function seconds(value: number | null | undefined, digits = 3): string {
+  if (value === null || value === undefined || !Number.isFinite(value)) return "—";
+  return `${value.toLocaleString("de-DE", { minimumFractionDigits: digits, maximumFractionDigits: digits })} s`;
 }

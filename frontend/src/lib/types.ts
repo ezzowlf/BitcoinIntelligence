@@ -183,6 +183,18 @@ export interface ShadowSignal {
   expires_at: string;
   calibration_status: string;
   signal_version: string;
+  /** Feed states the ENGINE saw at `timestamp`, in its own vocabulary
+   *  (HEALTHY / UNAVAILABLE). Historical - not the current live health. */
+  feed_health?: Record<string, string>;
+  /** Evaluation-time evidence the engine decided on. */
+  evidence?: {
+    bid?: number;
+    ask?: number;
+    spot_delta?: number;
+    futures_delta?: number;
+    l2_imbalance?: number;
+    sample_size?: number;
+  };
 }
 
 export interface Candle {

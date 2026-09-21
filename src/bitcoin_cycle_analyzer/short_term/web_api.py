@@ -407,6 +407,7 @@ class StateReader:
         state = active_setup["state"] if active_setup else "OBSERVING"
         signal = None
         if last_transition:
+            evidence = last_transition.get("evidence") or {}
             signal = {
                 "setup_id": last_transition.get("setup_id"),
                 "timestamp": last_transition.get("timestamp"),
@@ -424,6 +425,22 @@ class StateReader:
                 "expires_at": last_transition.get("expires_at"),
                 "calibration_status": last_transition.get("calibration_status", "UNCALIBRATED"),
                 "signal_version": last_transition.get("signal_version"),
+                # Evaluation-time evidence, forwarded verbatim so the dashboard can
+                # show the feed states the ENGINE actually saw at `timestamp`
+                # instead of implying that the current live health applied then.
+                # A transition is a historical record: by the time anyone reads it
+                # a stale feed has usually recovered, which previously made a
+                # correct CANCELLED look like it contradicted a green dashboard.
+                # Purely additive exposure of state the engine already persists -
+                # no signal logic, threshold, evidence rule or execution path is
+                # touched, and the raw engine vocabulary (HEALTHY/UNAVAILABLE) is
+                # passed through unchanged.
+                "feed_health": last_transition.get("feed_health") or {},
+                "evidence": {
+                    key: evidence.get(key)
+                    for key in ("bid", "ask", "spot_delta", "futures_delta", "l2_imbalance", "sample_size")
+                    if evidence.get(key) is not None
+                },
             }
         return {
             "state": state,
