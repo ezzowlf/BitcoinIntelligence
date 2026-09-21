@@ -48,7 +48,12 @@ def archive_segment(raw,*,compression='zstd'):
     table=pa.table({'source':sources,'received_at':times,'raw':rows})
     pq.write_table(table,temp,compression=compression,compression_level=9 if compression=='zstd' else None,row_group_size=8192)
     with temp.open('r+b') as f:os.fsync(f.fileno())
-    recovered=pq.read_table(temp,memory_map=False).column('raw').to_pylist()
+    # Same deterministic-close reason as verify_archive() below, with one extra
+    # consequence here: this round-trip check reads `temp`, and os.replace()
+    # then renames that file to `target`. A handle leaked here therefore follows
+    # the file through the rename and blocks the unlink of the FINAL archive
+    # later, long after this function returned.
+    with temp.open('rb') as handle:recovered=pq.read_table(handle,memory_map=False).column('raw').to_pylist()
     digest=hashlib.sha256(b''.join(rows)).hexdigest()
     if len(recovered)!=len(rows) or hashlib.sha256(b''.join(recovered)).hexdigest()!=digest:raise ValueError('archive round-trip mismatch')
     os.replace(temp,target)
@@ -61,10 +66,27 @@ def verify_archive(path):
     import pyarrow.parquet as pq
     path=Path(path);manifest=json.loads(path.with_suffix('.manifest.json').read_text())
     if manifest['verification']!='VERIFIED_ARCHIVE' or sha(path)!=manifest['checksum']:raise ValueError('archive checksum mismatch')
-    # memory_map=False: a mapped parquet keeps a Windows file handle alive
-    # after the read, so a later unlink of the very file just verified
-    # (expire_archive) fails with a sharing violation.
-    table=pq.read_table(path,memory_map=False)
+    # Read through a file object this function closes itself, rather than
+    # handing pyarrow the path.
+    #
+    # When pq.read_table() opens the file, the OS handle's lifetime is owned by
+    # Arrow-side objects that CPython's refcounting does not release
+    # deterministically - they are reclaimed by the cyclic collector, so the
+    # handle can outlive this call by an arbitrary amount. verify_archive() is
+    # called by retain_segment() and expire_archive() immediately before those
+    # delete the very file just verified, so on Windows that surviving handle
+    # intermittently turned the following unlink into WinError 32 (sharing
+    # violation). Reproduced 2026-09-21 at 5/5 runs of
+    # tests/test_waverun_storage_policy.py, with which test failed varying
+    # between runs - the signature of a collection-timing race. A forced
+    # gc.collect() before the unlink also cleared it, which confirmed the
+    # handle was held by an uncollected cycle rather than by a live reference.
+    #
+    # `with` closes the handle at a defined point; the Table stays fully usable
+    # afterwards because its data is already in memory. memory_map=False is
+    # kept (a mapped read would reintroduce a handle tied to the buffers), but
+    # on its own it was never sufficient - that was the earlier, incomplete fix.
+    with path.open('rb') as handle:table=pq.read_table(handle,memory_map=False)
     rows=table.column('raw').to_pylist();times=table.column('received_at').to_pylist()
     if len(rows)!=manifest['records'] or hashlib.sha256(b''.join(rows)).hexdigest()!=manifest['raw_checksum']:raise ValueError('archive record mismatch')
     if min(times)!=manifest['start'] or max(times)!=manifest['end'] or str(table.schema)!=manifest['schema']:raise ValueError('archive manifest mismatch')
