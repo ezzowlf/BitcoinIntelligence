@@ -409,6 +409,53 @@ body {
 .tag-bad  { color: var(--bad);  background: rgba(229, 72, 77, 0.13); }
 .tag-idle { color: var(--dim);  background: rgba(94, 107, 125, 0.13); }
 
+/* ------------------------------------------------------------ alert controls */
+
+.alerts {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  min-width: 0;
+}
+.alerts-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.alerts-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 44px;   /* thumb target for the button inside */
+  border-top: 1px solid var(--line);
+  padding: 4px 0;
+  flex-wrap: wrap;
+}
+.alerts-row:first-of-type { border-top: none; }
+.alerts-name { font-size: 13px; min-width: 0; }
+.alerts-action { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.alerts-action button {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 8px 12px;
+  min-height: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.alerts-hint { margin: 2px 0 6px; font-size: 11px; color: var(--dim); }
+
 /* --------------------------------------------------------------- health list */
 
 .health-list, .signal-list { list-style: none; margin: 0; padding: 0; }

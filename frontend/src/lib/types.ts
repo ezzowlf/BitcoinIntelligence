@@ -244,3 +244,30 @@ export interface SignalHistoryResponse {
   direction: string;
   execution: string;
 }
+
+/** One committed LIVE signal with its duration and how it resolved. */
+export interface LiveSignalRow {
+  setup_id: string;
+  timestamp: string;
+  direction: "LONG" | "SHORT" | null;
+  entry_zone: Array<number | null> | null;
+  invalidation: number | null;
+  expected_move_class: number | null;
+  expected_horizon: number | null;
+  reasons: string[];
+  synthetic: boolean;
+  /** null while the signal is still LIVE. */
+  live_seconds: number | null;
+  ended_state: string | null;
+  ended_reasons: string[];
+  outcome_status: string | null;
+  outcome_max_gap_seconds: number | null;
+  outcome_executable: number | null;
+  outcome_data_complete: boolean | null;
+}
+
+export interface LiveSignalsResponse {
+  signals: LiveSignalRow[];
+  available: boolean;
+  execution: string;
+}

@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type {
   AlertEvent,
+  LiveSignalRow,
+  LiveSignalsResponse,
   CandleResponse,
   LiveState,
   SignalHistoryResponse,
@@ -15,23 +17,68 @@ const BASE = import.meta.env.VITE_WAVERUN_API ?? "";
 
 export type StreamStatus = "CONNECTING" | "OPEN" | "ERROR";
 
-export function useSignalAudio(shadow: LiveState["shadow_signal"], connected: boolean) {
-  const [enabled, setEnabled] = useState(() => {
+/**
+ * One alert per real signal transition, across both channels.
+ *
+ * Regression fixed 2026-09-21: the mobile redesign dropped the AlertControls
+ * row, so `useSignalAudio` was still called but its toggle was unreachable and
+ * `useNotificationPermission` was not called at all - the sound stayed at its
+ * stored default (off, for anyone who had never enabled it) and browser
+ * notifications could never be granted. With LIVE signals visible for only
+ * ~305s about once every 15h (measured over 92h of production), that removed
+ * the only realistic way to learn a signal had fired.
+ *
+ * SignalAnnouncements.accept() is the single dedup authority: it is called
+ * exactly once per state change and is at-most-once per (setup_id, state_to),
+ * persisted in localStorage, silent on the first frame after a reload and
+ * silent for anything older than 10s. Both channels are driven from that one
+ * verdict, so a re-render, a reconnecting stream or a refresh cannot produce a
+ * second alert for the same transition. The channel toggles gate only whether
+ * an announcement is delivered, never whether it is marked as seen.
+ */
+export function useSignalAlerts(shadow: LiveState["shadow_signal"], connected: boolean) {
+  const [audioEnabled, setAudioEnabled] = useState(() => {
     try { return localStorage.getItem("waverun.signal.audio") === "true"; } catch { return false; }
   });
+  const { permission, request } = useNotificationPermission();
   const controller = useRef<SignalAnnouncements | null>(null);
+  // Read inside the effect without re-arming it when a toggle changes.
+  const channels = useRef({ audio: audioEnabled, push: permission });
+  channels.current = { audio: audioEnabled, push: permission };
+
   useEffect(() => {
     try {
       controller.current ??= new SignalAnnouncements(localStorage);
-      const stage = controller.current.accept(shadow?.signal, enabled && connected && !shadow?.paused, Date.now());
-      if (stage) beep(stage === "LIVE");
-    } catch { /* storage unavailable: remain silent */ }
-  }, [shadow, enabled, connected]);
-  const toggle = () => {
-    const next = !enabled;
-    try { localStorage.setItem("waverun.signal.audio", String(next)); setEnabled(next); } catch { setEnabled(false); }
+      const stage = controller.current.accept(shadow?.signal, connected && !shadow?.paused, Date.now());
+      if (!stage) return;
+      if (channels.current.audio) beep(stage === "LIVE");
+      if (stage === "LIVE" && channels.current.push === "granted" && typeof Notification !== "undefined") {
+        const signal = shadow?.signal;
+        try {
+          new Notification(`TAKEOFF ${signal?.direction ?? ""} SIGNAL`, {
+            body: signal?.entry_zone
+              ? `Entry ${signal.entry_zone[0]} – ${signal.entry_zone[1]} · Invalidierung ${signal.invalidation ?? "—"}`
+              : "Neues LIVE-Signal",
+            // Same tag as the dedup key, so even a duplicate OS-level delivery
+            // replaces the notification instead of stacking a second one.
+            tag: `${signal?.setup_id}:LIVE`,
+          });
+        } catch {
+          /* some browsers need a service worker; the sound already fired */
+        }
+      }
+    } catch {
+      /* storage unavailable: remain silent rather than alerting repeatedly */
+    }
+  }, [shadow, connected]);
+
+  const toggleAudio = () => {
+    const next = !audioEnabled;
+    try { localStorage.setItem("waverun.signal.audio", String(next)); setAudioEnabled(next); }
+    catch { setAudioEnabled(false); }
   };
-  return { enabled, toggle };
+
+  return { audio: { enabled: audioEnabled, toggle: toggleAudio }, push: { permission, request } };
 }
 
 export function useLiveState(): { state: LiveState | null; status: StreamStatus } {
@@ -205,6 +252,39 @@ export function useSignalHistory(direction: "ALL" | "LONG" | "SHORT") {
       active = false;
     };
   }, [direction]);
+
+  return { rows, available, error };
+}
+
+/**
+ * The real LIVE signals with their duration and outcome.
+ *
+ * Refetched on mount and whenever a new LIVE transition arrives, not on the 1s
+ * live cadence - this is an append-only journal read.
+ */
+export function useLiveSignals(liveKey: string | null) {
+  const [rows, setRows] = useState<LiveSignalRow[]>([]);
+  const [available, setAvailable] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const response = await fetch(`${BASE}/api/live-signals?limit=20`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = (await response.json()) as LiveSignalsResponse;
+        if (!active) return;
+        setRows(payload.signals);
+        setAvailable(payload.available);
+        setError(null);
+      } catch (cause) {
+        if (!active) return;
+        setError((cause as Error).message);
+      }
+    })();
+    return () => { active = false; };
+  }, [liveKey]);
 
   return { rows, available, error };
 }

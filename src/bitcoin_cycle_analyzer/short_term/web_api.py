@@ -909,6 +909,86 @@ def create_app(root: Path | None = None) -> FastAPI:
             return {"signals": [], "available": False, "direction": wanted, "execution": EXECUTION}
         return {"signals": rows, "available": True, "direction": wanted, "execution": EXECUTION}
 
+    @app.get("/api/live-signals")
+    def live_signals(limit: int = 20) -> dict[str, Any]:
+        """The real LIVE signals, with how long each stayed LIVE and how it resolved.
+
+        The general /api/signals history is a chronological feed of every
+        transition, so at ~28 transitions/hour a LIVE signal scrolls out of a
+        50-row page within roughly two hours - measured 2026-09-21: all six real
+        LIVE signals of the preceding 92h were already outside that window. This
+        endpoint answers the different question "show me the actual signals",
+        reading the same durable journal and computing nothing new.
+
+        Every row is a committed production transition; `synthetic` is carried
+        through untouched so a replay-produced one could never be mistaken for a
+        real one.
+        """
+        limit = max(1, min(int(limit), 100))
+        path = reader.runtime / "waverun/journal.db"
+        try:
+            with sqlite3.connect(f"{path.as_uri()}?mode=ro", uri=True, timeout=1.0) as db:
+                transitions = [
+                    (timestamp, json.loads(payload))
+                    for timestamp, payload in db.execute(
+                        "SELECT timestamp,payload FROM events"
+                        " WHERE kind='signal_transition' ORDER BY timestamp"
+                    )
+                ]
+                live = [(t, r) for t, r in transitions if r.get("state_to") == "LIVE"][-limit:]
+                if not live:
+                    return {"signals": [], "available": True, "execution": EXECUTION}
+
+                # What happened to each setup after it went LIVE.
+                by_setup: dict[str, list[tuple[float, dict[str, Any]]]] = {}
+                for t, r in transitions:
+                    by_setup.setdefault(r.get("setup_id"), []).append((t, r))
+
+                # Outcomes resolve after the signal, so one bounded scan suffices.
+                earliest = min(t for t, _ in live)
+                outcomes: dict[tuple[str, int], dict[str, Any]] = {}
+                for (payload,) in db.execute(
+                    "SELECT payload FROM events WHERE kind='outcome' AND timestamp>=?",
+                    (earliest - 60,),
+                ):
+                    try:
+                        row = json.loads(payload)
+                    except (TypeError, ValueError):
+                        continue
+                    setup_id = (row.get("observation") or {}).get("setup_id")
+                    if setup_id:
+                        outcomes[(setup_id, row.get("horizon_seconds"))] = row
+        except sqlite3.Error:
+            return {"signals": [], "available": False, "execution": EXECUTION}
+
+        rows: list[dict[str, Any]] = []
+        for timestamp, record in reversed(live):
+            setup_id = record.get("setup_id")
+            horizon = record.get("expected_horizon")
+            later = [(t, r) for t, r in by_setup.get(setup_id, []) if t > timestamp]
+            outcome = outcomes.get((setup_id, horizon))
+            rows.append({
+                "setup_id": setup_id,
+                "timestamp": record.get("timestamp"),
+                "direction": record.get("direction"),
+                "entry_zone": record.get("entry_zone"),
+                "invalidation": record.get("invalidation"),
+                "expected_move_class": record.get("expected_move_class"),
+                "expected_horizon": horizon,
+                "reasons": record.get("reasons") or [],
+                "synthetic": bool(record.get("synthetic", False)),
+                # None while the signal is still LIVE - not zero, which would
+                # read as "ended immediately".
+                "live_seconds": round(later[0][0] - timestamp, 1) if later else None,
+                "ended_state": later[0][1].get("state_to") if later else None,
+                "ended_reasons": (later[0][1].get("reasons") or []) if later else [],
+                "outcome_status": outcome.get("status") if outcome else None,
+                "outcome_max_gap_seconds": outcome.get("max_gap_seconds") if outcome else None,
+                "outcome_executable": outcome.get("executable_outcome") if outcome else None,
+                "outcome_data_complete": outcome.get("data_completeness") if outcome else None,
+            })
+        return {"signals": rows, "available": True, "execution": EXECUTION}
+
     @app.get("/api/stream")
     async def stream() -> StreamingResponse:
         async def events():

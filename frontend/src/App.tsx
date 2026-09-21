@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useLiveState, useSignalAudio } from "./lib/api";
+import { useLiveState, useSignalAlerts } from "./lib/api";
 import { Header } from "./components/Header";
 import { AlertCard } from "./components/AlertCard";
 import { SignalCard } from "./components/SignalCard";
 import { DataHealth } from "./components/DataHealth";
 import { SignalHistory } from "./components/SignalHistory";
+import { LiveSignalHistory } from "./components/LiveSignalHistory";
+import { AlertControls } from "./components/AlertControls";
 import { SystemPage } from "./components/SystemPage";
 import { PriceChart } from "./components/PriceChart";
 
@@ -27,8 +29,11 @@ export default function App() {
   const [tab, setTab] = useState<Tab>("LIVE");
   const { state, status } = useLiveState();
   const streamOk = status === "OPEN";
-  // Fires only on server-confirmed transitions, never on every stream frame.
-  useSignalAudio(state?.shadow_signal, streamOk);
+  // Fires once per server-confirmed transition, never on every stream frame.
+  const alerts = useSignalAlerts(state?.shadow_signal, streamOk);
+  // Refetch the LIVE list when a new LIVE transition arrives, not every second.
+  const signal = state?.shadow_signal?.signal;
+  const liveKey = signal?.state_to === "LIVE" ? `${signal.setup_id}:LIVE` : null;
 
   return (
     <div className="app">
@@ -55,12 +60,14 @@ export default function App() {
             {tab === "LIVE" && (
               <>
                 <SignalCard state={state} />
+                <AlertControls audio={alerts.audio} push={alerts.push} />
                 <DataHealth state={state} />
               </>
             )}
             {tab === "SIGNALE" && (
               <>
                 <SignalCard state={state} />
+                <LiveSignalHistory liveKey={liveKey} />
                 <SignalHistory />
               </>
             )}
