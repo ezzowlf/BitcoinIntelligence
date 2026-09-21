@@ -421,7 +421,30 @@ class LiveSession:
             # gate in SignalEngine.evaluate() will suppress NEW live signals.
             source_states['spot']='UNAVAILABLE';source_states['l2']='UNAVAILABLE'
         markers=Journal.progress_at(self.journal.path)
-        outcome_ready='outcome_scheduler' in markers and 0<=received.timestamp()-markers['outcome_scheduler']['committed_at']<=10
+        # Root cause fixed 2026-09-21: this liveness check ("is outcome
+        # resolution alive and recent?") was written as an ORDERING constraint -
+        # it additionally required the evaluated event to be NEWER than the
+        # scheduler's last heartbeat. Those are two independent clocks: the
+        # scheduler heartbeats ~1/s from wall time at the end of its run, while
+        # `received` is when this trade arrived, and evaluation is gated to once
+        # per received second. So whenever the scheduler happened to beat
+        # between an event arriving and that second being evaluated, the
+        # difference went negative and outcome evidence was reported missing
+        # although the scheduler was demonstrably healthy. Measured in
+        # production on this host: 20 of 25 samples negative, median -0.437s,
+        # min -1.718s - i.e. the gate failed ~80% of the time on a sub-second
+        # race, and `outcomes` appeared in missing_evidence for 46 of the last
+        # 60 signal transitions, suppressing otherwise-valid setups (the engine
+        # cancels a setup whenever `missing` is non-empty).
+        #
+        # abs() restores the intended meaning and nothing else: the same 10s
+        # freshness bound, now applied symmetrically, exactly as every other
+        # freshness check in this codebase measures staleness (health_supervisor
+        # ._age_state, web_api's max(now-committed_at, now-event_at)). A
+        # genuinely dead scheduler is still caught - its heartbeat simply stops,
+        # the gap grows past 10s and outcome evidence goes missing as before.
+        # No threshold was relaxed and no signal rule was changed.
+        outcome_ready='outcome_scheduler' in markers and abs(received.timestamp()-markers['outcome_scheduler']['committed_at'])<=10
         with self._data_lock:
             compact=self.causal_features.snapshot(received,quote,l2=imbalance,feed_health=source_states,storage_ready=self.raw_writer is not None and self.raw_writer.ready and not getattr(self.feed,'ledger_error',None),outcomes_ready=outcome_ready)
         compact['cause_id']=cause

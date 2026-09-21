@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { AlertEvent, CandleResponse, LiveState, Timeframe } from "./types";
+import type {
+  AlertEvent,
+  CandleResponse,
+  LiveState,
+  SignalHistoryResponse,
+  SignalHistoryRow,
+  Timeframe,
+} from "./types";
 import { SignalAnnouncements } from "./signalAnnouncements";
 
 // Single point of contact with the backend. The browser never speaks to MT5,
@@ -164,4 +171,40 @@ export function useCandles(timeframe: Timeframe, intervalMs = 5000) {
   }, [timeframe, intervalMs]);
 
   return { data, error };
+}
+
+/**
+ * Signal history for the SIGNALE tab.
+ *
+ * Refetched only when the filter changes or the visible tab is re-entered —
+ * history is an append-only journal read, so polling it on the 1s live cadence
+ * would be pure waste on a phone.
+ */
+export function useSignalHistory(direction: "ALL" | "LONG" | "SHORT") {
+  const [rows, setRows] = useState<SignalHistoryRow[]>([]);
+  const [available, setAvailable] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const response = await fetch(`${BASE}/api/signals?limit=50&direction=${direction}`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = (await response.json()) as SignalHistoryResponse;
+        if (!active) return;
+        setRows(payload.signals);
+        setAvailable(payload.available);
+        setError(null);
+      } catch (cause) {
+        if (!active) return;
+        setError((cause as Error).message);
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [direction]);
+
+  return { rows, available, error };
 }

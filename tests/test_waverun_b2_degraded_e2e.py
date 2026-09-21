@@ -141,7 +141,39 @@ def test_spot_drives_pipeline_then_loss_freezes_it_then_recovery_resumes(session
     assert any(i["component"] == "binance_spot" for i in incidents)
 
     # --- 4. spot recovery: the decision pipeline resumes producing records --
+    # What "resumes producing records" means is that the pipeline evaluates the
+    # returning spot events and advances its committed progress, so assert that
+    # first and directly - it is the pipeline evidence this test is named for.
+    from bitcoin_cycle_analyzer.short_term.journal import Journal
+
+    def _seqs():
+        progress = Journal.progress_at(rt / "journal.db")
+        return {k: progress.get(k, {}).get("seq", 0)
+                for k in ("features", "candidates", "decisions", "predictions")}
+
+    before = _seqs()
+
+    # The .jsonl mirrors of those records are deliberately throttled to one
+    # routine write per _JSONL_HEARTBEAT_S (10s of MONOTONIC time) by the
+    # storage gate, so on a routine BLOCKED/WATCH second their line count is a
+    # function of how long this test has been running, not of whether the
+    # pipeline recovered. This assertion used to pass only because the run
+    # happened to take longer than that window - before 2026-09-21 every
+    # journal operation opened its own sqlite connection (~3.63ms each), which
+    # padded the test past 10s; removing that bottleneck made the same test
+    # finish inside the window and the line counts stopped moving, although the
+    # pipeline itself was demonstrably still committing every event. Wind the
+    # throttle back explicitly so the file assertion tests the pipeline instead
+    # of the clock.
+    for _attr in ("_last_candidate_heartbeat", "_last_decision_heartbeat", "_last_latency_heartbeat"):
+        setattr(s, _attr, getattr(s, _attr) - (waverun_live.LiveSession._JSONL_HEARTBEAT_S + 1))
+
     asyncio.run(_feed_spot(s, 40, start_price=77200.0, t0=datetime(2026, 1, 1, 1, 0, tzinfo=UTC)))
+
+    after = _seqs()
+    assert all(after[k] > before[k] for k in before), (
+        f"decision pipeline did not resume committing after spot returned: {before} -> {after}"
+    )
     assert _count(cand) > c2 and _count(dec) > d2 and _count(lat) > l2
 
 

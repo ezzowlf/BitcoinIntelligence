@@ -205,3 +205,30 @@ export interface CandleResponse {
 
 export const TIMEFRAMES = ["30s", "1m", "3m", "5m", "15m", "1h", "4h"] as const;
 export type Timeframe = (typeof TIMEFRAMES)[number];
+
+/** One committed signal-state transition from the durable journal. */
+export interface SignalHistoryRow {
+  setup_id: string;
+  timestamp: string;
+  state_from: string;
+  state_to: string;
+  direction: "LONG" | "SHORT" | null;
+  entry_zone: Array<number | null> | null;
+  invalidation: number | null;
+  expected_move_class: number | null;
+  expected_horizon: number | null;
+  expires_at: string | null;
+  reasons: string[];
+  missing_evidence: string[];
+  conflicts: string[];
+  calibration_status: string | null;
+  /** Replay/fixture provenance, carried through from the engine untouched. */
+  synthetic: boolean;
+}
+
+export interface SignalHistoryResponse {
+  signals: SignalHistoryRow[];
+  available: boolean;
+  direction: string;
+  execution: string;
+}

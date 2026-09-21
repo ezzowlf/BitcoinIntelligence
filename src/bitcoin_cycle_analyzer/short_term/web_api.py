@@ -12,6 +12,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import sqlite3
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
@@ -470,11 +471,42 @@ class StateReader:
 
         # Independently verify actual committed stage markers, even for a fresh report.
         progress=Journal.progress_at(self.runtime/'waverun/journal.db')
+        # Root cause fixed 2026-09-21: this cross-check collapsed every degree of
+        # feed lateness into a bare OFFLINE at the 5s proof window, so a feed
+        # 6 seconds behind was reported identically to a dead socket - and, worse,
+        # the replacement ComponentHealth discarded the supervisor's real
+        # diagnostics (reconnect_count, last_error, last_event_at all became
+        # 0/None), destroying exactly the evidence needed to tell the two apart.
+        # That is the same defect already fixed for the pipeline stages below on
+        # 2026-09-14; feeds simply never got the matching treatment. The tiers
+        # here mirror the canonical feed state machine in health.py
+        # (CONFIG.feed_stale_after=30s, feed_offline_after=180s). No threshold is
+        # loosened: LIVE still requires the same proven 0..5s source-specific
+        # freshness it always did, and anything past feed_offline_after is still
+        # OFFLINE - the middle ground is now reported as what it actually is
+        # instead of being overstated as a dead feed.
         for key,stage in [('binance_spot','feed_spot'),('binance_futures','feed_futures'),('l2','feed_l2'),('vantage','vantage')]:
             marker=progress.get(stage)
             age=max(now.timestamp()-marker['committed_at'],now.timestamp()-marker['event_at']) if marker else None
-            if age is None or not 0<=age<=5:
-                comps[key]=ComponentHealth(key,'OFFLINE',age_seconds=age,detail='source-specific freshness not proven').to_dict()
+            if age is None or age<0:
+                state,detail='OFFLINE','source-specific freshness not proven'
+            elif age<=5:
+                continue  # proven fresh: keep the supervisor's own richer report
+            elif age<=RES_CONFIG.feed_stale_after:
+                state,detail='DEGRADED','events arriving but behind the 5s proof window'
+            elif age<=RES_CONFIG.feed_offline_after:
+                state,detail='STALE','no proven source event for %.0fs'%age
+            else:
+                state,detail='OFFLINE','no proven source event for %.0fs'%age
+            # Preserve the supervisor's diagnostics; only the state/detail are
+            # overridden by this independent freshness proof.
+            prior=comps.get(key) or {}
+            comps[key]=ComponentHealth(key,state,age_seconds=age,
+                last_event_at=prior.get('last_event_at'),
+                reconnect_count=prior.get('reconnect_count',0),
+                last_error=prior.get('last_error'),
+                recovery_level=prior.get('recovery_level',0),
+                detail=detail).to_dict()
         if vantage_state not in {'AVAILABLE','LIVE','HEALTHY'}:
             comps['vantage']=ComponentHealth('vantage',vantage_state).to_dict()
         for key,stage in [('feature_pipeline','features'),('candidate_pipeline','candidates'),('decision_pipeline','decisions'),('prediction_persistence','predictions'),('outcome_scheduler','outcome_scheduler'),('storage','storage')]:
@@ -803,6 +835,62 @@ def create_app(root: Path | None = None) -> FastAPI:
             "alerts": snapshot["alerts"],
             "execution": EXECUTION,
         }
+
+    @app.get("/api/signals")
+    def signals(limit: int = 50, direction: str = "ALL") -> dict[str, Any]:
+        """Read-only history of real signal transitions from the durable journal.
+
+        This reports what the engine already committed; it computes no new
+        signal state and never synthesises a row. `synthetic` is carried
+        through untouched so a replay/fixture-produced transition can never be
+        mistaken for a production one.
+        """
+        wanted = direction.upper()
+        if wanted not in {"ALL", "LONG", "SHORT"}:
+            raise HTTPException(status_code=400, detail="direction must be ALL, LONG or SHORT")
+        limit = max(1, min(int(limit), 200))
+        rows: list[dict[str, Any]] = []
+        try:
+            path = reader.runtime / "waverun/journal.db"
+            with sqlite3.connect(f"{path.as_uri()}?mode=ro", uri=True, timeout=0.5) as db:
+                # Over-fetch before filtering so a direction filter still returns
+                # up to `limit` rows rather than whatever survives the newest page.
+                cursor = db.execute(
+                    "SELECT payload FROM events WHERE kind='signal_transition'"
+                    " ORDER BY timestamp DESC LIMIT ?",
+                    (limit * 8,),
+                )
+                for (payload,) in cursor:
+                    try:
+                        row = json.loads(payload)
+                    except (TypeError, ValueError):
+                        continue
+                    if wanted != "ALL" and row.get("direction") != wanted:
+                        continue
+                    rows.append({
+                        "setup_id": row.get("setup_id"),
+                        "timestamp": row.get("timestamp"),
+                        "state_from": row.get("state_from"),
+                        "state_to": row.get("state_to"),
+                        "direction": row.get("direction"),
+                        "entry_zone": row.get("entry_zone"),
+                        "invalidation": row.get("invalidation"),
+                        "expected_move_class": row.get("expected_move_class"),
+                        "expected_horizon": row.get("expected_horizon"),
+                        "expires_at": row.get("expires_at"),
+                        "reasons": row.get("reasons") or [],
+                        "missing_evidence": row.get("missing_evidence") or [],
+                        "conflicts": row.get("conflicts") or [],
+                        "calibration_status": row.get("calibration_status"),
+                        "synthetic": bool(row.get("synthetic", False)),
+                    })
+                    if len(rows) >= limit:
+                        break
+        except sqlite3.Error:
+            # A locked/absent journal is a reporting gap, not a reason to 500 the
+            # dashboard: the UI shows "history unavailable" instead.
+            return {"signals": [], "available": False, "direction": wanted, "execution": EXECUTION}
+        return {"signals": rows, "available": True, "direction": wanted, "execution": EXECUTION}
 
     @app.get("/api/stream")
     async def stream() -> StreamingResponse:

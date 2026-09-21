@@ -57,12 +57,17 @@ class Journal:
     # constructed Journal objects still cooperate.
     _locks_guard = threading.Lock()
     _locks: dict[str, threading.RLock] = {}
+    # The reused connection lives beside the lock and is keyed the same way, so
+    # independently constructed Journal objects for one database share a single
+    # writer instead of each opening their own behind the shared gate.
+    _shared: dict[str, dict] = {}
 
     def __init__(self,path):
         self.path=Path(path);self.path.parent.mkdir(parents=True,exist_ok=True)
         key=str(self.path.resolve()).casefold()
         with self._locks_guard:
             self._lock=self._locks.setdefault(key,threading.RLock())
+            self._conn=self._shared.setdefault(key,{'db':None,'depth':0})
         with self.connect() as db:
             db.execute('PRAGMA journal_mode=WAL')
             # Only takes effect on a brand-new/empty database file; a no-op on an
@@ -100,16 +105,59 @@ class Journal:
         # (not guess) whether contention or commit latency dominates. Cheap
         # (2 extra monotonic() reads); logged only above WAVERUN_JOURNAL_DIAG_MIN_S
         # so normal operation is unaffected once the flag/threshold is removed.
+        # Root cause fixed 2026-09-21: this opened a brand-new sqlite3 connection
+        # (plus two PRAGMA round-trips) and closed it again for EVERY journal
+        # operation, all serialised behind the single writer gate above.
+        # Measured on this host against the live 74MB journal.db that sequence
+        # costs 3.63ms while the actual statement costs ~0ms - a hard ceiling of
+        # ~275 journal ops/s for the whole process. The collector needs far more
+        # than that (one connect per evaluated trade in _evaluate_event, one per
+        # Vantage quote, per liveness mark, per storage flush, per outcome
+        # batch), so under live BTC trade rates the consumer fell permanently
+        # behind: `Slow journal context` traces showed wait=1.5s / hold=0.1s,
+        # i.e. pure queueing for the gate, not slow SQL. The backlog is what
+        # froze feed_spot/feed_futures `event_at` ~600s in the past while
+        # `committed_at` stayed current, which the API's strict 0<=age<=5 feed
+        # check then reported as binance_spot/binance_futures = OFFLINE with
+        # reconnect_count=0 - the sockets were connected and delivering the
+        # whole time. Reusing one connection removes the ceiling; the writer
+        # gate, WAL mode, busy_timeout and synchronous=NORMAL are unchanged.
         wait_start=time.monotonic()
         with self._lock:
             acquired_at=time.monotonic()
-            db=sqlite3.connect(self.path,timeout=5)
-            db.execute('PRAGMA busy_timeout=5000')
-            db.execute('PRAGMA synchronous=NORMAL')
+            state=self._conn
+            if state['depth']:
+                # Re-entrant use from the same thread (the gate is an RLock).
+                # Hand back the connection whose transaction is already open:
+                # opening a second one here would make this thread contend with
+                # its own still-open write transaction, and committing an inner
+                # `with db:` would prematurely end the outer caller's unit of
+                # work. Only the outermost frame commits.
+                state['depth']+=1
+                try:
+                    yield state['db']
+                finally:
+                    state['depth']-=1
+                return
+            if state['db'] is None:
+                db=sqlite3.connect(self.path,timeout=5,check_same_thread=False)
+                db.execute('PRAGMA busy_timeout=5000')
+                db.execute('PRAGMA synchronous=NORMAL')
+                state['db']=db
+            db=state['db']
+            state['depth']=1
             try:
                 with db:yield db
+            except sqlite3.Error:
+                # A connection that failed mid-statement may hold a doomed
+                # transaction; drop it so the next caller rebuilds rather than
+                # inheriting the fault for the life of the process.
+                state['db']=None
+                try:db.close()
+                except Exception:pass
+                raise
             finally:
-                db.close()
+                state['depth']=0
             released_at=time.monotonic()
         wait_s=acquired_at-wait_start;hold_s=released_at-acquired_at;elapsed=released_at-wait_start
         diag_min=float(os.environ.get('WAVERUN_JOURNAL_DIAG_MIN_S',0) or 0)
